@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>CadiPulse — Field Force Dashboard Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0C1524;--s:#16243A;--s2:#1A2B45;--s3:#1E3050;
+  --bd:rgba(80,130,220,0.12);--bd2:rgba(80,130,220,0.22);
+  --blue:#3B7EFF;--blue2:#2563EB;--blues:rgba(59,126,255,0.14);
+  --green:#22C55E;--green2:#16A34A;--greens:rgba(34,197,94,0.14);
+  --gold:#F59E0B;--golds:rgba(245,158,11,0.14);
+  --red:#EF4444;--reds:rgba(239,68,68,0.14);
+  --purple:#A855F7;--purples:rgba(168,85,247,0.14);
+  --text:#EAF2FF;--text2:#BDD0EA;--text3:#7A9ABF;--text4:#3E5A7A;
+  --navy:#0F1A2E;--navy2:#1A2942;
+  --sh:0 2px 8px rgba(0,0,0,.3);--sh2:0 4px 20px rgba(0,0,0,.4);--sh3:0 8px 40px rgba(0,0,0,.5);
+  --r:8px;--r2:12px;--r3:16px;--r4:22px;--rfull:9999px;
+  --font:'Plus Jakarta Sans',sans-serif;--fontd:'Outfit',sans-serif;
+  --hh:54px;--sw:220px;
+}
+[data-theme="light"]{
+  --bg:#EEF4FC;--s:#FFFFFF;--s2:#F0F6FF;--s3:#E4EEF8;
+  --bd:rgba(30,60,120,0.08);--bd2:rgba(30,60,120,0.16);
+  --text:#0D1B2E;--text2:#1A3050;--text3:#4A6080;--text4:#A0B8D0;
+  --navy:#0F1A2E;--navy2:#1A2942;
+  --sh:0 2px 8px rgba(10,22,40,0.07);--sh2:0 4px 16px rgba(10,22,40,0.10);--sh3:0 8px 32px rgba(10,22,40,0.13);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:13px}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:4px}
+
+/* ── HEADER ── */
+#header{
+  height:var(--hh);background:var(--s);border-bottom:1px solid var(--bd2);
+  display:flex;align-items:center;padding:0 16px 0 0;
+  position:fixed;top:0;left:0;right:0;z-index:200;box-shadow:var(--sh);
+}
+.logo-wrap{width:var(--sw);display:flex;align-items:center;padding:0 16px;gap:9px;flex-shrink:0;border-right:1px solid var(--bd);height:100%}
+.logo-icon{width:30px;height:30px;background:linear-gradient(135deg,var(--blue),var(--blue2));border-radius:var(--r);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(59,126,255,0.35)}
+.logo-icon svg{width:16px;height:16px}
+.logo-text{font-family:var(--fontd);font-weight:800;font-size:16px;color:var(--text)}
+.logo-text span{color:var(--blue)}
+.header-center{flex:1;display:flex;align-items:center;gap:10px;padding-left:16px;min-width:0}
+#pageTitle{font-family:var(--fontd);font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.div-pill{background:var(--blues);border:1.5px solid var(--bd2);border-radius:var(--rfull);color:var(--blue);font-size:11px;font-weight:700;padding:4px 12px;font-family:var(--fontd)}
+.icon-btn{width:32px;height:32px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;color:var(--text3);transition:.15s}
+.icon-btn:hover{background:var(--s2);color:var(--text)}
+.icon-btn svg{width:17px;height:17px}
+.avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue2));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;font-family:var(--fontd);box-shadow:0 2px 8px rgba(59,126,255,.35)}
+#hamburger{display:none;width:34px;height:34px;align-items:center;justify-content:center;border-radius:var(--r);color:var(--text3)}
+#hamburger:hover{background:var(--s2)}
+
+/* ── SHELL ── */
+#shell{display:flex;margin-top:var(--hh);height:calc(100vh - var(--hh));overflow:hidden}
+
+/* ── SIDEBAR ── */
+#sidebar{width:var(--sw);background:var(--navy);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;z-index:100;transition:transform .2s}
+.nav-sec{padding:16px 0 4px}
+.nav-sec-title{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:rgba(138,163,192,0.5);padding:0 14px 7px;font-family:var(--fontd)}
+.nav-item{display:flex;align-items:center;gap:9px;padding:0 10px 0 12px;height:38px;border-radius:var(--r);margin:1px 7px;cursor:pointer;transition:.15s;color:#7A9ABF;font-size:12.5px;font-weight:500}
+.nav-item:hover{background:rgba(255,255,255,0.06);color:#D0E4FF}
+.nav-item.active{background:rgba(59,126,255,0.20);color:#fff;font-weight:700}
+.nav-item.active .nav-ic{color:#93C5FD}
+.nav-ic{width:16px;height:16px;flex-shrink:0}
+.sidebar-footer{margin-top:auto;padding:10px 7px;border-top:1px solid rgba(255,255,255,0.06)}
+.sbar-info{font-size:11px;color:rgba(138,163,192,0.7);padding:0 7px 8px;line-height:1.6}
+.sbar-info strong{color:#B8D0E8}
+.nav-logout{color:#FDA4AF!important}
+.nav-logout:hover{background:rgba(239,68,68,.14)!important;color:#FCA5A5!important}
+
+/* ── MAIN ── */
+#main{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column}
+
+/* ── VIEWS ── */
+.view{display:none;animation:fadeIn .2s ease}
+.view.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* ── COMPONENTS ── */
+.page-head{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.page-head h1{font-family:var(--fontd);font-size:19px;font-weight:800;color:var(--text);flex:1;letter-spacing:-.3px}
+
+/* PERIOD PILLS */
+.period-pills{display:flex;background:var(--s2);border-radius:var(--rfull);padding:3px;gap:2px}
+.period-pill{padding:4px 13px;border-radius:20px;font-size:11.5px;font-weight:700;color:var(--text3);transition:.15s;cursor:pointer;font-family:var(--fontd)}
+.period-pill.active{background:var(--s);color:var(--blue);box-shadow:var(--sh)}
+.refresh-btn{display:flex;align-items:center;gap:6px;background:transparent;border:1.5px solid var(--bd2);border-radius:var(--r);padding:6px 13px;font-size:12px;font-weight:700;color:var(--text3);font-family:var(--fontd);transition:.15s}
+.refresh-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blues)}
+.refresh-btn svg{width:13px;height:13px}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-bottom:18px}
+.kpi-card{border-radius:var(--r3);padding:18px 20px;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.18);transition:.2s}
+.kpi-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.28)}
+.kpi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px;font-family:var(--fontd);color:rgba(255,255,255,.75)}
+.kpi-value{font-family:var(--fontd);font-size:26px;font-weight:800;line-height:1;margin-bottom:4px;letter-spacing:-.5px;color:#fff}
+.kpi-sub{font-size:11px;color:rgba(255,255,255,.6)}
+.kpi-icon{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:var(--r);background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center}
+.kpi-icon svg{width:17px;height:17px;color:#fff}
+
+/* ACH BAR */
+.ach-wrap{background:var(--s);border:1px solid var(--bd);border-radius:var(--r3);padding:18px 20px;margin-bottom:18px;box-shadow:var(--sh)}
+.ach-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.ach-pct{font-family:var(--fontd);font-size:36px;font-weight:900;color:var(--text);line-height:1}
+.ach-pct span{font-size:18px;color:var(--text3);font-weight:500}
+.ach-stats{display:flex;gap:18px;flex-wrap:wrap}
+.ach-stat{text-align:right}
+.ach-stat-lbl{font-size:9px;color:var(--text4);text-transform:uppercase;letter-spacing:.5px;font-family:var(--fontd)}
+.ach-stat-val{font-size:13px;font-weight:800;color:var(--text);font-family:var(--fontd)}
+.ach-track{height:9px;background:var(--s2);border-radius:var(--rfull);overflow:hidden}
+.ach-fill{height:100%;border-radius:var(--rfull);transition:width .9s cubic-bezier(.4,0,.2,1)}
+
+/* CHIPS */
+.chips-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:11px;margin-bottom:18px}
+.chip{background:var(--s);border:1px solid var(--bd);border-radius:var(--r2);padding:12px 14px;display:flex;align-items:center;gap:9px;box-shadow:var(--sh);transition:.2s}
+.chip:hover{transform:translateY(-2px);box-shadow:var(--sh2)}
+.chip-icon{width:32px;height:32px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chip-icon svg{width:15px;height:15px}
+.chip-val{font-size:17px;font-weight:800;color:var(--text);font-family:var(--fontd);line-height:1.1}
+.chip-lbl{font-size:10px;color:var(--text3)}
+
+/* 2-COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+@media(max-width:800px){.two-col{grid-template-columns:1fr}}
+
+/* CARD */
+.card{background:var(--s);border:1px solid var(--bd);border-radius:var(--r3);overflow:hidden;box-shadow:var(--sh)}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--bd)}
+.card-title{font-family:var(--fontd);font-size:13px;font-weight:700;color:var(--text)}
+.card-body{padding:14px 18px}
+
+/* TABLE */
+.fp-table{width:100%;border-collapse:collapse;font-size:12px}
+.fp-table th{background:var(--s2);color:var(--text3);font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;padding:9px 13px;text-align:left;border-bottom:1px solid var(--bd);white-space:nowrap;font-family:var(--fontd)}
+.fp-table td{padding:9px 13px;border-bottom:1px solid var(--bd);color:var(--text2)}
+.fp-table tr:last-child td{border-bottom:none}
+.fp-table tr:hover td{background:var(--s2)}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.bold{font-weight:700;color:var(--text)}
+.pill{display:inline-flex;align-items:center;padding:2px 8px;border-radius:var(--rfull);font-size:10.5px;font-weight:700;font-family:var(--fontd)}
+.pill.g{background:var(--greens);color:var(--green2)}
+.pill.r{background:var(--reds);color:var(--red)}
+.pill.go{background:var(--golds);color:var(--gold)}
+.pill.b{background:var(--blues);color:var(--blue)}
+
+/* YTD */
+.ytd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.ytd-item{background:var(--s2);border-radius:var(--r2);padding:11px 13px;border:1px solid var(--bd)}
+.ytd-lbl{font-size:9.5px;color:var(--text4);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;font-family:var(--fontd)}
+.ytd-val{font-size:17px;font-weight:800;font-family:var(--fontd);color:var(--text)}
+
+/* STOCK */
+.stock-bar{display:flex;gap:14px;flex-wrap:wrap;background:var(--navy);border-radius:var(--r2);padding:10px 16px;margin-bottom:12px;align-items:center}
+.stock-bar-lbl{font-size:10px;color:#94A3B8;text-transform:uppercase;letter-spacing:.5px;font-family:var(--fontd)}
+.stock-bar-val{font-size:14px;font-weight:800;font-family:var(--fontd)}
+.sv-s{color:#6EE7B7}.sv-t{color:#FCD34D}.sv-total{color:#93C5FD}
+.tbl-scroll{overflow-x:auto;max-height:340px;overflow-y:auto}
+
+/* OD CHIPS */
+.od-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:9px;margin-bottom:18px}
+.od-chip{background:var(--s);border:1px solid var(--bd);border-radius:var(--r2);padding:11px;text-align:center;transition:.2s}
+.od-chip:hover{transform:translateY(-2px)}
+.od-chip-lbl{font-size:9.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;font-family:var(--fontd)}
+.od-chip-val{font-size:15px;font-weight:800;font-family:var(--fontd);color:var(--text)}
+
+/* NOTIF */
+.notif-item{display:flex;gap:10px;padding:12px 0;border-bottom:1px solid var(--bd);cursor:pointer;transition:.15s}
+.notif-item:last-child{border-bottom:none}
+.notif-dot{width:7px;height:7px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:5px}
+.notif-dot.read{background:var(--bd2)}
+.notif-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:2px;font-family:var(--fontd)}
+.notif-body{font-size:11.5px;color:var(--text3)}
+.notif-time{font-size:10.5px;color:var(--text4);margin-top:2px}
+
+/* CHART CONTAINER */
+.chart-box{position:relative;height:220px}
+
+/* TOAST */
+#toast-c{position:fixed;bottom:16px;right:16px;display:flex;flex-direction:column;gap:7px;z-index:9999}
+.toast{display:flex;align-items:center;gap:9px;background:var(--s);border:1px solid var(--bd);border-radius:var(--r2);padding:11px 15px;box-shadow:var(--sh3);font-size:12.5px;color:var(--text2);min-width:240px;max-width:340px;animation:sUp .25s ease;border-left:3px solid var(--blue)}
+.toast.ok{border-left-color:var(--green)}
+.toast.err{border-left-color:var(--red)}
+@keyframes sUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* OVERLAY */
+#overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99}
+#overlay.show{display:block}
+
+/* MOBILE */
+@media(max-width:720px){
+  #sidebar{position:fixed;top:var(--hh);left:0;bottom:0;transform:translateX(-100%);z-index:150}
+  #sidebar.open{transform:translateX(0)}
+  #hamburger{display:flex!important}
+  .logo-wrap{width:auto;border-right:none}
+  #main{padding:13px}
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .chips-row{grid-template-columns:1fr 1fr}
+}
+@media(max-width:420px){.kpi-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<!-- HEADER -->
+<header id="header">
+  <div class="logo-wrap">
+    <button id="hamburger" onclick="toggleSB()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5A7 7 0 1 0 10 19"/><path d="M10 5h5a4.5 4.5 0 0 1 0 9h-5v5"/></svg>
+    </div>
+    <span class="logo-text">Cadi<span>Pulse</span></span>
+  </div>
+  <div class="header-center">
+    <span id="pageTitle">Dashboard</span>
+    <div class="div-pill" id="divPill">NC — New Care</div>
+  </div>
+  <div class="header-right">
+    <button class="icon-btn" onclick="nav('notifications')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </button>
+    <button class="icon-btn" id="themeBtn" onclick="toggleTheme()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <div class="avatar">N</div>
+    <div style="display:flex;flex-direction:column;line-height:1.2">
+      <span style="font-size:11.5px;font-weight:700;color:var(--text);font-family:var(--fontd)">Nihar Mashru</span>
+      <span style="font-size:10px;color:var(--text3)">MIS · All Divisions</span>
+    </div>
+  </div>
+</header>
+
+<div id="shell">
+  <!-- SIDEBAR -->
+  <nav id="sidebar">
+    <div class="nav-sec">
+      <div class="nav-sec-title">Main</div>
+      <div class="nav-item active" onclick="nav('dashboard')">
+        <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" onclick="nav('stock')">
+        <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        Stock Report
+      </div>
+      <div class="nav-item" onclick="nav('od')">
+        <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Overdue (OD)
+      </div>
+      <div class="nav-item" onclick="nav('notifications')">
+        <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        Notifications
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sbar-info"><strong>NC Division</strong><br>Nihar Mashru · MIS</div>
+      <div class="nav-item nav-logout" onclick="toast('Demo mode — logout disabled.','info')">
+        <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Logout
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main id="main">
+
+    <!-- ── DASHBOARD ── -->
+    <div id="view-dashboard" class="view active">
+      <div class="page-head">
+        <h1 id="dashTitle">NC — Dashboard</h1>
+        <div class="period-pills">
+          <div class="period-pill active" id="pMTD" onclick="setPeriod('MTD')">MTD</div>
+          <div class="period-pill" id="pTODAY" onclick="setPeriod('TODAY')">Today</div>
+        </div>
+        <button class="refresh-btn" onclick="refreshDash()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Refresh
+        </button>
+      </div>
+
+      <!-- KPI GRID -->
+      <div class="kpi-grid" id="kpiGrid">
+        <div class="kpi-card" style="background:linear-gradient(135deg,#F59E0B,#D97706)">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+          <div class="kpi-label">MTD Budget</div>
+          <div class="kpi-value" id="k-budget">—</div>
+          <div class="kpi-sub">Lakhs Target</div>
+        </div>
+        <div class="kpi-card" style="background:linear-gradient(135deg,#2563EB,#1D4ED8)">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <div class="kpi-label">MTD Net Sales</div>
+          <div class="kpi-value" id="k-sales">—</div>
+          <div class="kpi-sub">Lakhs</div>
+        </div>
+        <div class="kpi-card" style="background:linear-gradient(135deg,#EF4444,#DC2626)">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
+          <div class="kpi-label">Expiry Value</div>
+          <div class="kpi-value" id="k-expiry">—</div>
+          <div class="kpi-sub">Non Salable Returns</div>
+        </div>
+        <div class="kpi-card" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED)">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+          <div class="kpi-label">GRN Value</div>
+          <div class="kpi-value" id="k-grn">—</div>
+          <div class="kpi-sub">Salable Returns</div>
+        </div>
+      </div>
+
+      <!-- ACH BAR -->
+      <div class="ach-wrap">
+        <div class="ach-head">
+          <div>
+            <div style="font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;font-family:var(--fontd)">Achievement</div>
+            <div class="ach-pct"><span id="achPct">—</span><span>%</span></div>
+          </div>
+          <div class="ach-stats">
+            <div class="ach-stat"><div class="ach-stat-lbl">Net Sales</div><div class="ach-stat-val" id="achSales">—</div></div>
+            <div class="ach-stat"><div class="ach-stat-lbl">Budget</div><div class="ach-stat-val" id="achBudget">—</div></div>
+            <div class="ach-stat"><div class="ach-stat-lbl">Pending</div><div class="ach-stat-val" id="achPending">—</div></div>
+          </div>
+        </div>
+        <div class="ach-track"><div class="ach-fill" id="achFill" style="width:0%"></div></div>
+      </div>
+
+      <!-- CHIPS -->
+      <div class="chips-row">
+        <div class="chip"><div class="chip-icon" style="background:var(--blues)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div><div class="chip-val" id="c-stockists">—</div><div class="chip-lbl">Active Stockists</div></div></div>
+        <div class="chip"><div class="chip-icon" style="background:var(--greens)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><div><div class="chip-val" id="c-billed">—</div><div class="chip-lbl">MTD Billed HQs</div></div></div>
+        <div class="chip"><div class="chip-icon" style="background:var(--reds)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><div class="chip-val" id="c-overdue">—</div><div class="chip-lbl">Overdue (L)</div></div></div>
+        <div class="chip"><div class="chip-icon" style="background:var(--golds)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div><div><div class="chip-val" id="c-zerohq">—</div><div class="chip-lbl">Zero HQs</div></div></div>
+      </div>
+
+      <div class="two-col">
+        <!-- TOP PRODUCTS -->
+        <div class="card">
+          <div class="card-header"><div class="card-title">Top 5 Products</div><span class="pill b">MTD</span></div>
+          <div class="tbl-scroll">
+            <table class="fp-table"><thead><tr><th>#</th><th>Product</th><th class="num">Qty</th><th class="num">Value (L)</th></tr></thead>
+            <tbody id="topProdTbl"></tbody></table>
+          </div>
+        </div>
+        <!-- HQ TABLE -->
+        <div class="card">
+          <div class="card-header"><div class="card-title">HQ-wise Net Sales</div></div>
+          <div class="tbl-scroll">
+            <table class="fp-table"><thead><tr><th>HQ</th><th class="num">Net Sales</th><th class="num">Budget</th><th class="num">Ach%</th></tr></thead>
+            <tbody id="hqTbl"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHART + YTD -->
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Monthly Sales Trend</div></div>
+          <div class="card-body"><div class="chart-box"><canvas id="trendChart"></canvas></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Year-to-Date</div><span class="pill g">FY 2025</span></div>
+          <div class="card-body">
+            <div class="ytd-grid">
+              <div class="ytd-item"><div class="ytd-lbl">YTD Sales</div><div class="ytd-val" id="y-sales">—</div></div>
+              <div class="ytd-item"><div class="ytd-lbl">YTD Budget</div><div class="ytd-val" id="y-budget">—</div></div>
+              <div class="ytd-item"><div class="ytd-lbl">YTD Ach%</div><div class="ytd-val" id="y-ach">—</div></div>
+              <div class="ytd-item"><div class="ytd-lbl">LYTD</div><div class="ytd-val" id="y-lytd">—</div></div>
+              <div class="ytd-item"><div class="ytd-lbl">LMTD</div><div class="ytd-val" id="y-lmtd">—</div></div>
+              <div class="ytd-item"><div class="ytd-lbl">YTD Growth</div><div class="ytd-val" id="y-growth">—</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /dashboard -->
+
+    <!-- ── STOCK ── -->
+    <div id="view-stock" class="view">
+      <div class="page-head"><h1>Stock Report</h1><button class="refresh-btn" onclick="loadStock()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Refresh</button></div>
+      <div class="stock-bar">
+        <div><div class="stock-bar-lbl">Salable</div><div class="stock-bar-val sv-s" id="st-sal">—</div></div>
+        <div style="width:1px;background:rgba(255,255,255,0.10);margin:0 4px"></div>
+        <div><div class="stock-bar-lbl">Transit</div><div class="stock-bar-val sv-t" id="st-tra">—</div></div>
+        <div style="width:1px;background:rgba(255,255,255,0.10);margin:0 4px"></div>
+        <div><div class="stock-bar-lbl">Total</div><div class="stock-bar-val sv-total" id="st-tot">—</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Plant-wise Stock</div><span class="pill g" id="stLive">Live</span></div>
+        <div class="tbl-scroll">
+          <table class="fp-table"><thead><tr><th>Plant Code</th><th>Plant Name</th><th class="num" style="color:var(--green)">Salable</th><th class="num" style="color:var(--gold)">Transit</th><th class="num">Total</th></tr></thead>
+          <tbody id="stockTbl"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── OD ── -->
+    <div id="view-od" class="view">
+      <div class="page-head"><h1>Overdue Summary</h1></div>
+      <div class="od-grid" id="odChips"></div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">HQ-wise Overdue</div></div>
+        <div class="tbl-scroll">
+          <table class="fp-table"><thead><tr><th>HQ</th><th class="num">Pending (L)</th><th class="num">Days Due</th><th>Status</th></tr></thead>
+          <tbody id="odTbl"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── NOTIFICATIONS ── -->
+    <div id="view-notifications" class="view">
+      <div class="page-head"><h1>Notifications</h1></div>
+      <div class="card"><div style="padding:8px 18px" id="notifList"></div></div>
+    </div>
+
+  </main>
+</div><!-- /shell -->
+
+<div id="overlay" onclick="closeSB()"></div>
+<div id="toast-c"></div>
+
+<script>
+// ── FAKE DATA ─────────────────────────────────────────────────
+var DATA = {
+  MTD: {
+    budget:4200000, sales:3654000, expiry:52000, grn:38000, achPct:87,
+    stockists:142, billedHQ:38, overdue:8.4, zeroHQ:4,
+    topProducts:[
+      {name:'Pantodac 40mg',qty:18420,value:2780000},
+      {name:'Metformin SR 500mg',qty:24600,value:2340000},
+      {name:'Atorvastatin 10mg',qty:15800,value:1980000},
+      {name:'Telmisartan 40mg',qty:12340,value:1640000},
+      {name:'Amlodipine 5mg',qty:9870,value:1120000},
+    ],
+    hqData:[
+      {hq:'AMD HQ',sales:680000,budget:750000,ach:90.7},
+      {hq:'SRT HQ',sales:520000,budget:600000,ach:86.7},
+      {hq:'BRD HQ',sales:410000,budget:500000,ach:82.0},
+      {hq:'RJK HQ',sales:360000,budget:420000,ach:85.7},
+      {hq:'ANK HQ',sales:295000,budget:380000,ach:77.6},
+      {hq:'MHM HQ',sales:218000,budget:300000,ach:72.7},
+      {hq:'JND HQ',sales:171000,budget:250000,ach:68.4},
+    ],
+    ytd:{sales:24800000,budget:28000000,ach:88.6,lytd:22100000,lmtd:3420000,growth:12.2},
+  },
+  TODAY: {
+    budget:140000, sales:112000, expiry:1800, grn:1200, achPct:80,
+    stockists:28, billedHQ:12, overdue:8.4, zeroHQ:4,
+    topProducts:[
+      {name:'Pantodac 40mg',qty:620,value:94000},
+      {name:'Metformin SR 500mg',qty:840,value:80000},
+      {name:'Atorvastatin 10mg',qty:510,value:64000},
+      {name:'Telmisartan 40mg',qty:390,value:52000},
+      {name:'Amlodipine 5mg',qty:280,value:36000},
+    ],
+    hqData:[
+      {hq:'AMD HQ',sales:22000,budget:25000,ach:88.0},
+      {hq:'SRT HQ',sales:17000,budget:20000,ach:85.0},
+      {hq:'BRD HQ',sales:12500,budget:16000,ach:78.1},
+      {hq:'RJK HQ',sales:11000,budget:14000,ach:78.6},
+      {hq:'ANK HQ',sales:9200, budget:13000,ach:70.8},
+    ],
+    ytd:{sales:24800000,budget:28000000,ach:88.6,lytd:22100000,lmtd:3420000,growth:12.2},
+  }
+};
+var STOCK = [
+  {plantCode:'1000',plantName:'Moraiya Plant (Ahmedabad)',salable:48200,transit:6400,total:54600},
+  {plantCode:'1001',plantName:'Ankleshwar Plant',salable:32100,transit:4200,total:36300},
+  {plantCode:'1002',plantName:'Baddi Plant (HP)',salable:27800,transit:3100,total:30900},
+  {plantCode:'1003',plantName:'Dabhasa Plant',salable:19400,transit:2600,total:22000},
+  {plantCode:'1004',plantName:'Changodar Plant',salable:15700,transit:1800,total:17500},
+];
+var OD = {
+  total:840000, b030:220000, b3160:190000, b6190:160000, b90p:270000,
+  hqWise:[
+    {hq:'AMD HQ',pending:180000,days:42,status:'WARN'},
+    {hq:'SRT HQ',pending:145000,days:28,status:'OK'},
+    {hq:'BRD HQ',pending:132000,days:67,status:'CRITICAL'},
+    {hq:'RJK HQ',pending:98000, days:19,status:'OK'},
+    {hq:'ANK HQ',pending:87000, days:55,status:'WARN'},
+    {hq:'MHM HQ',pending:72000, days:84,status:'CRITICAL'},
+    {hq:'JND HQ',pending:54000, days:35,status:'WARN'},
+    {hq:'PNM HQ',pending:72000, days:12,status:'OK'},
+  ]
+};
+var NOTIFS = [
+  {title:'Stock Requirement Alert',body:'Pantodac 40mg stock below threshold at Moraiya Plant. Place indent immediately.',time:'Today 10:32 AM',read:false},
+  {title:'Q1 Sales Review — Division Heads',body:'Monthly sales review scheduled for 25th May 2025. Prepare division-wise MIS.',time:'Today 08:15 AM',read:false},
+  {title:'New Order Received',body:'HO Order ORD-20250518142311 submitted by Kiran Patel (ABM, SRT HQ). 5 products, NC Division.',time:'Yesterday 2:40 PM',read:true},
+  {title:'OD Warning — BRD HQ',body:'Overdue >60 days detected for 3 stockists in Baroda. Immediate follow-up required.',time:'May 17',read:true},
+  {title:'SAP Report Upload',body:'Daily Sales report for NC Division successfully processed. 3,847 rows updated.',time:'May 16',read:true},
+];
+var TREND = {
+  labels:['Nov','Dec','Jan','Feb','Mar','Apr','May'],
+  sales:  [2840,3120,2980,3380,3520,3820,3654],
+  budget: [4000,4000,4000,4000,4200,4200,4200],
+};
+var period='MTD', trendChart=null;
+
+// ── FORMAT HELPERS ──────────────────────────────────────────
+function fL(v){var n=parseFloat(v)/100000;return n.toFixed(n>=10?1:2)+'L'}
+function fLs(v){return (parseFloat(v)/100000).toFixed(1)+'L'}
+function fN(v){return parseInt(v).toLocaleString('en-IN')}
+
+// ── NAV ──────────────────────────────────────────────────────
+function nav(id){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active')});
+  document.getElementById('view-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active')});
+  var ti={dashboard:'Dashboard',stock:'Stock Report',od:'Overdue (OD)',notifications:'Notifications'};
+  document.getElementById('pageTitle').textContent=ti[id]||'CadiPulse';
+  closeSB();
+  if(id==='dashboard') renderDash();
+  else if(id==='stock') loadStock();
+  else if(id==='od') loadOD();
+  else if(id==='notifications') loadNotifs();
+}
+function toggleSB(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show')}
+function closeSB(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show')}
+function toggleTheme(){
+  var html=document.documentElement;
+  var dark=html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme',dark?'light':'dark');
+  if(trendChart)renderTrend();
+}
+
+// ── PERIOD ────────────────────────────────────────────────────
+function setPeriod(p){
+  period=p;
+  document.getElementById('pMTD').classList.toggle('active',p==='MTD');
+  document.getElementById('pTODAY').classList.toggle('active',p==='TODAY');
+  renderDash();
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────
+function refreshDash(){
+  // Slightly vary the data to look like a refresh
+  toast('Dashboard refreshed','ok');
+  renderDash();
+}
+function renderDash(){
+  var d=DATA[period];
+  // KPIs
+  document.getElementById('k-budget').textContent=fL(d.budget);
+  document.getElementById('k-sales').textContent=fL(d.sales);
+  document.getElementById('k-expiry').textContent=fL(d.expiry);
+  document.getElementById('k-grn').textContent=fL(d.grn);
+  // Ach bar
+  var pct=d.achPct;
+  document.getElementById('achPct').textContent=pct.toFixed(1);
+  document.getElementById('achSales').textContent=fL(d.sales);
+  document.getElementById('achBudget').textContent=fL(d.budget);
+  document.getElementById('achPending').textContent=fL(d.budget-d.sales);
+  var fill=document.getElementById('achFill');
+  fill.style.width=Math.min(pct,100)+'%';
+  fill.style.background=pct>=85?'linear-gradient(90deg,#22C55E,#16A34A)':pct>=70?'linear-gradient(90deg,#F59E0B,#D97706)':'linear-gradient(90deg,#EF4444,#DC2626)';
+  // Chips
+  document.getElementById('c-stockists').textContent=d.stockists;
+  document.getElementById('c-billed').textContent=d.billedHQ;
+  document.getElementById('c-overdue').textContent=d.overdue+'L';
+  document.getElementById('c-zerohq').textContent=d.zeroHQ;
+  // Top Products
+  var tp='';
+  d.topProducts.forEach(function(p,i){
+    tp+='<tr><td>'+(i+1)+'</td><td class="bold">'+p.name+'</td><td class="num">'+fN(p.qty)+'</td><td class="num">'+fL(p.value)+'</td></tr>';
+  });
+  document.getElementById('topProdTbl').innerHTML=tp;
+  // HQ
+  var hq='';
+  d.hqData.forEach(function(r){
+    var a=r.ach;var cls=a>=85?'g':a>=70?'go':'r';
+    hq+='<tr><td class="bold">'+r.hq+'</td><td class="num">'+fL(r.sales)+'</td><td class="num">'+fL(r.budget)+'</td><td class="num"><span class="pill '+cls+'">'+a.toFixed(1)+'%</span></td></tr>';
+  });
+  document.getElementById('hqTbl').innerHTML=hq;
+  // YTD
+  var ytd=d.ytd;
+  document.getElementById('y-sales').textContent=fL(ytd.sales);
+  document.getElementById('y-budget').textContent=fL(ytd.budget);
+  document.getElementById('y-ach').textContent=ytd.ach+'%';
+  document.getElementById('y-lytd').textContent=fL(ytd.lytd);
+  document.getElementById('y-lmtd').textContent=fL(ytd.lmtd);
+  var g=ytd.growth;
+  document.getElementById('y-growth').innerHTML='<span style="color:'+(g>=0?'var(--green)':'var(--red)')+'">'+(g>=0?'+':'')+g+'%</span>';
+  // Trend chart
+  renderTrend();
+}
+
+function renderTrend(){
+  var isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  var gridColor=isDark?'rgba(80,130,220,0.08)':'rgba(30,60,120,0.06)';
+  var textColor=isDark?'#7A9ABF':'#6B7280';
+  var ctx=document.getElementById('trendChart').getContext('2d');
+  if(trendChart)trendChart.destroy();
+  trendChart=new Chart(ctx,{
+    type:'line',
+    data:{
+      labels:TREND.labels,
+      datasets:[
+        {label:'Net Sales',data:TREND.sales,borderColor:'#3B7EFF',backgroundColor:'rgba(59,126,255,0.10)',borderWidth:2,fill:true,tension:0.4,pointBackgroundColor:'#3B7EFF',pointRadius:4},
+        {label:'Budget',data:TREND.budget,borderColor:'rgba(245,158,11,0.7)',backgroundColor:'transparent',borderWidth:1.5,borderDash:[5,4],fill:false,tension:0.3,pointRadius:0},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:textColor,font:{family:'Outfit',size:11},boxWidth:12}}},
+      scales:{
+        x:{grid:{color:gridColor},ticks:{color:textColor,font:{size:11}}},
+        y:{grid:{color:gridColor},ticks:{color:textColor,font:{size:11},callback:function(v){return v+'L'}}}
+      }
+    }
+  });
+}
+
+// ── STOCK ─────────────────────────────────────────────────────
+function loadStock(){
+  var totS=0,totT=0,totTotal=0;
+  var html='';
+  STOCK.forEach(function(r){
+    totS+=r.salable;totT+=r.transit;totTotal+=r.total;
+    html+='<tr><td>'+r.plantCode+'</td><td class="bold">'+r.plantName+'</td><td class="num" style="color:var(--green);font-weight:700">'+fN(r.salable)+'</td><td class="num" style="color:var(--gold);font-weight:700">'+fN(r.transit)+'</td><td class="num" style="font-weight:800">'+fN(r.total)+'</td></tr>';
+  });
+  html+='<tr style="background:var(--navy2);font-family:var(--fontd)"><td colspan="2" style="text-align:right;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:#94A3B8">TOTAL</td><td class="num" style="color:#6EE7B7;font-weight:800">'+fN(totS)+'</td><td class="num" style="color:#FCD34D;font-weight:800">'+fN(totT)+'</td><td class="num" style="color:#93C5FD;font-weight:800">'+fN(totTotal)+'</td></tr>';
+  document.getElementById('stockTbl').innerHTML=html;
+  document.getElementById('st-sal').textContent=fN(totS);
+  document.getElementById('st-tra').textContent=fN(totT);
+  document.getElementById('st-tot').textContent=fN(totTotal);
+}
+
+// ── OD ────────────────────────────────────────────────────────
+function loadOD(){
+  var chips=[
+    {lbl:'Total Pending',val:fL(OD.total)},{lbl:'0–30 Days',val:fL(OD.b030)},
+    {lbl:'31–60 Days',val:fL(OD.b3160)},{lbl:'61–90 Days',val:fL(OD.b6190)},{lbl:'>90 Days',val:fL(OD.b90p)},
+  ];
+  document.getElementById('odChips').innerHTML=chips.map(function(c){
+    return '<div class="od-chip"><div class="od-chip-lbl">'+c.lbl+'</div><div class="od-chip-val">'+c.val+'</div></div>';
+  }).join('');
+  var html='';
+  OD.hqWise.forEach(function(r){
+    var cls=r.status==='CRITICAL'?'r':r.status==='WARN'?'go':'g';
+    html+='<tr><td class="bold">'+r.hq+'</td><td class="num">'+fLs(r.pending)+'</td><td class="num">'+r.days+'d</td><td><span class="pill '+cls+'">'+r.status+'</span></td></tr>';
+  });
+  document.getElementById('odTbl').innerHTML=html;
+}
+
+// ── NOTIFICATIONS ─────────────────────────────────────────────
+function loadNotifs(){
+  document.getElementById('notifList').innerHTML=NOTIFS.map(function(n){
+    return '<div class="notif-item"><div class="notif-dot'+(n.read?' read':'')+'"></div><div style="flex:1"><div class="notif-title">'+n.title+'</div><div class="notif-body">'+n.body+'</div><div class="notif-time">'+n.time+'</div></div></div>';
+  }).join('');
+}
+
+// ── TOAST ─────────────────────────────────────────────────────
+function toast(msg, type){
+  var c=document.getElementById('toast-c');
+  var t=document.createElement('div');t.className='toast '+(type||'');
+  var icons={ok:'✓',err:'✕',info:'ℹ'};
+  t.innerHTML='<span style="font-size:14px">'+(icons[type]||'ℹ')+'</span><span>'+msg+'</span>';
+  c.appendChild(t);
+  setTimeout(function(){t.style.opacity='0';t.style.transform='translateY(5px)';t.style.transition='.25s';setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t)},260)},3000);
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+renderDash();
+</script>
+</body>
+</html>
