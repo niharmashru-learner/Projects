@@ -2,19 +2,174 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>My Projects</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nihar Mashru | Projects</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: sans-serif; max-width: 600px; margin: 60px auto; background: #f5f5f5; }
-    h1 { color: #333; }
-    a { display: block; padding: 15px 20px; margin: 10px 0; 
-        background: #0070f3; color: white; text-decoration: none; border-radius: 8px; }
-    a:hover { background: #005cc5; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0f0f0f;
+      color: #e5e5e5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin: 0 auto 16px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: #888;
+      margin-top: 6px;
+      font-weight: 400;
+    }
+
+    .divider {
+      width: 40px;
+      height: 2px;
+      background: #667eea;
+      margin: 16px auto 0;
+      border-radius: 2px;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 14px;
+      padding: 28px 24px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .card:hover {
+      border-color: #3a3a3a;
+      background: #202020;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-icon {
+      font-size: 32px;
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: #777;
+      line-height: 1.6;
+    }
+
+    .card-arrow {
+      margin-top: auto;
+      font-size: 12px;
+      color: #667eea;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .footer {
+      margin-top: 50px;
+      text-align: center;
+      font-size: 12px;
+      color: #555;
+    }
   </style>
 </head>
 <body>
-  <h1>My Demo Projects</h1>
-  <a href="CadiPulse_Dashboard.html">📊 CadiPulse Dashboard</a>
-  <a href="HO_Order_Form.html">📋 HO Order Form</a>
-  <a href="SAP_RUNNER">🔧 SAP Runner</a>
+
+  <div class="header">
+    <div class="avatar">👨‍💻</div>
+    <h1>Nihar Mashru</h1>
+    <p>MIS & Data Analytics Projects</p>
+    <div class="divider"></div>
+  </div>
+
+  <div class="projects-grid">
+
+    <a class="card" href="CadiPulse_Dashboard.html">
+      <div class="card-icon">📊</div>
+      <div class="card-title">CadiPulse Dashboard</div>
+      <div class="card-desc">Interactive sales dashboard with division-level reporting and real-time data visualization.</div>
+      <div class="card-arrow">View Project →</div>
+    </a>
+
+    <a class="card" href="HO_Order_Form.html">
+      <div class="card-icon">📋</div>
+      <div class="card-title">HO Order Form</div>
+      <div class="card-desc">Automated Head Office order management form with validation and workflow integration.</div>
+      <div class="card-arrow">View Project →</div>
+    </a>
+
+    <a class="card" href="SAP_RUNNER">
+      <div class="card-icon">⚙️</div>
+      <div class="card-title">SAP Runner</div>
+      <div class="card-desc">SAP automation tool for streamlining repetitive business processes and data entry.</div>
+      <div class="card-arrow">View Project →</div>
+    </a>
+
+  </div>
+
+  <div class="footer">© 2026 Nihar Mashru · Built with GitHub Pages</div>
+
 </body>
 </html>
