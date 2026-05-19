@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SAP Runner — Automation Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#05080F;--surface:#0A0F1A;--s2:#101828;--s3:#162035;
+  --border:rgba(0,255,136,0.10);--border2:rgba(0,255,136,0.22);
+  --green:#00FF88;--green2:#00CC6A;--green3:rgba(0,255,136,0.08);
+  --amber:#FFB800;--red:#FF4444;--blue:#4488FF;
+  --text:#D0FFE8;--text2:#6A9C7E;--text3:#2A4A36;
+  --font:'JetBrains Mono',monospace;--fontd:'Syne',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+/* scanline effect */
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:9999}
+a{color:inherit;text-decoration:none}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+/* TOPBAR */
+.topbar{
+  background:rgba(5,8,15,0.95);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:0 20px;height:52px;
+  display:flex;align-items:center;gap:14px;
+  position:sticky;top:0;z-index:100;
+}
+.tb-dots{display:flex;gap:6px}
+.tb-dot{width:12px;height:12px;border-radius:50%}
+.tb-dot:nth-child(1){background:#FF5F56}
+.tb-dot:nth-child(2){background:#FFBD2E}
+.tb-dot:nth-child(3){background:#27C93F}
+.tb-title{font-family:var(--fontd);font-size:13px;font-weight:700;color:var(--green);letter-spacing:0.5px;flex:1;text-align:center}
+.tb-badge{font-size:10px;color:var(--text2);border:1px solid var(--border);padding:2px 8px;border-radius:3px;letter-spacing:0.5px}
+
+/* LAYOUT */
+.shell{max-width:900px;margin:0 auto;padding:24px 16px 60px}
+
+/* BANNER */
+.banner{
+  background:linear-gradient(135deg,var(--s2) 0%,var(--s3) 100%);
+  border:1px solid var(--border2);border-radius:12px;
+  padding:24px 28px;margin-bottom:20px;position:relative;overflow:hidden;
+}
+.banner::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:200px;height:200px;
+  background:radial-gradient(circle,rgba(0,255,136,0.06) 0%,transparent 70%);
+}
+.banner-tag{font-size:10px;color:var(--green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.banner-tag::before{content:'';width:20px;height:1px;background:var(--green)}
+.banner-h{font-family:var(--fontd);font-size:clamp(20px,4vw,28px);font-weight:800;color:#fff;margin-bottom:8px;line-height:1.2}
+.banner-sub{font-size:12px;color:var(--text2);line-height:1.7;max-width:520px}
+.banner-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.pill{font-size:10px;padding:4px 10px;border-radius:3px;letter-spacing:0.5px;text-transform:uppercase;font-weight:600}
+.pill-green{background:rgba(0,255,136,0.10);color:var(--green);border:1px solid rgba(0,255,136,0.20)}
+.pill-amber{background:rgba(255,184,0,0.10);color:var(--amber);border:1px solid rgba(255,184,0,0.20)}
+.pill-blue{background:rgba(68,136,255,0.10);color:var(--blue);border:1px solid rgba(68,136,255,0.20)}
+
+/* GRID */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:620px){.grid2{grid-template-columns:1fr}}
+
+/* CARD */
+.card{background:var(--s2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.card-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--s3)}
+.card-title{font-family:var(--fontd);font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:1px}
+.card-body{padding:16px}
+
+/* CONFIG BLOCK */
+.config-row{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.config-row:last-child{margin-bottom:0}
+.config-label{font-size:10px;color:var(--text2);letter-spacing:0.5px;text-transform:uppercase}
+.config-val{
+  background:var(--bg);border:1px solid var(--border);border-radius:5px;
+  padding:8px 12px;font-size:12px;color:var(--green);
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+.config-val select,.config-val input{
+  background:transparent;border:none;outline:none;color:var(--green);font-family:var(--font);font-size:12px;width:100%;cursor:pointer;
+}
+.config-val select option{background:var(--s2);color:var(--text)}
+
+/* LOG TERMINAL */
+.terminal{background:var(--bg);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.term-bar{background:var(--s3);border-bottom:1px solid var(--border);padding:8px 14px;display:flex;align-items:center;gap:8px}
+.term-bar-dots{display:flex;gap:5px}
+.term-bar-dot{width:9px;height:9px;border-radius:50%}
+.term-bar-dot:nth-child(1){background:#FF5F56}
+.term-bar-dot:nth-child(2){background:#FFBD2E}
+.term-bar-dot:nth-child(3){background:#27C93F}
+.term-bar-label{font-size:10px;color:var(--text2);flex:1;text-align:center;letter-spacing:0.5px}
+.term-body{padding:14px;max-height:260px;overflow-y:auto;min-height:120px}
+.log-line{font-size:11px;line-height:1.8;display:flex;gap:8px}
+.log-ts{color:var(--text3);flex-shrink:0}
+.log-ok{color:var(--green)}
+.log-warn{color:var(--amber)}
+.log-err{color:var(--red)}
+.log-info{color:var(--blue)}
+.log-cursor{display:inline-block;width:8px;height:14px;background:var(--green);animation:blink .8s step-end infinite;vertical-align:middle;margin-left:2px}
+@keyframes blink{50%{opacity:0}}
+
+/* REPORT TABLE */
+.report-table{width:100%;border-collapse:collapse;font-size:11px}
+.report-table th{background:var(--s3);color:var(--text2);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);font-weight:600;letter-spacing:0.5px;white-space:nowrap}
+.report-table td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text)}
+.report-table tr:last-child td{border-bottom:none}
+.report-table tr:hover td{background:var(--green3)}
+.status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px}
+.status-dot.ok{background:var(--green);box-shadow:0 0 5px var(--green)}
+.status-dot.pend{background:var(--amber);box-shadow:0 0 5px var(--amber)}
+.status-dot.err{background:var(--red)}
+
+/* BUTTONS */
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.btn{
+  font-family:var(--font);font-size:12px;font-weight:600;
+  padding:10px 20px;border-radius:6px;cursor:pointer;border:none;
+  display:inline-flex;align-items:center;gap:8px;transition:all .15s;letter-spacing:0.3px;
+}
+.btn-primary{background:var(--green2);color:#05080F;box-shadow:0 0 20px rgba(0,255,136,0.25)}
+.btn-primary:hover{background:var(--green);box-shadow:0 0 30px rgba(0,255,136,0.4);transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--green);border:1px solid var(--border2)}
+.btn-outline:hover{background:var(--green3);border-color:var(--green)}
+.btn-danger{background:rgba(255,68,68,0.12);color:var(--red);border:1px solid rgba(255,68,68,0.25)}
+.btn-danger:hover{background:rgba(255,68,68,0.22)}
+.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+
+/* PROGRESS */
+.progress-wrap{margin-top:14px;display:none}
+.progress-wrap.show{display:block}
+.progress-label{font-size:10px;color:var(--text2);margin-bottom:6px;display:flex;justify-content:space-between}
+.progress-track{height:4px;background:var(--s3);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--green2),var(--green));border-radius:4px;width:0%;transition:width .3s ease}
+.progress-fill.shimmer{position:relative;overflow:hidden}
+.progress-fill.shimmer::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);animation:shimmer 1s infinite}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:480px){.stats-row{grid-template-columns:1fr 1fr}}
+.stat-box{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:12px 14px}
+.stat-val{font-family:var(--fontd);font-size:20px;font-weight:800;color:var(--green);line-height:1}
+.stat-lbl{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:0.8px;margin-top:4px}
+
+/* DEMO BADGE */
+.demo-badge{
+  background:rgba(255,184,0,0.10);border:1px solid rgba(255,184,0,0.25);
+  color:var(--amber);font-size:10px;padding:3px 10px;border-radius:3px;letter-spacing:0.5px;
+  display:inline-flex;align-items:center;gap:5px;
+}
+.demo-badge::before{content:'◆';font-size:8px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-dots"><div class="tb-dot"></div><div class="tb-dot"></div><div class="tb-dot"></div></div>
+  <div class="tb-title">SAP_Runner_v2.exe — Automation Console</div>
+  <div class="tb-badge">DEMO</div>
+</div>
+
+<div class="shell">
+
+  <!-- BANNER -->
+  <div class="banner">
+    <div class="banner-tag">Project 01</div>
+    <div class="banner-h">SAP Automation Runner</div>
+    <div class="banner-sub">
+      Automated SAP GUI + Excel VBA pipeline that downloads Sales, Limit, COL &amp; Stock reports from S/4HANA, processes through Power Query, and triggers downstream macros — fully dynamic, zero hardcoding.
+    </div>
+    <div class="banner-pills">
+      <span class="pill pill-green">VBScript</span>
+      <span class="pill pill-green">Excel VBA</span>
+      <span class="pill pill-amber">SAP GUI Scripting</span>
+      <span class="pill pill-amber">Power Query</span>
+      <span class="pill pill-blue">CDO / SMTP Email</span>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-val">4</div><div class="stat-lbl">Report Types</div></div>
+    <div class="stat-box"><div class="stat-val">~0s</div><div class="stat-lbl">Manual Work</div></div>
+    <div class="stat-box"><div class="stat-val">S/4H</div><div class="stat-lbl">SAP System</div></div>
+    <div class="stat-box"><div class="stat-val" id="runCount">0</div><div class="stat-lbl">Runs Today</div></div>
+  </div>
+
+  <div class="grid2">
+    <!-- CONFIG -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">⚙ Configuration</div>
+        <div class="demo-badge">Interactive</div>
+      </div>
+      <div class="card-body">
+        <div class="config-row">
+          <div class="config-label">SAP System</div>
+          <div class="config-val"><input type="text" value="S/4HANA Production Server" readonly/></div>
+        </div>
+        <div class="config-row">
+          <div class="config-label">Report Type</div>
+          <div class="config-val">
+            <select id="reportType">
+              <option value="CM">CM — Current Month</option>
+              <option value="LM">LM — Last Month</option>
+              <option value="YT">YT — Year to Date</option>
+              <option value="LY">LY — Last Year</option>
+            </select>
+          </div>
+        </div>
+        <div class="config-row">
+          <div class="config-label">Reports to Run</div>
+          <div class="config-val">
+            <select id="reportSet">
+              <option value="all">All Reports (Sales, Limit, COL, Stock)</option>
+              <option value="sales">Sales Only</option>
+              <option value="stock">Stock Only</option>
+              <option value="limit">Limit + COL</option>
+            </select>
+          </div>
+        </div>
+        <div class="config-row">
+          <div class="config-label">Output Path</div>
+          <div class="config-val"><input type="text" value="C:\Users\NIHARM\SAP_Reports\" style="font-size:11px"/></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="btnRun" onclick="runAutomation()">▶ Run Automation</button>
+          <button class="btn btn-outline" onclick="clearLog()">Clear Log</button>
+        </div>
+        <div class="progress-wrap" id="progressWrap">
+          <div class="progress-label"><span id="progressStep">Connecting to SAP...</span><span id="progressPct">0%</span></div>
+          <div class="progress-track"><div class="progress-fill shimmer" id="progressBar"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORT STATUS -->
+    <div class="card">
+      <div class="card-head"><div class="card-title">📋 Report Status</div></div>
+      <div class="card-body" style="padding:0">
+        <table class="report-table">
+          <thead><tr><th>Report</th><th>Type</th><th>Status</th><th>Rows</th></tr></thead>
+          <tbody id="reportStatusTbl">
+            <tr><td><span class="status-dot pend"></span>Sales Report</td><td>Daily Sales</td><td style="color:var(--amber)">Waiting</td><td>—</td></tr>
+            <tr><td><span class="status-dot pend"></span>Limit Report</td><td>Credit Limit</td><td style="color:var(--amber)">Waiting</td><td>—</td></tr>
+            <tr><td><span class="status-dot pend"></span>COL Report</td><td>Collections</td><td style="color:var(--amber)">Waiting</td><td>—</td></tr>
+            <tr><td><span class="status-dot pend"></span>Stock Report</td><td>Inventory</td><td style="color:var(--amber)">Waiting</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TERMINAL LOG -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">Terminal Output</div>
+      <button class="btn btn-danger" style="padding:4px 10px;font-size:10px" onclick="clearLog()">Clear</button>
+    </div>
+    <div class="card-body" style="padding:0">
+      <div class="terminal">
+        <div class="term-bar">
+          <div class="term-bar-dots"><div class="term-bar-dot"></div><div class="term-bar-dot"></div><div class="term-bar-dot"></div></div>
+          <div class="term-bar-label">SAP_Runner_v2.vbs — Output Console</div>
+        </div>
+        <div class="term-body" id="termBody">
+          <div class="log-line"><span class="log-ts">[00:00:00]</span><span class="log-info">SAP Runner v2 initialized.</span></div>
+          <div class="log-line"><span class="log-ts">[00:00:00]</span><span class="log-ok">CONFIG loaded. Dynamic path resolution active.</span></div>
+          <div class="log-line"><span class="log-ts">[00:00:00]</span><span class="log-info">User: NIHARM | Client: 900 | System: S/4HANA Production</span></div>
+          <div class="log-line"><span class="log-ts">[00:00:00]</span><span class="log-warn">Click "Run Automation" to start a simulated run.</span></div>
+          <div class="log-line"><span class="log-ts">[00:00:00]</span><span class="log-ok">Ready.<span class="log-cursor"></span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /shell -->
+
+<script>
+var running = false;
+var runCount = parseInt(localStorage.getItem('sap_runs') || '0');
+document.getElementById('runCount').textContent = runCount;
+
+var SEQUENCES = {
+  all: [
+    {step:'Launching SAP GUI Scripting Engine...', delay:300, type:'info'},
+    {step:'Connecting to S/4HANA Production Server (Client 900)...', delay:600, type:'info'},
+    {step:'Login successful — User: NIHARM', delay:400, type:'ok'},
+    {step:'Navigating to transaction: ZSD_SALES...', delay:500, type:'info'},
+    {step:'Setting date range for CM (Current Month)...', delay:300, type:'info'},
+    {step:'Executing Sales Report — please wait...', delay:1200, type:'info', progress:15, progressTxt:'Running Sales Report...'},
+    {step:'Sales Report downloaded → SAP_Reports\\Sales_CM.xlsx (3,847 rows)', delay:400, type:'ok', updateReport:[0,'ok','3,847']},
+    {step:'Navigating to transaction: FBL5N (Limit Report)...', delay:500, type:'info'},
+    {step:'Executing Limit Report...', delay:1000, type:'info', progress:35, progressTxt:'Running Limit Report...'},
+    {step:'Limit Report downloaded → SAP_Reports\\Limit_CM.xlsx (1,203 rows)', delay:400, type:'ok', updateReport:[1,'ok','1,203']},
+    {step:'Navigating to COL Report transaction...', delay:400, type:'info'},
+    {step:'Executing COL Report...', delay:900, type:'info', progress:55, progressTxt:'Running COL Report...'},
+    {step:'COL Report downloaded → SAP_Reports\\COL_CM.xlsx (892 rows)', delay:300, type:'ok', updateReport:[2,'ok','892']},
+    {step:'Navigating to MB52 (Stock Report)...', delay:400, type:'info'},
+    {step:'Executing Stock Report — all plants...', delay:1100, type:'info', progress:75, progressTxt:'Running Stock Report...'},
+    {step:'Stock Report downloaded → SAP_Reports\\Stock_CM.xlsx (2,156 rows)', delay:400, type:'ok', updateReport:[3,'ok','2,156']},
+    {step:'SAP session closed successfully.', delay:300, type:'ok'},
+    {step:'Triggering Power Query refresh on MasterWorkbook.xlsm...', delay:800, type:'info', progress:88, progressTxt:'Processing with Power Query...'},
+    {step:'Power Query refresh complete. 8,098 total rows processed.', delay:400, type:'ok'},
+    {step:'Triggering VBA macro: Run_EmailDispatch()...', delay:600, type:'info', progress:95, progressTxt:'Sending emails...'},
+    {step:'Emails dispatched via CDO/SMTP to 14 zone recipients.', delay:400, type:'ok'},
+    {step:'─────────────────────────────────────', delay:100, type:'info'},
+    {step:'✓ All 4 reports completed successfully.', delay:0, type:'ok', progress:100, progressTxt:'Complete'},
+    {step:'Total execution time: 4m 32s', delay:0, type:'ok'},
+  ]
+};
+
+function ts() {
+  var d = new Date();
+  return '[' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') + ':' + String(d.getSeconds()).padStart(2,'0') + ']';
+}
+
+function appendLog(text, type) {
+  var tb = document.getElementById('termBody');
+  var line = document.createElement('div');
+  line.className = 'log-line';
+  line.innerHTML = '<span class="log-ts">' + ts() + '</span><span class="log-' + type + '">' + text + '</span>';
+  tb.appendChild(line);
+  tb.scrollTop = tb.scrollHeight;
+}
+
+function clearLog() {
+  document.getElementById('termBody').innerHTML =
+    '<div class="log-line"><span class="log-ts">[--:--:--]</span><span class="log-ok">Log cleared. Ready.<span class="log-cursor"></span></span></div>';
+  resetReportTable();
+  document.getElementById('progressWrap').classList.remove('show');
+}
+
+function resetReportTable() {
+  var rows = document.querySelectorAll('#reportStatusTbl tr');
+  var names = ['Sales Report','Limit Report','COL Report','Stock Report'];
+  var types = ['Daily Sales','Credit Limit','Collections','Inventory'];
+  rows.forEach(function(r, i) {
+    r.cells[0].innerHTML = '<span class="status-dot pend"></span>' + names[i];
+    r.cells[2].textContent = 'Waiting';
+    r.cells[2].style.color = 'var(--amber)';
+    r.cells[3].textContent = '—';
+  });
+}
+
+function updateReportRow(idx, status, rows) {
+  var r = document.querySelectorAll('#reportStatusTbl tr')[idx];
+  var names = ['Sales Report','Limit Report','COL Report','Stock Report'];
+  if (status === 'ok') {
+    r.cells[0].innerHTML = '<span class="status-dot ok"></span>' + names[idx];
+    r.cells[2].textContent = 'Complete';
+    r.cells[2].style.color = 'var(--green)';
+  } else {
+    r.cells[0].innerHTML = '<span class="status-dot err"></span>' + names[idx];
+    r.cells[2].textContent = 'Error';
+    r.cells[2].style.color = 'var(--red)';
+  }
+  r.cells[3].textContent = rows;
+}
+
+function runAutomation() {
+  if (running) return;
+  running = true;
+  document.getElementById('btnRun').disabled = true;
+  document.getElementById('progressWrap').classList.add('show');
+  resetReportTable();
+  clearLog();
+
+  var seq = SEQUENCES['all'];
+  var delay = 0;
+
+  seq.forEach(function(s) {
+    delay += s.delay;
+    setTimeout(function() {
+      appendLog(s.step, s.type);
+      if (s.progress !== undefined) {
+        document.getElementById('progressBar').style.width = s.progress + '%';
+        document.getElementById('progressPct').textContent = s.progress + '%';
+        document.getElementById('progressStep').textContent = s.progressTxt;
+      }
+      if (s.updateReport) updateReportRow(s.updateReport[0], s.updateReport[1], s.updateReport[2]);
+    }, delay);
+  });
+
+  var totalDelay = delay + 500;
+  setTimeout(function() {
+    running = false;
+    document.getElementById('btnRun').disabled = false;
+    document.getElementById('progressFill');
+    runCount++;
+    document.getElementById('runCount').textContent = runCount;
+    try { localStorage.setItem('sap_runs', runCount); } catch(e){}
+    var cursor = document.createElement('span');
+    cursor.className = 'log-cursor';
+    var lastLine = document.createElement('div');
+    lastLine.className = 'log-line';
+    lastLine.innerHTML = '<span class="log-ts">' + ts() + '</span><span class="log-ok">System idle. Ready for next run.</span>';
+    document.getElementById('termBody').appendChild(lastLine);
+    document.getElementById('termBody').scrollTop = 9999;
+  }, totalDelay);
+}
+</script>
+</body>
+</html>
