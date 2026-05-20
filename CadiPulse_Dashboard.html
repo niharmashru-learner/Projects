@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>CadiPulse — Field Force Dashboard Demo</title>
+<title>CadiPulse v2 — Field Force Intelligence Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
@@ -15,18 +15,19 @@
   --gold:#F59E0B;--golds:rgba(245,158,11,0.14);
   --red:#EF4444;--reds:rgba(239,68,68,0.14);
   --purple:#A855F7;--purples:rgba(168,85,247,0.14);
+  --cyan:#06B6D4;--cyans:rgba(6,182,212,0.14);
   --text:#EAF2FF;--text2:#BDD0EA;--text3:#7A9ABF;--text4:#3E5A7A;
   --navy:#0F1A2E;--navy2:#1A2942;
   --sh:0 2px 8px rgba(0,0,0,.3);--sh2:0 4px 20px rgba(0,0,0,.4);--sh3:0 8px 40px rgba(0,0,0,.5);
   --r:8px;--r2:12px;--r3:16px;--r4:22px;--rfull:9999px;
   --font:'Plus Jakarta Sans',sans-serif;--fontd:'Outfit',sans-serif;
-  --hh:54px;--sw:220px;
+  --hh:54px;--sw:224px;
 }
 [data-theme="light"]{
   --bg:#EEF4FC;--s:#FFFFFF;--s2:#F0F6FF;--s3:#E4EEF8;
   --bd:rgba(30,60,120,0.08);--bd2:rgba(30,60,120,0.16);
   --text:#0D1B2E;--text2:#1A3050;--text3:#4A6080;--text4:#A0B8D0;
-  --navy:#0F1A2E;--navy2:#1A2942;
+  --navy:#F0F6FF;--navy2:#E4EEF8;
   --sh:0 2px 8px rgba(10,22,40,0.07);--sh2:0 4px 16px rgba(10,22,40,0.10);--sh3:0 8px 32px rgba(10,22,40,0.13);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -37,14 +38,10 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:4px}
 
-/* ── HEADER ── */
-#header{
-  height:var(--hh);background:var(--s);border-bottom:1px solid var(--bd2);
-  display:flex;align-items:center;padding:0 16px 0 0;
-  position:fixed;top:0;left:0;right:0;z-index:200;box-shadow:var(--sh);
-}
+/* HEADER */
+#header{height:var(--hh);background:var(--s);border-bottom:1px solid var(--bd2);display:flex;align-items:center;padding:0 16px 0 0;position:fixed;top:0;left:0;right:0;z-index:200;box-shadow:var(--sh)}
 .logo-wrap{width:var(--sw);display:flex;align-items:center;padding:0 16px;gap:9px;flex-shrink:0;border-right:1px solid var(--bd);height:100%}
-.logo-icon{width:30px;height:30px;background:linear-gradient(135deg,var(--blue),var(--blue2));border-radius:var(--r);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(59,126,255,0.35)}
+.logo-icon{width:30px;height:30px;background:linear-gradient(135deg,var(--blue),var(--blue2));border-radius:var(--r);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(59,126,255,.35)}
 .logo-icon svg{width:16px;height:16px}
 .logo-text{font-family:var(--fontd);font-weight:800;font-size:16px;color:var(--text)}
 .logo-text span{color:var(--blue)}
@@ -59,10 +56,10 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
 #hamburger{display:none;width:34px;height:34px;align-items:center;justify-content:center;border-radius:var(--r);color:var(--text3)}
 #hamburger:hover{background:var(--s2)}
 
-/* ── SHELL ── */
+/* SHELL */
 #shell{display:flex;margin-top:var(--hh);height:calc(100vh - var(--hh));overflow:hidden}
 
-/* ── SIDEBAR ── */
+/* SIDEBAR */
 #sidebar{width:var(--sw);background:var(--navy);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;z-index:100;transition:transform .2s}
 .nav-sec{padding:16px 0 4px}
 .nav-sec-title{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:rgba(138,163,192,0.5);padding:0 14px 7px;font-family:var(--fontd)}
@@ -77,15 +74,15 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
 .nav-logout{color:#FDA4AF!important}
 .nav-logout:hover{background:rgba(239,68,68,.14)!important;color:#FCA5A5!important}
 
-/* ── MAIN ── */
+/* MAIN */
 #main{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column}
 
-/* ── VIEWS ── */
+/* VIEWS */
 .view{display:none;animation:fadeIn .2s ease}
 .view.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 
-/* ── COMPONENTS ── */
+/* COMPONENTS */
 .page-head{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
 .page-head h1{font-family:var(--fontd);font-size:19px;font-weight:800;color:var(--text);flex:1;letter-spacing:-.3px}
 
@@ -99,13 +96,14 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
 
 /* KPI CARDS */
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-bottom:18px}
-.kpi-card{border-radius:var(--r3);padding:18px 20px;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.18);transition:.2s}
+.kpi-card{border-radius:var(--r3);padding:18px 20px;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.18);transition:.2s;cursor:pointer}
 .kpi-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.28)}
 .kpi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px;font-family:var(--fontd);color:rgba(255,255,255,.75)}
 .kpi-value{font-family:var(--fontd);font-size:26px;font-weight:800;line-height:1;margin-bottom:4px;letter-spacing:-.5px;color:#fff}
 .kpi-sub{font-size:11px;color:rgba(255,255,255,.6)}
 .kpi-icon{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:var(--r);background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center}
 .kpi-icon svg{width:17px;height:17px;color:#fff}
+.kpi-growth{font-size:11px;font-weight:700;margin-top:6px;color:rgba(255,255,255,.85)}
 
 /* ACH BAR */
 .ach-wrap{background:var(--s);border:1px solid var(--bd);border-radius:var(--r3);padding:18px 20px;margin-bottom:18px;box-shadow:var(--sh)}
@@ -121,16 +119,18 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
 
 /* CHIPS */
 .chips-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:11px;margin-bottom:18px}
-.chip{background:var(--s);border:1px solid var(--bd);border-radius:var(--r2);padding:12px 14px;display:flex;align-items:center;gap:9px;box-shadow:var(--sh);transition:.2s}
-.chip:hover{transform:translateY(-2px);box-shadow:var(--sh2)}
+.chip{background:var(--s);border:1px solid var(--bd);border-radius:var(--r2);padding:12px 14px;display:flex;align-items:center;gap:9px;box-shadow:var(--sh);transition:.2s;cursor:pointer}
+.chip:hover{transform:translateY(-2px);box-shadow:var(--sh2);border-color:var(--bd2)}
 .chip-icon{width:32px;height:32px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .chip-icon svg{width:15px;height:15px}
 .chip-val{font-size:17px;font-weight:800;color:var(--text);font-family:var(--fontd);line-height:1.1}
 .chip-lbl{font-size:10px;color:var(--text3)}
 
-/* 2-COL */
+/* 2-COL / 3-COL */
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
-@media(max-width:800px){.two-col{grid-template-columns:1fr}}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:18px}
+@media(max-width:900px){.three-col{grid-template-columns:1fr 1fr}}
+@media(max-width:800px){.two-col,.three-col{grid-template-columns:1fr}}
 
 /* CARD */
 .card{background:var(--s);border:1px solid var(--bd);border-radius:var(--r3);overflow:hidden;box-shadow:var(--sh)}
@@ -144,6 +144,8 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
 .fp-table td{padding:9px 13px;border-bottom:1px solid var(--bd);color:var(--text2)}
 .fp-table tr:last-child td{border-bottom:none}
 .fp-table tr:hover td{background:var(--s2)}
+.fp-table tr.clickable{cursor:pointer}
+.fp-table tr.clickable:hover td{background:var(--blues);color:var(--text)}
 .num{text-align:right;font-variant-numeric:tabular-nums}
 .bold{font-weight:700;color:var(--text)}
 .pill{display:inline-flex;align-items:center;padding:2px 8px;border-radius:var(--rfull);font-size:10.5px;font-weight:700;font-family:var(--fontd)}
@@ -151,6 +153,8 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
 .pill.r{background:var(--reds);color:var(--red)}
 .pill.go{background:var(--golds);color:var(--gold)}
 .pill.b{background:var(--blues);color:var(--blue)}
+.pill.p{background:var(--purples);color:var(--purple)}
+.pill.c{background:var(--cyans);color:var(--cyan)}
 
 /* YTD */
 .ytd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
@@ -163,11 +167,11 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
 .stock-bar-lbl{font-size:10px;color:#94A3B8;text-transform:uppercase;letter-spacing:.5px;font-family:var(--fontd)}
 .stock-bar-val{font-size:14px;font-weight:800;font-family:var(--fontd)}
 .sv-s{color:#6EE7B7}.sv-t{color:#FCD34D}.sv-total{color:#93C5FD}
-.tbl-scroll{overflow-x:auto;max-height:340px;overflow-y:auto}
+.tbl-scroll{overflow-x:auto;max-height:360px;overflow-y:auto}
 
 /* OD CHIPS */
 .od-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:9px;margin-bottom:18px}
-.od-chip{background:var(--s);border:1px solid var(--bd);border-radius:var(--r2);padding:11px;text-align:center;transition:.2s}
+.od-chip{background:var(--s);border:1px solid var(--bd);border-radius:var(--r2);padding:11px;text-align:center;transition:.2s;cursor:pointer}
 .od-chip:hover{transform:translateY(-2px)}
 .od-chip-lbl{font-size:9.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;font-family:var(--fontd)}
 .od-chip-val{font-size:15px;font-weight:800;font-family:var(--fontd);color:var(--text)}
@@ -181,8 +185,9 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
 .notif-body{font-size:11.5px;color:var(--text3)}
 .notif-time{font-size:10.5px;color:var(--text4);margin-top:2px}
 
-/* CHART CONTAINER */
+/* CHART BOX */
 .chart-box{position:relative;height:220px}
+.chart-box-lg{position:relative;height:280px}
 
 /* TOAST */
 #toast-c{position:fixed;bottom:16px;right:16px;display:flex;flex-direction:column;gap:7px;z-index:9999}
@@ -194,6 +199,70 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
 /* OVERLAY */
 #overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99}
 #overlay.show{display:block}
+
+/* ===================== MODAL ===================== */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:500;align-items:center;justify-content:center;padding:16px}
+.modal-bg.show{display:flex;animation:fadeIn .18s ease}
+.modal{background:var(--s);border:1px solid var(--bd2);border-radius:var(--r4);width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.6);position:relative}
+.modal-head{display:flex;align-items:flex-start;gap:12px;padding:20px 20px 14px;border-bottom:1px solid var(--bd)}
+.modal-badge{width:42px;height:42px;border-radius:var(--r2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+.modal-title{font-family:var(--fontd);font-size:15px;font-weight:800;color:var(--text);margin-bottom:3px}
+.modal-sub{font-size:11.5px;color:var(--text3)}
+.modal-close{position:absolute;top:14px;right:14px;width:28px;height:28px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;color:var(--text3);transition:.15s}
+.modal-close:hover{background:var(--s2);color:var(--text)}
+.modal-close svg{width:16px;height:16px}
+.modal-body{padding:16px 20px 20px}
+.modal-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.modal-stat{background:var(--s2);border-radius:var(--r2);padding:12px 14px;border:1px solid var(--bd)}
+.modal-stat-lbl{font-size:9.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;font-family:var(--fontd)}
+.modal-stat-val{font-size:18px;font-weight:800;font-family:var(--fontd);color:var(--text)}
+.modal-stat-sub{font-size:10px;color:var(--text4);margin-top:2px}
+.modal-section{margin-bottom:14px}
+.modal-section-title{font-family:var(--fontd);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin-bottom:8px}
+.mini-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.mini-bar-label{font-size:11.5px;color:var(--text2);width:130px;flex-shrink:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini-bar-track{flex:1;height:6px;background:var(--s3);border-radius:3px;overflow:hidden}
+.mini-bar-fill{height:100%;border-radius:3px;transition:width .7s ease}
+.mini-bar-val{font-size:11px;color:var(--text3);width:46px;text-align:right;font-family:var(--fontd);font-weight:700}
+.star-badge{display:inline-flex;align-items:center;gap:4px;background:var(--golds);color:var(--gold);border-radius:var(--rfull);padding:3px 9px;font-size:10.5px;font-weight:700;font-family:var(--fontd)}
+.fire-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(239,68,68,.15);color:var(--red);border-radius:var(--rfull);padding:3px 9px;font-size:10.5px;font-weight:700;font-family:var(--fontd)}
+.alert-badge{display:inline-flex;align-items:center;gap:4px;background:var(--greens);color:var(--green);border-radius:var(--rfull);padding:3px 9px;font-size:10.5px;font-weight:700;font-family:var(--fontd)}
+.modal-trend-wrap{height:130px;position:relative;margin-bottom:4px}
+.highlight-row{background:rgba(34,197,94,0.07)!important}
+.highlight-row td{color:var(--green)!important}
+.highlight-row td.bold{color:#6EE7B7!important}
+
+/* ===================== FINDINGS ===================== */
+.finding-card{background:var(--s);border:1px solid var(--bd);border-radius:var(--r3);padding:16px 18px;margin-bottom:10px;display:flex;gap:13px;align-items:flex-start;transition:.2s;cursor:pointer}
+.finding-card:hover{box-shadow:var(--sh2);border-color:var(--bd2);transform:translateX(2px)}
+.finding-icon{width:36px;height:36px;border-radius:var(--r2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+.finding-title{font-family:var(--fontd);font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:3px}
+.finding-body{font-size:11.5px;color:var(--text3);line-height:1.5}
+.finding-tag{display:inline-flex;align-items:center;margin-top:6px}
+.findings-grid{margin-bottom:18px}
+.finding-priority-high{border-left:3px solid var(--red)}
+.finding-priority-med{border-left:3px solid var(--gold)}
+.finding-priority-low{border-left:3px solid var(--green)}
+
+/* GROWTH CHART AREA */
+.growth-header{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.growth-tag{background:var(--greens);color:var(--green);border-radius:var(--rfull);padding:3px 11px;font-size:11px;font-weight:700;font-family:var(--fontd)}
+.growth-tag.neg{background:var(--reds);color:var(--red)}
+
+/* ZONE MATRIX */
+.zone-matrix{width:100%;border-collapse:collapse;font-size:11.5px;margin-bottom:4px}
+.zone-matrix th{background:var(--s2);color:var(--text3);font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:8px 10px;text-align:center;border:1px solid var(--bd);font-family:var(--fontd)}
+.zone-matrix th:first-child{text-align:left}
+.zone-matrix td{padding:8px 10px;border:1px solid var(--bd);text-align:center;font-weight:600;color:var(--text2);cursor:pointer;transition:.15s}
+.zone-matrix td:first-child{text-align:left;font-weight:700;color:var(--text);background:var(--s2)}
+.zone-matrix td:hover{opacity:.8}
+.zone-matrix .z-hot{background:rgba(34,197,94,.18);color:#6EE7B7}
+.zone-matrix .z-warm{background:rgba(245,158,11,.18);color:#FCD34D}
+.zone-matrix .z-cold{background:rgba(239,68,68,.18);color:#FCA5A5}
+
+/* STOCKIST TABLE HIGHLIGHT */
+.stkst-star{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;color:var(--green);background:var(--greens);padding:1px 7px;border-radius:var(--rfull);font-family:var(--fontd)}
+.stkst-warn{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;color:var(--gold);background:var(--golds);padding:1px 7px;border-radius:var(--rfull);font-family:var(--fontd)}
 
 /* MOBILE */
 @media(max-width:720px){
@@ -209,6 +278,17 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
 </style>
 </head>
 <body>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg" onclick="closeModalBg(event)">
+  <div class="modal" id="modalBox">
+    <button class="modal-close" onclick="closeModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
 <!-- HEADER -->
 <header id="header">
   <div class="logo-wrap">
@@ -248,6 +328,29 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
         <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         Dashboard
       </div>
+      <div class="nav-item" onclick="nav('products')">
+        <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-8 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>
+        Product Sales
+      </div>
+      <div class="nav-item" onclick="nav('stockists')">
+        <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Stockist Sales
+      </div>
+      <div class="nav-item" onclick="nav('zones')">
+        <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        Zone Analysis
+      </div>
+      <div class="nav-item" onclick="nav('growth')">
+        <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        Growth YoY
+      </div>
+      <div class="nav-item" onclick="nav('findings')">
+        <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        AI Findings
+      </div>
+    </div>
+    <div class="nav-sec">
+      <div class="nav-sec-title">Reports</div>
       <div class="nav-item" onclick="nav('stock')">
         <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
         Stock Report
@@ -273,7 +376,7 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
   <!-- MAIN -->
   <main id="main">
 
-    <!-- ── DASHBOARD ── -->
+    <!-- ══ DASHBOARD ══ -->
     <div id="view-dashboard" class="view active">
       <div class="page-head">
         <h1 id="dashTitle">NC — Dashboard</h1>
@@ -287,70 +390,82 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
         </button>
       </div>
 
-      <!-- KPI GRID -->
       <div class="kpi-grid" id="kpiGrid">
-        <div class="kpi-card" style="background:linear-gradient(135deg,#F59E0B,#D97706)">
+        <div class="kpi-card" style="background:linear-gradient(135deg,#F59E0B,#D97706)" onclick="showKpiModal('budget')">
           <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
           <div class="kpi-label">MTD Budget</div>
           <div class="kpi-value" id="k-budget">—</div>
           <div class="kpi-sub">Lakhs Target</div>
+          <div class="kpi-growth" id="k-budget-g">—</div>
         </div>
-        <div class="kpi-card" style="background:linear-gradient(135deg,#2563EB,#1D4ED8)">
+        <div class="kpi-card" style="background:linear-gradient(135deg,#2563EB,#1D4ED8)" onclick="showKpiModal('sales')">
           <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
           <div class="kpi-label">MTD Net Sales</div>
           <div class="kpi-value" id="k-sales">—</div>
           <div class="kpi-sub">Lakhs</div>
+          <div class="kpi-growth" id="k-sales-g">—</div>
         </div>
-        <div class="kpi-card" style="background:linear-gradient(135deg,#EF4444,#DC2626)">
+        <div class="kpi-card" style="background:linear-gradient(135deg,#EF4444,#DC2626)" onclick="showKpiModal('expiry')">
           <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
           <div class="kpi-label">Expiry Value</div>
           <div class="kpi-value" id="k-expiry">—</div>
           <div class="kpi-sub">Non Salable Returns</div>
+          <div class="kpi-growth" id="k-expiry-g">—</div>
         </div>
-        <div class="kpi-card" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED)">
+        <div class="kpi-card" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED)" onclick="showKpiModal('grn')">
           <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
           <div class="kpi-label">GRN Value</div>
           <div class="kpi-value" id="k-grn">—</div>
           <div class="kpi-sub">Salable Returns</div>
+          <div class="kpi-growth" id="k-grn-g">—</div>
         </div>
       </div>
 
-      <!-- ACH BAR -->
       <div class="ach-wrap">
         <div class="ach-head">
           <div>
-            <div style="font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;font-family:var(--fontd)">Achievement</div>
+            <div style="font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;font-family:var(--fontd)">Achievement vs Budget</div>
             <div class="ach-pct"><span id="achPct">—</span><span>%</span></div>
           </div>
           <div class="ach-stats">
             <div class="ach-stat"><div class="ach-stat-lbl">Net Sales</div><div class="ach-stat-val" id="achSales">—</div></div>
             <div class="ach-stat"><div class="ach-stat-lbl">Budget</div><div class="ach-stat-val" id="achBudget">—</div></div>
             <div class="ach-stat"><div class="ach-stat-lbl">Pending</div><div class="ach-stat-val" id="achPending">—</div></div>
+            <div class="ach-stat"><div class="ach-stat-lbl">vs LMTD</div><div class="ach-stat-val" id="achGrowth">—</div></div>
           </div>
         </div>
         <div class="ach-track"><div class="ach-fill" id="achFill" style="width:0%"></div></div>
       </div>
 
-      <!-- CHIPS -->
       <div class="chips-row">
-        <div class="chip"><div class="chip-icon" style="background:var(--blues)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div><div class="chip-val" id="c-stockists">—</div><div class="chip-lbl">Active Stockists</div></div></div>
-        <div class="chip"><div class="chip-icon" style="background:var(--greens)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><div><div class="chip-val" id="c-billed">—</div><div class="chip-lbl">MTD Billed HQs</div></div></div>
-        <div class="chip"><div class="chip-icon" style="background:var(--reds)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><div class="chip-val" id="c-overdue">—</div><div class="chip-lbl">Overdue (L)</div></div></div>
-        <div class="chip"><div class="chip-icon" style="background:var(--golds)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div><div><div class="chip-val" id="c-zerohq">—</div><div class="chip-lbl">Zero HQs</div></div></div>
+        <div class="chip" onclick="nav('stockists')">
+          <div class="chip-icon" style="background:var(--blues)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div><div class="chip-val" id="c-stockists">—</div><div class="chip-lbl">Active Stockists</div></div>
+        </div>
+        <div class="chip" onclick="nav('zones')">
+          <div class="chip-icon" style="background:var(--greens)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+          <div><div class="chip-val" id="c-billed">—</div><div class="chip-lbl">MTD Billed HQs</div></div>
+        </div>
+        <div class="chip" onclick="nav('od')">
+          <div class="chip-icon" style="background:var(--reds)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+          <div><div class="chip-val" id="c-overdue">—</div><div class="chip-lbl">Overdue (L)</div></div>
+        </div>
+        <div class="chip" onclick="nav('zones')">
+          <div class="chip-icon" style="background:var(--golds)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+          <div><div class="chip-val" id="c-zerohq">—</div><div class="chip-lbl">Zero HQs</div></div>
+        </div>
       </div>
 
       <div class="two-col">
-        <!-- TOP PRODUCTS -->
         <div class="card">
-          <div class="card-header"><div class="card-title">Top 5 Products</div><span class="pill b">MTD</span></div>
+          <div class="card-header"><div class="card-title">Top 5 Products</div><span class="pill b" id="tpPill">MTD</span></div>
           <div class="tbl-scroll">
-            <table class="fp-table"><thead><tr><th>#</th><th>Product</th><th class="num">Qty</th><th class="num">Value (L)</th></tr></thead>
+            <table class="fp-table"><thead><tr><th>#</th><th>Product</th><th class="num">Qty</th><th class="num">Value</th><th class="num">vs LY</th></tr></thead>
             <tbody id="topProdTbl"></tbody></table>
           </div>
         </div>
-        <!-- HQ TABLE -->
         <div class="card">
-          <div class="card-header"><div class="card-title">HQ-wise Net Sales</div></div>
+          <div class="card-header"><div class="card-title">HQ-wise Achievement</div></div>
           <div class="tbl-scroll">
             <table class="fp-table"><thead><tr><th>HQ</th><th class="num">Net Sales</th><th class="num">Budget</th><th class="num">Ach%</th></tr></thead>
             <tbody id="hqTbl"></tbody></table>
@@ -358,10 +473,9 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
         </div>
       </div>
 
-      <!-- CHART + YTD -->
       <div class="two-col">
         <div class="card">
-          <div class="card-header"><div class="card-title">Monthly Sales Trend</div></div>
+          <div class="card-header"><div class="card-title">Monthly Sales Trend</div><span class="pill g">7 Months</span></div>
           <div class="card-body"><div class="chart-box"><canvas id="trendChart"></canvas></div></div>
         </div>
         <div class="card">
@@ -380,7 +494,139 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       </div>
     </div><!-- /dashboard -->
 
-    <!-- ── STOCK ── -->
+    <!-- ══ PRODUCT SALES ══ -->
+    <div id="view-products" class="view">
+      <div class="page-head"><h1>Product-wise Sales</h1>
+        <div class="period-pills">
+          <div class="period-pill active" id="ppMTD" onclick="setProductPeriod('MTD')">MTD</div>
+          <div class="period-pill" id="ppQTD" onclick="setProductPeriod('QTD')">QTD</div>
+          <div class="period-pill" id="ppYTD" onclick="setProductPeriod('YTD')">YTD</div>
+        </div>
+      </div>
+      <div class="two-col" style="margin-bottom:18px">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Sales by Product</div><span class="pill b" id="prodChartPill">MTD</span></div>
+          <div class="card-body"><div class="chart-box-lg"><canvas id="prodBarChart"></canvas></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Revenue Share %</div></div>
+          <div class="card-body"><div class="chart-box-lg"><canvas id="prodPieChart"></canvas></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Product Performance Detail</div>
+          <span style="font-size:11px;color:var(--text3)">Click any row for drill-down</span>
+        </div>
+        <div class="tbl-scroll">
+          <table class="fp-table">
+            <thead><tr><th>#</th><th>Product</th><th>Category</th><th class="num">Qty Sold</th><th class="num">MTD Value</th><th class="num">LMTD</th><th class="num">Growth%</th><th class="num">Budget Ach%</th><th>Status</th></tr></thead>
+            <tbody id="prodDetailTbl"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ STOCKIST SALES ══ -->
+    <div id="view-stockists" class="view">
+      <div class="page-head"><h1>Stockist-wise Sales</h1>
+        <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+          <span style="font-size:11px;color:var(--text3)"><span style="color:var(--green);font-weight:700">●</span> Above 3M Avg</span>
+          <span style="font-size:11px;color:var(--text3)"><span style="color:var(--gold);font-weight:700">●</span> Within Range</span>
+          <span style="font-size:11px;color:var(--text3)"><span style="color:var(--red);font-weight:700">●</span> Below Avg</span>
+        </div>
+      </div>
+      <div class="chips-row" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))">
+        <div class="chip"><div class="chip-icon" style="background:var(--greens)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><div><div class="chip-val" id="stkAbove">8</div><div class="chip-lbl">Above 3M Avg</div></div></div>
+        <div class="chip"><div class="chip-icon" style="background:var(--golds)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div><div class="chip-val" id="stkNormal">18</div><div class="chip-lbl">Within Range</div></div></div>
+        <div class="chip"><div class="chip-icon" style="background:var(--reds)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg></div><div><div class="chip-val" id="stkBelow">6</div><div class="chip-lbl">Below Avg</div></div></div>
+        <div class="chip"><div class="chip-icon" style="background:var(--blues)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div><div class="chip-val">32</div><div class="chip-lbl">Total Stockists</div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Stockist Performance vs 3-Month Avg</div>
+          <span style="font-size:11px;color:var(--text3)">Click row for full history</span>
+        </div>
+        <div class="tbl-scroll">
+          <table class="fp-table">
+            <thead><tr><th>Stockist Name</th><th>HQ</th><th class="num">MTD Sales</th><th class="num">3M Avg</th><th class="num">vs Avg</th><th class="num">M-1</th><th class="num">M-2</th><th class="num">M-3</th><th>Status</th></tr></thead>
+            <tbody id="stockistTbl"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ZONE ANALYSIS ══ -->
+    <div id="view-zones" class="view">
+      <div class="page-head"><h1>Zone-wise Product Analysis</h1></div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><div class="card-title">🏆 Best Selling — Product × Zone</div></div>
+          <div class="card-body" style="padding-bottom:6px">
+            <p style="font-size:11px;color:var(--text3);margin-bottom:10px">Click any cell to drill down</p>
+            <div class="tbl-scroll"><table class="zone-matrix" id="zoneBestTbl"></table></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">🔻 Worst Selling — Product × Zone</div></div>
+          <div class="card-body" style="padding-bottom:6px">
+            <p style="font-size:11px;color:var(--text3);margin-bottom:10px">Click any cell to drill down</p>
+            <div class="tbl-scroll"><table class="zone-matrix" id="zoneWorstTbl"></table></div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:18px">
+        <div class="card-header"><div class="card-title">Zone Sales Radar — All Products</div></div>
+        <div class="card-body"><div class="chart-box-lg"><canvas id="zoneRadarChart"></canvas></div></div>
+      </div>
+    </div>
+
+    <!-- ══ GROWTH ══ -->
+    <div id="view-growth" class="view">
+      <div class="page-head"><h1>Growth — Year over Year Comparison</h1></div>
+      <div class="chips-row" style="grid-template-columns:repeat(auto-fill,minmax(170px,1fr))">
+        <div class="chip"><div class="chip-icon" style="background:var(--greens)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg></div><div><div class="chip-val" style="color:var(--green)">+12.2%</div><div class="chip-lbl">YTD Growth vs LY</div></div></div>
+        <div class="chip"><div class="chip-icon" style="background:var(--blues)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div><div class="chip-val">248L</div><div class="chip-lbl">YTD FY25</div></div></div>
+        <div class="chip"><div class="chip-icon" style="background:var(--purples)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="chip-val">221L</div><div class="chip-lbl">YTD FY24 (LYTD)</div></div></div>
+        <div class="chip"><div class="chip-icon" style="background:var(--golds)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div><div><div class="chip-val">36.54L</div><div class="chip-lbl">Best Month (Apr)</div></div></div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Monthly FY25 vs FY24</div></div>
+          <div class="card-body"><div class="chart-box-lg"><canvas id="growthBarChart"></canvas></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Cumulative Growth Curve</div></div>
+          <div class="card-body"><div class="chart-box-lg"><canvas id="growthCumChart"></canvas></div></div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:18px">
+        <div class="card-header"><div class="card-title">Product-wise Growth vs Last Year</div></div>
+        <div class="tbl-scroll">
+          <table class="fp-table">
+            <thead><tr><th>Product</th><th class="num">FY25 MTD</th><th class="num">FY24 MTD</th><th class="num">Growth Qty</th><th class="num">Growth%</th><th class="num">FY25 YTD</th><th class="num">FY24 YTD</th><th class="num">YTD Growth%</th><th>Trend</th></tr></thead>
+            <tbody id="growthProdTbl"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ FINDINGS ══ -->
+    <div id="view-findings" class="view">
+      <div class="page-head"><h1>AI-Powered Findings</h1>
+        <div style="background:var(--blues);border:1px solid var(--bd2);border-radius:var(--r);padding:5px 12px;font-size:11px;color:var(--blue);font-weight:700;font-family:var(--fontd)">🤖 Auto Analysis · May 2025</div>
+      </div>
+      <div style="background:var(--s2);border:1px solid var(--bd2);border-radius:var(--r2);padding:12px 16px;margin-bottom:18px;display:flex;align-items:center;gap:10px">
+        <span style="font-size:20px">📊</span>
+        <div>
+          <div style="font-family:var(--fontd);font-weight:700;font-size:12.5px;color:var(--text);margin-bottom:2px">System analyzed 7 months of data across 32 stockists, 7 HQs, 15 products and 4 zones</div>
+          <div style="font-size:11px;color:var(--text3)">Last updated: Today 9:00 AM · Next refresh: Tomorrow 9:00 AM · Click any finding for detailed action plan</div>
+        </div>
+      </div>
+      <div class="findings-grid" id="findingsContainer"></div>
+    </div>
+
+    <!-- ══ STOCK ══ -->
     <div id="view-stock" class="view">
       <div class="page-head"><h1>Stock Report</h1><button class="refresh-btn" onclick="loadStock()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Refresh</button></div>
       <div class="stock-bar">
@@ -399,7 +645,7 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       </div>
     </div>
 
-    <!-- ── OD ── -->
+    <!-- ══ OD ══ -->
     <div id="view-od" class="view">
       <div class="page-head"><h1>Overdue Summary</h1></div>
       <div class="od-grid" id="odChips"></div>
@@ -412,30 +658,32 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       </div>
     </div>
 
-    <!-- ── NOTIFICATIONS ── -->
+    <!-- ══ NOTIFICATIONS ══ -->
     <div id="view-notifications" class="view">
       <div class="page-head"><h1>Notifications</h1></div>
       <div class="card"><div style="padding:8px 18px" id="notifList"></div></div>
     </div>
 
   </main>
-</div><!-- /shell -->
-
+</div>
 <div id="overlay" onclick="closeSB()"></div>
 <div id="toast-c"></div>
 
 <script>
-// ── FAKE DATA ─────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════
 var DATA = {
-  MTD: {
-    budget:4200000, sales:3654000, expiry:52000, grn:38000, achPct:87,
-    stockists:142, billedHQ:38, overdue:8.4, zeroHQ:4,
+  MTD:{
+    budget:4200000,sales:3654000,expiry:52000,grn:38000,achPct:87,
+    lmtdSales:3420000,
+    stockists:142,billedHQ:38,overdue:8.4,zeroHQ:4,
     topProducts:[
-      {name:'Pantodac 40mg',qty:18420,value:2780000},
-      {name:'Metformin SR 500mg',qty:24600,value:2340000},
-      {name:'Atorvastatin 10mg',qty:15800,value:1980000},
-      {name:'Telmisartan 40mg',qty:12340,value:1640000},
-      {name:'Amlodipine 5mg',qty:9870,value:1120000},
+      {name:'Pantodac 40mg',qty:18420,value:2780000,lyValue:2340000},
+      {name:'Metformin SR 500',qty:24600,value:2340000,lyValue:2100000},
+      {name:'Atorvastatin 10',qty:15800,value:1980000,lyValue:1920000},
+      {name:'Telmisartan 40',qty:12340,value:1640000,lyValue:1580000},
+      {name:'Amlodipine 5mg',qty:9870,value:1120000,lyValue:980000},
     ],
     hqData:[
       {hq:'AMD HQ',sales:680000,budget:750000,ach:90.7},
@@ -448,74 +696,144 @@ var DATA = {
     ],
     ytd:{sales:24800000,budget:28000000,ach:88.6,lytd:22100000,lmtd:3420000,growth:12.2},
   },
-  TODAY: {
-    budget:140000, sales:112000, expiry:1800, grn:1200, achPct:80,
-    stockists:28, billedHQ:12, overdue:8.4, zeroHQ:4,
+  TODAY:{
+    budget:140000,sales:112000,expiry:1800,grn:1200,achPct:80,
+    lmtdSales:98000,
+    stockists:28,billedHQ:12,overdue:8.4,zeroHQ:4,
     topProducts:[
-      {name:'Pantodac 40mg',qty:620,value:94000},
-      {name:'Metformin SR 500mg',qty:840,value:80000},
-      {name:'Atorvastatin 10mg',qty:510,value:64000},
-      {name:'Telmisartan 40mg',qty:390,value:52000},
-      {name:'Amlodipine 5mg',qty:280,value:36000},
+      {name:'Pantodac 40mg',qty:620,value:94000,lyValue:82000},
+      {name:'Metformin SR 500',qty:840,value:80000,lyValue:74000},
+      {name:'Atorvastatin 10',qty:510,value:64000,lyValue:60000},
+      {name:'Telmisartan 40',qty:390,value:52000,lyValue:48000},
+      {name:'Amlodipine 5mg',qty:280,value:36000,lyValue:38000},
     ],
     hqData:[
       {hq:'AMD HQ',sales:22000,budget:25000,ach:88.0},
       {hq:'SRT HQ',sales:17000,budget:20000,ach:85.0},
       {hq:'BRD HQ',sales:12500,budget:16000,ach:78.1},
       {hq:'RJK HQ',sales:11000,budget:14000,ach:78.6},
-      {hq:'ANK HQ',sales:9200, budget:13000,ach:70.8},
+      {hq:'ANK HQ',sales:9200,budget:13000,ach:70.8},
     ],
     ytd:{sales:24800000,budget:28000000,ach:88.6,lytd:22100000,lmtd:3420000,growth:12.2},
   }
 };
-var STOCK = [
+
+var PRODUCTS_FULL = [
+  {name:'Pantodac 40mg',cat:'GI',qty:18420,value:2780000,lmtd:2340000,lyValue:2380000,budget:3000000,zones:{North:820000,South:680000,East:740000,West:540000}},
+  {name:'Metformin SR 500mg',cat:'Diabetes',qty:24600,value:2340000,lmtd:2100000,lyValue:2180000,budget:2500000,zones:{North:680000,South:720000,East:460000,West:480000}},
+  {name:'Atorvastatin 10mg',cat:'Cardiac',qty:15800,value:1980000,lmtd:1920000,lyValue:1750000,budget:2200000,zones:{North:580000,South:460000,East:540000,West:400000}},
+  {name:'Telmisartan 40mg',cat:'Cardiac',qty:12340,value:1640000,lmtd:1580000,lyValue:1490000,budget:1800000,zones:{North:520000,South:380000,East:420000,West:320000}},
+  {name:'Amlodipine 5mg',cat:'Cardiac',qty:9870,value:1120000,lmtd:980000,lyValue:940000,budget:1200000,zones:{North:340000,South:320000,East:260000,West:200000}},
+  {name:'Cefixime 200mg',cat:'Antibiotic',qty:8200,value:960000,lmtd:1100000,lyValue:880000,budget:1100000,zones:{North:280000,South:240000,East:260000,West:180000}},
+  {name:'Azithromycin 500',cat:'Antibiotic',qty:7100,value:840000,lmtd:820000,lyValue:780000,budget:950000,zones:{North:240000,South:220000,East:210000,West:170000}},
+  {name:'Omeprazole 20mg',cat:'GI',qty:11200,value:780000,lmtd:760000,lyValue:720000,budget:880000,zones:{North:230000,South:200000,East:190000,West:160000}},
+  {name:'Glimepiride 2mg',cat:'Diabetes',qty:6800,value:720000,lmtd:680000,lyValue:650000,budget:820000,zones:{North:210000,South:195000,East:180000,West:135000}},
+  {name:'Losartan 50mg',cat:'Cardiac',qty:5400,value:620000,lmtd:640000,lyValue:590000,budget:700000,zones:{North:190000,South:170000,East:150000,West:110000}},
+];
+
+var STOCKISTS = [
+  {name:'Shree Medical',hq:'AMD HQ',mtd:182000,m1:164000,m2:171000,m3:155000},
+  {name:'Sai Pharma Dist.',hq:'AMD HQ',mtd:156000,m1:148000,m2:152000,m3:140000},
+  {name:'Om Sai Medical',hq:'SRT HQ',mtd:143000,m1:120000,m2:118000,m3:124000},
+  {name:'Rajlaxmi Pharma',hq:'SRT HQ',mtd:138000,m1:142000,m2:136000,m3:130000},
+  {name:'Kiran Medicals',hq:'BRD HQ',mtd:124000,m1:118000,m2:122000,m3:116000},
+  {name:'National Pharma',hq:'BRD HQ',mtd:118000,m1:125000,m2:119000,m3:128000},
+  {name:'Sunrise Medical',hq:'RJK HQ',mtd:112000,m1:105000,m2:98000,m3:100000},
+  {name:'Ambica Pharma',hq:'RJK HQ',mtd:108000,m1:112000,m2:108000,m3:104000},
+  {name:'Patel Medical',hq:'ANK HQ',mtd:96000,m1:88000,m2:90000,m3:86000},
+  {name:'Savita Dist.',hq:'ANK HQ',mtd:89000,m1:94000,m2:90000,m3:96000},
+  {name:'Himalaya Pharma',hq:'MHM HQ',mtd:84000,m1:78000,m2:82000,m3:76000},
+  {name:'Trimurti Medical',hq:'MHM HQ',mtd:78000,m1:86000,m2:82000,m3:80000},
+  {name:'Shivam Pharma',hq:'JND HQ',mtd:66000,m1:72000,m2:68000,m3:74000},
+  {name:'Apex Distributors',hq:'AMD HQ',mtd:198000,m1:158000,m2:155000,m3:162000},
+  {name:'Global Pharma',hq:'SRT HQ',mtd:52000,m1:82000,m2:88000,m3:78000},
+];
+
+var ZONES = ['North','South','East','West'];
+var ZONE_HQ = {North:['AMD HQ','ANK HQ'],South:['BRD HQ','MHM HQ'],East:['SRT HQ','JND HQ'],West:['RJK HQ']};
+
+var GROWTH_MONTHLY = {
+  labels:['Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May'],
+  fy25:  [2640,2810,2920,3100,3280,2840,3120,2980,3380,3520,3820,3654],
+  fy24:  [2340,2510,2620,2740,2920,2580,2820,2710,2980,3120,3380,3260],
+};
+
+var STOCK=[
   {plantCode:'1000',plantName:'Moraiya Plant (Ahmedabad)',salable:48200,transit:6400,total:54600},
   {plantCode:'1001',plantName:'Ankleshwar Plant',salable:32100,transit:4200,total:36300},
   {plantCode:'1002',plantName:'Baddi Plant (HP)',salable:27800,transit:3100,total:30900},
   {plantCode:'1003',plantName:'Dabhasa Plant',salable:19400,transit:2600,total:22000},
   {plantCode:'1004',plantName:'Changodar Plant',salable:15700,transit:1800,total:17500},
 ];
-var OD = {
-  total:840000, b030:220000, b3160:190000, b6190:160000, b90p:270000,
+var OD={
+  total:840000,b030:220000,b3160:190000,b6190:160000,b90p:270000,
   hqWise:[
     {hq:'AMD HQ',pending:180000,days:42,status:'WARN'},
     {hq:'SRT HQ',pending:145000,days:28,status:'OK'},
     {hq:'BRD HQ',pending:132000,days:67,status:'CRITICAL'},
-    {hq:'RJK HQ',pending:98000, days:19,status:'OK'},
-    {hq:'ANK HQ',pending:87000, days:55,status:'WARN'},
-    {hq:'MHM HQ',pending:72000, days:84,status:'CRITICAL'},
-    {hq:'JND HQ',pending:54000, days:35,status:'WARN'},
-    {hq:'PNM HQ',pending:72000, days:12,status:'OK'},
+    {hq:'RJK HQ',pending:98000,days:19,status:'OK'},
+    {hq:'ANK HQ',pending:87000,days:55,status:'WARN'},
+    {hq:'MHM HQ',pending:72000,days:84,status:'CRITICAL'},
+    {hq:'JND HQ',pending:54000,days:35,status:'WARN'},
+    {hq:'PNM HQ',pending:72000,days:12,status:'OK'},
   ]
 };
-var NOTIFS = [
+var NOTIFS=[
   {title:'Stock Requirement Alert',body:'Pantodac 40mg stock below threshold at Moraiya Plant. Place indent immediately.',time:'Today 10:32 AM',read:false},
   {title:'Q1 Sales Review — Division Heads',body:'Monthly sales review scheduled for 25th May 2025. Prepare division-wise MIS.',time:'Today 08:15 AM',read:false},
   {title:'New Order Received',body:'HO Order ORD-20250518142311 submitted by Kiran Patel (ABM, SRT HQ). 5 products, NC Division.',time:'Yesterday 2:40 PM',read:true},
   {title:'OD Warning — BRD HQ',body:'Overdue >60 days detected for 3 stockists in Baroda. Immediate follow-up required.',time:'May 17',read:true},
   {title:'SAP Report Upload',body:'Daily Sales report for NC Division successfully processed. 3,847 rows updated.',time:'May 16',read:true},
 ];
-var TREND = {
+var TREND={
   labels:['Nov','Dec','Jan','Feb','Mar','Apr','May'],
-  sales:  [2840,3120,2980,3380,3520,3820,3654],
-  budget: [4000,4000,4000,4000,4200,4200,4200],
+  sales:[2840,3120,2980,3380,3520,3820,3654],
+  budget:[4000,4000,4000,4000,4200,4200,4200],
 };
-var period='MTD', trendChart=null;
 
-// ── FORMAT HELPERS ──────────────────────────────────────────
+var FINDINGS = [
+  {priority:'high',icon:'🔥',title:'Cefixime 200mg Declining — Immediate Action Needed',body:'Cefixime dropped 12.7% vs LMTD across SRT & JND HQs. Antibiotic season is peak — competition gaining. Suggest doctor coverage blitz in affected territories within 7 days.',tag:'Product Risk',tagCls:'r',hqs:['SRT HQ','JND HQ']},
+  {priority:'high',icon:'⚡',title:'JND HQ Critical Under-Performance (68.4% Ach)',body:'JND HQ is tracking 31.6% below budget with only 12 days left in month. At current run-rate, projected end-of-month shortfall is ₹79L. ABM intervention + stockist push required urgently.',tag:'HQ Alert',tagCls:'r',hqs:['JND HQ']},
+  {priority:'med',icon:'📈',title:'AMD HQ Outperforming — Best Practice Replication Opportunity',body:'AMD HQ at 90.7% ach by mid-month, driven by Pantodac & Telmisartan success. Product-wise push strategy from AMD ABM should be shared with MHM & JND for replication.',tag:'Best Practice',tagCls:'go',hqs:['AMD HQ']},
+  {priority:'med',icon:'🌍',title:'West Zone — Untapped Potential in Cardiac Portfolio',body:'West Zone shows 18% lower Amlodipine & Telmisartan numbers vs North despite similar HCP density. Market development activity recommended. Potential ₹45L additional revenue.',tag:'Zone Gap',tagCls:'go',hqs:['RJK HQ']},
+  {priority:'med',icon:'🏪',title:'14 Stockists Below 3-Month Average — OD Risk',body:'14 of 32 stockists are billing below their 3-month average. 6 of these also have overdue >30 days. Combined at-risk value: ₹1.2 Cr. Needs territory manager attention.',tag:'Stockist Risk',tagCls:'go',hqs:['BRD HQ','MHM HQ']},
+  {priority:'low',icon:'🚀',title:'Apex Distributors — Star Performer This Month',body:'Apex Distributors (AMD HQ) billed ₹1.98L MTD vs 3M avg of ₹1.58L — up 25.3%. Driven by new product additions. Consider incentive recognition and increase allocation.',tag:'Opportunity',tagCls:'g',hqs:['AMD HQ']},
+  {priority:'low',icon:'💊',title:'Metformin SR 500mg — Highest Volume, Underpriced Margin',body:'Metformin is the #1 volume product at 24,600 units but ranks 2nd in value. Margin per unit is ₹9.5 vs market average ₹12. Price revision or premium SKU push recommended.',tag:'Margin Gap',tagCls:'b',hqs:[]},
+  {priority:'low',icon:'📉',title:'Global Pharma Stockist Declining Trend',body:'Global Pharma (SRT HQ) billed only ₹52K this month vs 3M avg of ₹83K — a 37% drop. No OD issue. Likely competition shift. Immediate field visit recommended.',tag:'Churn Risk',tagCls:'r',hqs:['SRT HQ']},
+];
+
+var period='MTD', productPeriod='MTD';
+var trendChart=null, prodBarChart=null, prodPieChart=null, growthBarChart=null, growthCumChart=null, zoneRadarChart=null;
+var modalTrendChart=null;
+
+// ══════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════
 function fL(v){var n=parseFloat(v)/100000;return n.toFixed(n>=10?1:2)+'L'}
 function fLs(v){return (parseFloat(v)/100000).toFixed(1)+'L'}
 function fN(v){return parseInt(v).toLocaleString('en-IN')}
+function growthStr(cur,prev){var g=((cur-prev)/prev*100);return (g>=0?'+':'')+g.toFixed(1)+'%';}
+function growthColor(cur,prev){return cur>=prev?'var(--green)':'var(--red)';}
+function isDark(){return document.documentElement.getAttribute('data-theme')==='dark';}
+function gcol(){return isDark()?'rgba(80,130,220,0.08)':'rgba(30,60,120,0.06)';}
+function tcol(){return isDark()?'#7A9ABF':'#6B7280';}
 
-// ── NAV ──────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════════════════
 function nav(id){
   document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active')});
   document.getElementById('view-'+id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active')});
-  var ti={dashboard:'Dashboard',stock:'Stock Report',od:'Overdue (OD)',notifications:'Notifications'};
+  var ti={dashboard:'Dashboard',products:'Product Sales',stockists:'Stockist Sales',zones:'Zone Analysis',growth:'Growth YoY',findings:'AI Findings',stock:'Stock Report',od:'Overdue (OD)',notifications:'Notifications'};
   document.getElementById('pageTitle').textContent=ti[id]||'CadiPulse';
   closeSB();
   if(id==='dashboard') renderDash();
+  else if(id==='products') loadProducts();
+  else if(id==='stockists') loadStockists();
+  else if(id==='zones') loadZones();
+  else if(id==='growth') loadGrowth();
+  else if(id==='findings') loadFindings();
   else if(id==='stock') loadStock();
   else if(id==='od') loadOD();
   else if(id==='notifications') loadNotifs();
@@ -526,58 +844,69 @@ function toggleTheme(){
   var html=document.documentElement;
   var dark=html.getAttribute('data-theme')==='dark';
   html.setAttribute('data-theme',dark?'light':'dark');
-  if(trendChart)renderTrend();
+  setTimeout(function(){
+    if(trendChart) renderTrend();
+    if(prodBarChart) renderProdCharts();
+    if(growthBarChart) renderGrowthCharts();
+    if(zoneRadarChart) renderZoneRadar();
+  },50);
 }
-
-// ── PERIOD ────────────────────────────────────────────────────
 function setPeriod(p){
   period=p;
   document.getElementById('pMTD').classList.toggle('active',p==='MTD');
   document.getElementById('pTODAY').classList.toggle('active',p==='TODAY');
   renderDash();
 }
-
-// ── DASHBOARD ─────────────────────────────────────────────────
-function refreshDash(){
-  // Slightly vary the data to look like a refresh
-  toast('Dashboard refreshed','ok');
-  renderDash();
+function setProductPeriod(p){
+  productPeriod=p;
+  ['ppMTD','ppQTD','ppYTD'].forEach(function(id){document.getElementById(id).classList.remove('active')});
+  document.getElementById('pp'+p).classList.add('active');
+  document.getElementById('prodChartPill').textContent=p;
+  loadProducts();
 }
+
+// ══════════════════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════════════════
+function refreshDash(){toast('Dashboard refreshed','ok');renderDash();}
 function renderDash(){
   var d=DATA[period];
-  // KPIs
   document.getElementById('k-budget').textContent=fL(d.budget);
   document.getElementById('k-sales').textContent=fL(d.sales);
   document.getElementById('k-expiry').textContent=fL(d.expiry);
   document.getElementById('k-grn').textContent=fL(d.grn);
-  // Ach bar
+  var lmtdG=((d.sales-d.lmtdSales)/d.lmtdSales*100).toFixed(1);
+  document.getElementById('k-sales-g').innerHTML='vs LMTD: '+(lmtdG>=0?'▲':'▼')+Math.abs(lmtdG)+'%';
+  document.getElementById('k-budget-g').innerHTML='7 HQs Active';
+  document.getElementById('k-expiry-g').innerHTML=(d.expiry>60000?'⚠ Above threshold':'✓ Within limit');
+  document.getElementById('k-grn-g').innerHTML='Salable stock returned';
   var pct=d.achPct;
   document.getElementById('achPct').textContent=pct.toFixed(1);
   document.getElementById('achSales').textContent=fL(d.sales);
   document.getElementById('achBudget').textContent=fL(d.budget);
   document.getElementById('achPending').textContent=fL(d.budget-d.sales);
+  var lmtdGS=((d.sales-d.lmtdSales)/d.lmtdSales*100).toFixed(1);
+  document.getElementById('achGrowth').innerHTML='<span style="color:'+(lmtdGS>=0?'var(--green)':'var(--red)')+'">'+( lmtdGS>=0?'+':'')+lmtdGS+'%</span>';
   var fill=document.getElementById('achFill');
   fill.style.width=Math.min(pct,100)+'%';
   fill.style.background=pct>=85?'linear-gradient(90deg,#22C55E,#16A34A)':pct>=70?'linear-gradient(90deg,#F59E0B,#D97706)':'linear-gradient(90deg,#EF4444,#DC2626)';
-  // Chips
   document.getElementById('c-stockists').textContent=d.stockists;
   document.getElementById('c-billed').textContent=d.billedHQ;
   document.getElementById('c-overdue').textContent=d.overdue+'L';
   document.getElementById('c-zerohq').textContent=d.zeroHQ;
-  // Top Products
+  document.getElementById('tpPill').textContent=period;
   var tp='';
   d.topProducts.forEach(function(p,i){
-    tp+='<tr><td>'+(i+1)+'</td><td class="bold">'+p.name+'</td><td class="num">'+fN(p.qty)+'</td><td class="num">'+fL(p.value)+'</td></tr>';
+    var g=((p.value-p.lyValue)/p.lyValue*100).toFixed(1);
+    tp+='<tr class="clickable" onclick="showProductModal(\''+p.name+'\')"><td>'+(i+1)+'</td><td class="bold">'+p.name+'</td><td class="num">'+fN(p.qty)+'</td><td class="num">'+fL(p.value)+'</td><td class="num" style="color:'+(g>=0?'var(--green)':'var(--red)')+'">'+( g>=0?'+':'')+g+'%</td></tr>';
   });
   document.getElementById('topProdTbl').innerHTML=tp;
-  // HQ
   var hq='';
   d.hqData.forEach(function(r){
     var a=r.ach;var cls=a>=85?'g':a>=70?'go':'r';
-    hq+='<tr><td class="bold">'+r.hq+'</td><td class="num">'+fL(r.sales)+'</td><td class="num">'+fL(r.budget)+'</td><td class="num"><span class="pill '+cls+'">'+a.toFixed(1)+'%</span></td></tr>';
+    hq+='<tr class="clickable" onclick="showHQModal(\''+r.hq+'\')"><td class="bold">'+r.hq+'</td><td class="num">'+fL(r.sales)+'</td><td class="num">'+fL(r.budget)+'</td><td class="num"><span class="pill '+cls+'">'+a.toFixed(1)+'%</span></td></tr>';
   });
   document.getElementById('hqTbl').innerHTML=hq;
-  // YTD
   var ytd=d.ytd;
   document.getElementById('y-sales').textContent=fL(ytd.sales);
   document.getElementById('y-budget').textContent=fL(ytd.budget);
@@ -586,14 +915,10 @@ function renderDash(){
   document.getElementById('y-lmtd').textContent=fL(ytd.lmtd);
   var g=ytd.growth;
   document.getElementById('y-growth').innerHTML='<span style="color:'+(g>=0?'var(--green)':'var(--red)')+'">'+(g>=0?'+':'')+g+'%</span>';
-  // Trend chart
   renderTrend();
 }
 
 function renderTrend(){
-  var isDark=document.documentElement.getAttribute('data-theme')==='dark';
-  var gridColor=isDark?'rgba(80,130,220,0.08)':'rgba(30,60,120,0.06)';
-  var textColor=isDark?'#7A9ABF':'#6B7280';
   var ctx=document.getElementById('trendChart').getContext('2d');
   if(trendChart)trendChart.destroy();
   trendChart=new Chart(ctx,{
@@ -605,18 +930,216 @@ function renderTrend(){
         {label:'Budget',data:TREND.budget,borderColor:'rgba(245,158,11,0.7)',backgroundColor:'transparent',borderWidth:1.5,borderDash:[5,4],fill:false,tension:0.3,pointRadius:0},
       ]
     },
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{labels:{color:textColor,font:{family:'Outfit',size:11},boxWidth:12}}},
-      scales:{
-        x:{grid:{color:gridColor},ticks:{color:textColor,font:{size:11}}},
-        y:{grid:{color:gridColor},ticks:{color:textColor,font:{size:11},callback:function(v){return v+'L'}}}
-      }
-    }
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:tcol(),font:{family:'Outfit',size:11},boxWidth:12}}},scales:{x:{grid:{color:gcol()},ticks:{color:tcol(),font:{size:11}}},y:{grid:{color:gcol()},ticks:{color:tcol(),font:{size:11},callback:function(v){return v+'L'}}}}}
   });
 }
 
-// ── STOCK ─────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════
+// PRODUCTS
+// ══════════════════════════════════════════════════════
+function loadProducts(){
+  renderProdCharts();
+  var multiplier=productPeriod==='YTD'?8:productPeriod==='QTD'?3:1;
+  var html='';
+  PRODUCTS_FULL.forEach(function(p,i){
+    var val=p.value*multiplier;
+    var lmtd=p.lmtd*multiplier;
+    var ly=p.lyValue*multiplier;
+    var gr=((val-lmtd)/lmtd*100).toFixed(1);
+    var ach=(val/(p.budget*multiplier)*100).toFixed(1);
+    var cls=ach>=90?'g':ach>=70?'go':'r';
+    var grCls=parseFloat(gr)>=0?'g':'r';
+    html+='<tr class="clickable" onclick="showProductModal(\''+p.name+'\')">';
+    html+='<td>'+(i+1)+'</td><td class="bold">'+p.name+'</td><td><span class="pill b">'+p.cat+'</span></td>';
+    html+='<td class="num">'+fN(p.qty*multiplier)+'</td><td class="num">'+fL(val)+'</td><td class="num">'+fL(lmtd)+'</td>';
+    html+='<td class="num"><span class="pill '+grCls+'">'+(parseFloat(gr)>=0?'+':'')+gr+'%</span></td>';
+    html+='<td class="num"><span class="pill '+cls+'">'+ach+'%</span></td>';
+    html+='<td>'+(parseFloat(ach)>=90?'<span class="stkst-star">★ Top</span>':parseFloat(ach)<70?'<span class="stkst-warn">⚠ Low</span>':'<span style="font-size:10px;color:var(--text3)">On Track</span>')+'</td>';
+    html+='</tr>';
+  });
+  document.getElementById('prodDetailTbl').innerHTML=html;
+}
+
+function renderProdCharts(){
+  var multiplier=productPeriod==='YTD'?8:productPeriod==='QTD'?3:1;
+  var names=PRODUCTS_FULL.map(function(p){return p.name.split(' ').slice(0,2).join(' ')});
+  var vals=PRODUCTS_FULL.map(function(p){return (p.value*multiplier/100000).toFixed(1)});
+  var colors=['#3B7EFF','#22C55E','#F59E0B','#A855F7','#06B6D4','#EF4444','#10B981','#F97316','#8B5CF6','#EC4899'];
+
+  var ctx=document.getElementById('prodBarChart').getContext('2d');
+  if(prodBarChart)prodBarChart.destroy();
+  prodBarChart=new Chart(ctx,{
+    type:'bar',
+    data:{labels:names,datasets:[{label:'Sales (L)',data:vals,backgroundColor:colors,borderRadius:5,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gcol()},ticks:{color:tcol(),font:{size:10}}},y:{grid:{color:gcol()},ticks:{color:tcol(),callback:function(v){return v+'L'}}}}}
+  });
+
+  var ctx2=document.getElementById('prodPieChart').getContext('2d');
+  if(prodPieChart)prodPieChart.destroy();
+  prodPieChart=new Chart(ctx2,{
+    type:'doughnut',
+    data:{labels:names,datasets:[{data:vals,backgroundColor:colors,borderWidth:2,borderColor:isDark()?'#16243A':'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:tcol(),font:{size:10},boxWidth:10}}}}
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// STOCKISTS
+// ══════════════════════════════════════════════════════
+function loadStockists(){
+  var above=0,norm=0,below=0;
+  var html='';
+  STOCKISTS.forEach(function(s){
+    var avg=(s.m1+s.m2+s.m3)/3;
+    var diff=s.mtd-avg;
+    var diffPct=((diff/avg)*100).toFixed(1);
+    var isAbove=s.mtd>avg*1.1;
+    var isBelow=s.mtd<avg*0.85;
+    if(isAbove)above++;else if(isBelow)below++;else norm++;
+    var rowCls=isAbove?'highlight-row':'';
+    var badge=isAbove?'<span class="stkst-star">▲ Above Avg</span>':isBelow?'<span class="stkst-warn">▼ Below Avg</span>':'<span style="font-size:10px;color:var(--text3)">Normal</span>';
+    html+='<tr class="clickable '+rowCls+'" onclick="showStockistModal(\''+s.name+'\')">';
+    html+='<td class="bold">'+s.name+'</td><td>'+s.hq+'</td>';
+    html+='<td class="num" style="font-weight:800;color:'+(isAbove?'var(--green)':isBelow?'var(--red)':'var(--text)')+'">'+fL(s.mtd)+'</td>';
+    html+='<td class="num">'+fL(avg)+'</td>';
+    html+='<td class="num" style="color:'+(parseFloat(diffPct)>=0?'var(--green)':'var(--red)')+'">'+( parseFloat(diffPct)>=0?'+':'')+diffPct+'%</td>';
+    html+='<td class="num">'+fL(s.m1)+'</td><td class="num">'+fL(s.m2)+'</td><td class="num">'+fL(s.m3)+'</td>';
+    html+='<td>'+badge+'</td></tr>';
+  });
+  document.getElementById('stockistTbl').innerHTML=html;
+  document.getElementById('stkAbove').textContent=above;
+  document.getElementById('stkNormal').textContent=norm;
+  document.getElementById('stkBelow').textContent=below;
+}
+
+// ══════════════════════════════════════════════════════
+// ZONES
+// ══════════════════════════════════════════════════════
+function loadZones(){
+  buildZoneMatrix('zoneBestTbl',true);
+  buildZoneMatrix('zoneWorstTbl',false);
+  renderZoneRadar();
+}
+
+function buildZoneMatrix(tblId,isBest){
+  var prods=PRODUCTS_FULL.slice(0,6);
+  var tbl=document.getElementById(tblId);
+  var head='<tr><th>Product</th>'+ZONES.map(function(z){return '<th>'+z+'</th>'}).join('')+'<th>Best Zone</th></tr>';
+  var rows='';
+  prods.forEach(function(p){
+    var zvals=ZONES.map(function(z){return p.zones[z]});
+    var maxV=Math.max.apply(null,zvals);
+    var minV=Math.min.apply(null,zvals);
+    rows+='<tr>';
+    rows+='<td>'+p.name.split(' ').slice(0,2).join(' ')+'</td>';
+    ZONES.forEach(function(z,zi){
+      var v=p.zones[z];
+      var isBest2=(v===maxV);var isWorst=(v===minV);
+      var cls=isBest?(isBest2?'z-hot':isWorst?'z-cold':'z-warm'):(isWorst?'z-hot':isBest2?'z-cold':'z-warm');
+      rows+='<td class="'+cls+'" onclick="showZoneModal(\''+p.name+'\',\''+z+'\')">'+fL(v)+'</td>';
+    });
+    var bestZ=ZONES[zvals.indexOf(maxV)];
+    var worstZ=ZONES[zvals.indexOf(minV)];
+    rows+='<td style="font-weight:700;color:'+(isBest?'var(--green)':'var(--red)')+'">'+( isBest?bestZ:worstZ)+'</td>';
+    rows+='</tr>';
+  });
+  tbl.innerHTML=head+rows;
+}
+
+function renderZoneRadar(){
+  var ctx=document.getElementById('zoneRadarChart').getContext('2d');
+  if(zoneRadarChart)zoneRadarChart.destroy();
+  var colors=['rgba(59,126,255,.7)','rgba(34,197,94,.7)','rgba(245,158,11,.7)','rgba(168,85,247,.7)','rgba(6,182,212,.7)'];
+  var datasets=PRODUCTS_FULL.slice(0,5).map(function(p,i){
+    return {label:p.name.split(' ')[0],data:ZONES.map(function(z){return (p.zones[z]/100000).toFixed(1)}),borderColor:colors[i],backgroundColor:colors[i].replace('.7','.12'),borderWidth:2,pointBackgroundColor:colors[i]};
+  });
+  zoneRadarChart=new Chart(ctx,{
+    type:'radar',
+    data:{labels:ZONES,datasets:datasets},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:tcol(),font:{size:11},boxWidth:12}}},scales:{r:{grid:{color:gcol()},pointLabels:{color:tcol(),font:{size:12,weight:'700'}},ticks:{color:tcol(),font:{size:10},callback:function(v){return v+'L'}}}}}
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// GROWTH
+// ══════════════════════════════════════════════════════
+function loadGrowth(){
+  renderGrowthCharts();
+  var html='';
+  PRODUCTS_FULL.forEach(function(p,i){
+    var mtdG=((p.value-p.lyValue)/p.lyValue*100).toFixed(1);
+    var ytdV=p.value*8;var ytdLy=p.lyValue*8;
+    var ytdG=((ytdV-ytdLy)/ytdLy*100).toFixed(1);
+    var mtdGQty=Math.round(p.qty*0.12);
+    var grCls=parseFloat(mtdG)>=0?'g':'r';
+    var ytdCls=parseFloat(ytdG)>=0?'g':'r';
+    var spark=parseFloat(mtdG)>=0?'↗':'↘';
+    html+='<tr class="clickable" onclick="showProductModal(\''+p.name+'\')">';
+    html+='<td class="bold">'+p.name+'</td>';
+    html+='<td class="num">'+fL(p.value)+'</td><td class="num">'+fL(p.lyValue)+'</td>';
+    html+='<td class="num" style="color:'+(mtdGQty>=0?'var(--green)':'var(--red)')+'">'+fN(mtdGQty)+'</td>';
+    html+='<td class="num"><span class="pill '+grCls+'">'+(parseFloat(mtdG)>=0?'+':'')+mtdG+'%</span></td>';
+    html+='<td class="num">'+fL(ytdV)+'</td><td class="num">'+fL(ytdLy)+'</td>';
+    html+='<td class="num"><span class="pill '+ytdCls+'">'+(parseFloat(ytdG)>=0?'+':'')+ytdG+'%</span></td>';
+    html+='<td style="font-size:18px;text-align:center;color:'+(parseFloat(mtdG)>=0?'var(--green)':'var(--red)')+'">'+spark+'</td>';
+    html+='</tr>';
+  });
+  document.getElementById('growthProdTbl').innerHTML=html;
+}
+
+function renderGrowthCharts(){
+  var ctx=document.getElementById('growthBarChart').getContext('2d');
+  if(growthBarChart)growthBarChart.destroy();
+  growthBarChart=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:GROWTH_MONTHLY.labels,
+      datasets:[
+        {label:'FY 2025',data:GROWTH_MONTHLY.fy25,backgroundColor:'rgba(59,126,255,0.75)',borderRadius:4,borderSkipped:false},
+        {label:'FY 2024',data:GROWTH_MONTHLY.fy24,backgroundColor:'rgba(168,85,247,0.5)',borderRadius:4,borderSkipped:false},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:tcol(),font:{family:'Outfit',size:11},boxWidth:12}}},scales:{x:{grid:{color:gcol()},ticks:{color:tcol(),font:{size:11}}},y:{grid:{color:gcol()},ticks:{color:tcol(),callback:function(v){return v+'L'}}}}}
+  });
+
+  // Cumulative
+  var cum25=[],cum24=[],c25=0,c24=0;
+  GROWTH_MONTHLY.fy25.forEach(function(v,i){c25+=v;c24+=GROWTH_MONTHLY.fy24[i];cum25.push(c25);cum24.push(c24);});
+  var ctx2=document.getElementById('growthCumChart').getContext('2d');
+  if(growthCumChart)growthCumChart.destroy();
+  growthCumChart=new Chart(ctx2,{
+    type:'line',
+    data:{
+      labels:GROWTH_MONTHLY.labels,
+      datasets:[
+        {label:'FY25 Cumulative',data:cum25,borderColor:'#3B7EFF',backgroundColor:'rgba(59,126,255,0.10)',fill:true,tension:0.4,borderWidth:2,pointRadius:3},
+        {label:'FY24 Cumulative',data:cum24,borderColor:'#A855F7',backgroundColor:'transparent',fill:false,tension:0.4,borderWidth:2,borderDash:[4,3],pointRadius:3},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:tcol(),font:{family:'Outfit',size:11},boxWidth:12}}},scales:{x:{grid:{color:gcol()},ticks:{color:tcol(),font:{size:11}}},y:{grid:{color:gcol()},ticks:{color:tcol(),callback:function(v){return v+'L'}}}}}
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// FINDINGS
+// ══════════════════════════════════════════════════════
+function loadFindings(){
+  var html='';
+  FINDINGS.forEach(function(f,i){
+    var iconBg=f.priority==='high'?'background:var(--reds)':f.priority==='med'?'background:var(--golds)':'background:var(--greens)';
+    html+='<div class="finding-card finding-priority-'+f.priority+'" onclick="showFindingModal('+i+')">';
+    html+='<div class="finding-icon" style="'+iconBg+'">'+f.icon+'</div>';
+    html+='<div style="flex:1"><div class="finding-title">'+f.title+'</div><div class="finding-body">'+f.body+'</div>';
+    html+='<div class="finding-tag"><span class="pill '+f.tagCls+'">'+f.tag+'</span>';
+    if(f.hqs.length){html+='&nbsp;<span style="font-size:11px;color:var(--text4)">'+f.hqs.join(', ')+'</span>';}
+    html+='</div></div></div>';
+  });
+  document.getElementById('findingsContainer').innerHTML=html;
+}
+
+// ══════════════════════════════════════════════════════
+// STOCK / OD / NOTIFS
+// ══════════════════════════════════════════════════════
 function loadStock(){
   var totS=0,totT=0,totTotal=0;
   var html='';
@@ -630,33 +1153,238 @@ function loadStock(){
   document.getElementById('st-tra').textContent=fN(totT);
   document.getElementById('st-tot').textContent=fN(totTotal);
 }
-
-// ── OD ────────────────────────────────────────────────────────
 function loadOD(){
-  var chips=[
-    {lbl:'Total Pending',val:fL(OD.total)},{lbl:'0–30 Days',val:fL(OD.b030)},
-    {lbl:'31–60 Days',val:fL(OD.b3160)},{lbl:'61–90 Days',val:fL(OD.b6190)},{lbl:'>90 Days',val:fL(OD.b90p)},
-  ];
+  var chips=[{lbl:'Total Pending',val:fL(OD.total)},{lbl:'0–30 Days',val:fL(OD.b030)},{lbl:'31–60 Days',val:fL(OD.b3160)},{lbl:'61–90 Days',val:fL(OD.b6190)},{lbl:'>90 Days',val:fL(OD.b90p)}];
   document.getElementById('odChips').innerHTML=chips.map(function(c){
-    return '<div class="od-chip"><div class="od-chip-lbl">'+c.lbl+'</div><div class="od-chip-val">'+c.val+'</div></div>';
+    return '<div class="od-chip" onclick="toast(\''+c.lbl+': '+c.val+'\',\'info\')"><div class="od-chip-lbl">'+c.lbl+'</div><div class="od-chip-val">'+c.val+'</div></div>';
   }).join('');
   var html='';
   OD.hqWise.forEach(function(r){
     var cls=r.status==='CRITICAL'?'r':r.status==='WARN'?'go':'g';
-    html+='<tr><td class="bold">'+r.hq+'</td><td class="num">'+fLs(r.pending)+'</td><td class="num">'+r.days+'d</td><td><span class="pill '+cls+'">'+r.status+'</span></td></tr>';
+    html+='<tr class="clickable" onclick="showHQModal(\''+r.hq+'\')"><td class="bold">'+r.hq+'</td><td class="num">'+fLs(r.pending)+'</td><td class="num">'+r.days+'d</td><td><span class="pill '+cls+'">'+r.status+'</span></td></tr>';
   });
   document.getElementById('odTbl').innerHTML=html;
 }
-
-// ── NOTIFICATIONS ─────────────────────────────────────────────
 function loadNotifs(){
   document.getElementById('notifList').innerHTML=NOTIFS.map(function(n){
     return '<div class="notif-item"><div class="notif-dot'+(n.read?' read':'')+'"></div><div style="flex:1"><div class="notif-title">'+n.title+'</div><div class="notif-body">'+n.body+'</div><div class="notif-time">'+n.time+'</div></div></div>';
   }).join('');
 }
 
-// ── TOAST ─────────────────────────────────────────────────────
-function toast(msg, type){
+// ══════════════════════════════════════════════════════
+// MODALS
+// ══════════════════════════════════════════════════════
+function openModal(html){
+  document.getElementById('modalContent').innerHTML=html;
+  document.getElementById('modalBg').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){
+  document.getElementById('modalBg').classList.remove('show');
+  document.body.style.overflow='';
+  if(modalTrendChart){modalTrendChart.destroy();modalTrendChart=null;}
+}
+function closeModalBg(e){if(e.target===document.getElementById('modalBg'))closeModal();}
+
+function showProductModal(name){
+  var p=PRODUCTS_FULL.find(function(x){return x.name===name});
+  if(!p){
+    var d=DATA[period];
+    p=d.topProducts.find(function(x){return x.name===name});
+    if(!p)return;
+    p={name:p.name,cat:'GI',qty:p.qty,value:p.value,lmtd:p.value*0.93,lyValue:p.lyValue,budget:p.value*1.08,zones:{North:p.value*.3,South:p.value*.25,East:p.value*.27,West:p.value*.18}};
+  }
+  var g=((p.value-p.lyValue)/p.lyValue*100).toFixed(1);
+  var ach=(p.value/p.budget*100).toFixed(1);
+  var topZone=ZONES.reduce(function(a,b){return p.zones[a]>p.zones[b]?a:b});
+  var lowZone=ZONES.reduce(function(a,b){return p.zones[a]<p.zones[b]?a:b});
+  var html='';
+  html+='<div class="modal-head"><div class="modal-badge" style="background:var(--blues);font-size:22px">💊</div><div><div class="modal-title">'+p.name+'</div><div class="modal-sub">Category: '+p.cat+' &nbsp;·&nbsp; <span class="pill b">'+p.cat+'</span></div></div></div>';
+  html+='<div class="modal-body">';
+  html+='<div class="modal-stat-grid">';
+  html+='<div class="modal-stat"><div class="modal-stat-lbl">MTD Sales</div><div class="modal-stat-val">'+fL(p.value)+'</div><div class="modal-stat-sub">'+fN(p.qty)+' units</div></div>';
+  html+='<div class="modal-stat"><div class="modal-stat-lbl">vs Last Year</div><div class="modal-stat-val" style="color:'+(parseFloat(g)>=0?'var(--green)':'var(--red)')+'">'+( parseFloat(g)>=0?'+':'')+g+'%</div><div class="modal-stat-sub">LMTD: '+fL(p.lyValue)+'</div></div>';
+  html+='<div class="modal-stat"><div class="modal-stat-lbl">Budget Ach.</div><div class="modal-stat-val" style="color:'+(parseFloat(ach)>=85?'var(--green)':'var(--gold)')+'">'+ach+'%</div><div class="modal-stat-sub">Budget: '+fL(p.budget)+'</div></div>';
+  html+='<div class="modal-stat"><div class="modal-stat-lbl">vs LMTD</div><div class="modal-stat-val" style="color:var(--green)">'+growthStr(p.value,p.lmtd)+'</div><div class="modal-stat-sub">LMTD: '+fL(p.lmtd)+'</div></div>';
+  html+='</div>';
+  html+='<div class="modal-section"><div class="modal-section-title">Zone-wise Sales</div>';
+  var maxZ=Math.max.apply(null,ZONES.map(function(z){return p.zones[z]}));
+  ZONES.forEach(function(z){
+    var v=p.zones[z];var pct=Math.round(v/maxZ*100);
+    html+='<div class="mini-bar-row"><div class="mini-bar-label">'+z+' Zone</div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:'+pct+'%;background:var(--blue)"></div></div><div class="mini-bar-val">'+fL(v)+'</div></div>';
+  });
+  html+='</div>';
+  html+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">';
+  html+='<span class="star-badge">★ Best: '+topZone+'</span>';
+  html+='<span class="fire-badge">▼ Worst: '+lowZone+'</span>';
+  if(parseFloat(g)>=10)html+='<span class="alert-badge">✓ Strong Growth</span>';
+  if(parseFloat(ach)>=90)html+='<span class="star-badge">🏆 Top Performer</span>';
+  html+='</div>';
+  html+='</div>';
+  openModal(html);
+}
+
+function showHQModal(hqName){
+  var hqData=DATA[period].hqData.find(function(x){return x.hq===hqName})||{hq:hqName,sales:340000,budget:420000,ach:81};
+  var odData=OD.hqWise.find(function(x){return x.hq===hqName})||{pending:80000,days:25,status:'OK'};
+  var stkInHQ=STOCKISTS.filter(function(s){return s.hq===hqName});
+  var stkAbove=stkInHQ.filter(function(s){var avg=(s.m1+s.m2+s.m3)/3;return s.mtd>avg*1.1;}).length;
+  var html='';
+  html+='<div class="modal-head"><div class="modal-badge" style="background:var(--blues);font-size:22px">🏢</div><div><div class="modal-title">'+hqName+'</div><div class="modal-sub">Headquarter Performance · '+period+'</div></div></div>';
+  html+='<div class="modal-body">';
+  html+='<div class="modal-stat-grid">';
+  var cls=hqData.ach>=85?'var(--green)':hqData.ach>=70?'var(--gold)':'var(--red)';
+  html+='<div class="modal-stat"><div class="modal-stat-lbl">Net Sales</div><div class="modal-stat-val">'+fL(hqData.sales)+'</div></div>';
+  html+='<div class="modal-stat"><div class="modal-stat-lbl">Budget</div><div class="modal-stat-val">'+fL(hqData.budget)+'</div></div>';
+  html+='<div class="modal-stat"><div class="modal-stat-lbl">Achievement</div><div class="modal-stat-val" style="color:'+cls+'">'+hqData.ach+'%</div></div>';
+  html+='<div class="modal-stat"><div class="modal-stat-lbl">OD Pending</div><div class="modal-stat-val" style="color:'+(odData.status==='CRITICAL'?'var(--red)':'var(--gold)')+'">'+fL(odData.pending)+'</div><div class="modal-stat-sub">'+odData.days+' days · '+odData.status+'</div></div>';
+  html+='</div>';
+  html+='<div class="modal-section"><div class="modal-section-title">Stockist Summary</div>';
+  html+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">';
+  html+='<div class="modal-stat" style="flex:1"><div class="modal-stat-lbl">Total</div><div class="modal-stat-val">'+stkInHQ.length+'</div></div>';
+  html+='<div class="modal-stat" style="flex:1"><div class="modal-stat-lbl">Above Avg</div><div class="modal-stat-val" style="color:var(--green)">'+stkAbove+'</div></div>';
+  html+='<div class="modal-stat" style="flex:1"><div class="modal-stat-lbl">Below Avg</div><div class="modal-stat-val" style="color:var(--red)">'+(stkInHQ.length-stkAbove-1 > 0 ? stkInHQ.length-stkAbove-1 : 0)+'</div></div>';
+  html+='</div>';
+  if(stkInHQ.length){
+    html+='<div class="modal-section-title" style="margin-top:10px">Stockist Breakdown</div>';
+    stkInHQ.forEach(function(s){
+      var avg=(s.m1+s.m2+s.m3)/3;var pct=Math.round(s.mtd/avg*100);var isHigh=s.mtd>avg*1.1;
+      html+='<div class="mini-bar-row"><div class="mini-bar-label">'+s.name+'</div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:'+Math.min(pct,100)+'%;background:'+(isHigh?'var(--green)':pct<85?'var(--red)':'var(--blue)')+'"></div></div><div class="mini-bar-val">'+fL(s.mtd)+'</div></div>';
+    });
+  }
+  html+='</div>';
+  html+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">';
+  if(hqData.ach>=90)html+='<span class="star-badge">★ Top HQ</span>';
+  if(hqData.ach<70)html+='<span class="fire-badge">⚠ Action Needed</span>';
+  if(odData.status==='CRITICAL')html+='<span class="fire-badge">🔴 OD Critical</span>';
+  html+='</div>';
+  html+='</div>';
+  openModal(html);
+}
+
+function showStockistModal(name){
+  var s=STOCKISTS.find(function(x){return x.name===name});
+  if(!s)return;
+  var avg=(s.m1+s.m2+s.m3)/3;
+  var diffPct=((s.mtd-avg)/avg*100).toFixed(1);
+  var isAbove=s.mtd>avg*1.1;
+  var isBelow=s.mtd<avg*0.85;
+  var months=['Feb','Mar','Apr'];
+  var html='';
+  html+='<div class="modal-head"><div class="modal-badge" style="background:var(--greens);font-size:22px">🏪</div><div><div class="modal-title">'+s.name+'</div><div class="modal-sub">'+s.hq+' &nbsp;·&nbsp; Active Stockist</div></div></div>';
+  html+='<div class="modal-body">';
+  html+='<div class="modal-stat-grid">';
+  html+='<div class="modal-stat"><div class="modal-stat-lbl">MTD Billing</div><div class="modal-stat-val" style="color:'+(isAbove?'var(--green)':isBelow?'var(--red)':'var(--text)')+'">'+fL(s.mtd)+'</div></div>';
+  html+='<div class="modal-stat"><div class="modal-stat-lbl">3-Month Avg</div><div class="modal-stat-val">'+fL(avg)+'</div></div>';
+  html+='<div class="modal-stat"><div class="modal-stat-lbl">vs 3M Avg</div><div class="modal-stat-val" style="color:'+(parseFloat(diffPct)>=0?'var(--green)':'var(--red)')+'">'+( parseFloat(diffPct)>=0?'+':'')+diffPct+'%</div></div>';
+  html+='<div class="modal-stat"><div class="modal-stat-lbl">Status</div><div class="modal-stat-val">'+(isAbove?'⬆ Star':'⬇ Review')+'</div></div>';
+  html+='</div>';
+  html+='<div class="modal-section"><div class="modal-section-title">Monthly Billing History</div>';
+  var allMonths=[s.m3,s.m2,s.m1,s.mtd];
+  var allLabels=['M-3','M-2','M-1','This Month'];
+  var maxV=Math.max.apply(null,allMonths);
+  allMonths.forEach(function(v,i){
+    var pct=Math.round(v/maxV*100);
+    var isCurrent=(i===3);
+    html+='<div class="mini-bar-row"><div class="mini-bar-label" style="font-weight:'+(isCurrent?'800':'600')+'">'+allLabels[i]+'</div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:'+pct+'%;background:'+(isCurrent?'var(--blue)':'rgba(59,126,255,.4)')+'"></div></div><div class="mini-bar-val">'+fL(v)+'</div></div>';
+  });
+  html+='</div>';
+  html+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">';
+  if(isAbove)html+='<span class="star-badge">★ Above 3M Average</span>';
+  if(isBelow)html+='<span class="fire-badge">⚠ Review Required</span>';
+  html+='</div>';
+  html+='</div>';
+  openModal(html);
+}
+
+function showZoneModal(prod,zone){
+  var p=PRODUCTS_FULL.find(function(x){return x.name===prod});
+  if(!p)return;
+  var val=p.zones[zone];
+  var maxZ=ZONES.reduce(function(a,b){return p.zones[a]>p.zones[b]?a:b});
+  var minZ=ZONES.reduce(function(a,b){return p.zones[a]<p.zones[b]?a:b});
+  var html='';
+  html+='<div class="modal-head"><div class="modal-badge" style="background:var(--cyans);font-size:22px">🌍</div><div><div class="modal-title">'+p.name+'</div><div class="modal-sub">Zone: '+zone+' &nbsp;·&nbsp; Zone Analysis</div></div></div>';
+  html+='<div class="modal-body">';
+  html+='<div class="modal-stat-grid">';
+  html+='<div class="modal-stat"><div class="modal-stat-lbl">'+zone+' Zone Sales</div><div class="modal-stat-val">'+fL(val)+'</div></div>';
+  html+='<div class="modal-stat"><div class="modal-stat-lbl">Best Zone</div><div class="modal-stat-val" style="color:var(--green)">'+maxZ+'</div><div class="modal-stat-sub">'+fL(p.zones[maxZ])+'</div></div>';
+  html+='<div class="modal-stat"><div class="modal-stat-lbl">Worst Zone</div><div class="modal-stat-val" style="color:var(--red)">'+minZ+'</div><div class="modal-stat-sub">'+fL(p.zones[minZ])+'</div></div>';
+  html+='<div class="modal-stat"><div class="modal-stat-lbl">Zone Share</div><div class="modal-stat-val">'+(val/p.value*100).toFixed(1)+'%</div></div>';
+  html+='</div>';
+  html+='<div class="modal-section"><div class="modal-section-title">All Zones Comparison</div>';
+  var mxV=Math.max.apply(null,ZONES.map(function(z){return p.zones[z]}));
+  ZONES.forEach(function(z){
+    var v=p.zones[z];var pct=Math.round(v/mxV*100);var isThis=(z===zone);
+    html+='<div class="mini-bar-row"><div class="mini-bar-label" style="font-weight:'+(isThis?'800':'600')+'">'+z+(isThis?' ◀':'')+' Zone</div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:'+pct+'%;background:'+(isThis?'var(--cyan)':'rgba(59,126,255,.4)')+'"></div></div><div class="mini-bar-val">'+fL(v)+'</div></div>';
+  });
+  html+='</div></div>';
+  openModal(html);
+}
+
+function showFindingModal(idx){
+  var f=FINDINGS[idx];
+  var prioLabel=f.priority==='high'?'HIGH PRIORITY':f.priority==='med'?'MEDIUM PRIORITY':'LOW PRIORITY';
+  var prioColor=f.priority==='high'?'var(--red)':f.priority==='med'?'var(--gold)':'var(--green)';
+  var actions={'high':['Escalate to NSM/ZSM immediately','Schedule emergency HQ review call','Deploy ABM for field intervention within 48h','Pull product-wise doctor coverage data'],'med':['Schedule review in weekly MIS meeting','Share action plan with ABM','Track for next 2 weeks','Prepare comparative data for NSM'],'low':['Note for monthly review','Share as best practice','Monitor next month performance','Include in NSM presentation']};
+  var html='';
+  html+='<div class="modal-head"><div class="modal-badge" style="background:'+(f.priority==='high'?'var(--reds)':f.priority==='med'?'var(--golds)':'var(--greens)')+';font-size:22px">'+f.icon+'</div>';
+  html+='<div><div class="modal-title">'+f.title+'</div><div class="modal-sub"><span style="color:'+prioColor+';font-weight:800">'+prioLabel+'</span> &nbsp;·&nbsp; <span class="pill '+f.tagCls+'">'+f.tag+'</span></div></div></div>';
+  html+='<div class="modal-body">';
+  html+='<div style="background:var(--s2);border-radius:var(--r2);padding:13px 15px;margin-bottom:14px;font-size:12.5px;color:var(--text2);line-height:1.65;border-left:3px solid '+prioColor+'">'+f.body+'</div>';
+  html+='<div class="modal-section"><div class="modal-section-title">Recommended Actions</div>';
+  actions[f.priority].forEach(function(a,i){
+    html+='<div style="display:flex;gap:10px;margin-bottom:8px;align-items:flex-start"><div style="width:20px;height:20px;border-radius:50%;background:var(--blues);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;margin-top:1px">'+(i+1)+'</div><div style="font-size:12px;color:var(--text2);line-height:1.5">'+a+'</div></div>';
+  });
+  html+='</div>';
+  if(f.hqs.length){
+    html+='<div class="modal-section"><div class="modal-section-title">Affected HQs</div><div style="display:flex;gap:6px;flex-wrap:wrap">';
+    f.hqs.forEach(function(h){html+='<span class="pill b" style="cursor:pointer" onclick="closeModal();setTimeout(function(){showHQModal(\''+h+'\')},100)">'+h+' →</span>';});
+    html+='</div></div>';
+  }
+  html+='</div>';
+  openModal(html);
+}
+
+function showKpiModal(type){
+  var d=DATA[period];
+  var map={
+    budget:{title:'Budget Details',icon:'🎯',val:d.budget,sub:'Monthly sales target for NC Division',color:'#F59E0B'},
+    sales:{title:'Net Sales Detail',icon:'💰',val:d.sales,sub:'Actual invoiced sales this '+period,color:'#2563EB'},
+    expiry:{title:'Expiry / Non-Salable Returns',icon:'⚠️',val:d.expiry,sub:'Expired or non-salable goods returned',color:'#EF4444'},
+    grn:{title:'GRN / Salable Returns',icon:'↩️',val:d.grn,sub:'Salable goods returned (GRN)',color:'#8B5CF6'},
+  };
+  var m=map[type];
+  var html='';
+  html+='<div class="modal-head"><div class="modal-badge" style="background:var(--blues);font-size:22px">'+m.icon+'</div><div><div class="modal-title">'+m.title+'</div><div class="modal-sub">'+m.sub+'</div></div></div>';
+  html+='<div class="modal-body">';
+  html+='<div class="modal-stat-grid">';
+  html+='<div class="modal-stat"><div class="modal-stat-lbl">'+period+' Value</div><div class="modal-stat-val" style="color:'+m.color+'">'+fL(m.val)+'</div></div>';
+  if(type==='sales'){
+    html+='<div class="modal-stat"><div class="modal-stat-lbl">Achievement</div><div class="modal-stat-val">'+d.achPct+'%</div></div>';
+    html+='<div class="modal-stat"><div class="modal-stat-lbl">vs LMTD</div><div class="modal-stat-val" style="color:var(--green)">'+growthStr(d.sales,d.lmtdSales)+'</div></div>';
+    html+='<div class="modal-stat"><div class="modal-stat-lbl">YTD Sales</div><div class="modal-stat-val">'+fL(d.ytd.sales)+'</div></div>';
+  }
+  if(type==='budget'){
+    html+='<div class="modal-stat"><div class="modal-stat-lbl">Pending</div><div class="modal-stat-val" style="color:var(--gold)">'+fL(d.budget-d.sales)+'</div></div>';
+    html+='<div class="modal-stat"><div class="modal-stat-lbl">YTD Budget</div><div class="modal-stat-val">'+fL(d.ytd.budget)+'</div></div>';
+  }
+  html+='</div>';
+  html+='<div class="modal-section"><div class="modal-section-title">HQ Contribution</div>';
+  var maxHQ=Math.max.apply(null,d.hqData.map(function(h){return h.sales}));
+  d.hqData.forEach(function(h){
+    var pct=Math.round(h.sales/maxHQ*100);
+    var cls=h.ach>=85?'var(--green)':h.ach>=70?'var(--gold)':'var(--red)';
+    html+='<div class="mini-bar-row"><div class="mini-bar-label">'+h.hq+'</div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:'+pct+'%;background:'+cls+'"></div></div><div class="mini-bar-val">'+fL(h.sales)+'</div></div>';
+  });
+  html+='</div></div>';
+  openModal(html);
+}
+
+// ══════════════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════════════
+function toast(msg,type){
   var c=document.getElementById('toast-c');
   var t=document.createElement('div');t.className='toast '+(type||'');
   var icons={ok:'✓',err:'✕',info:'ℹ'};
@@ -665,7 +1393,9 @@ function toast(msg, type){
   setTimeout(function(){t.style.opacity='0';t.style.transform='translateY(5px)';t.style.transition='.25s';setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t)},260)},3000);
 }
 
-// ── INIT ──────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════
 renderDash();
 </script>
 </body>
