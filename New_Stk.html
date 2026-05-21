@@ -1,209 +1,140 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cadila Stockist Visual Demo</title>
-  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=cabinet-grotesk@500,700&display=swap" rel="stylesheet">
+  <title>Cadila Stockist Request Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
   <style>
-    :root, [data-theme="light"]{
-      --bg:#f3f3ef;--surface:rgba(255,255,255,.78);--surface-2:rgba(255,255,255,.56);--line:rgba(34,34,34,.09);--text:#181818;--muted:#676767;--accent:#0d6e73;--accent-2:#4ca6b0;--good:#2f7c46;--warn:#aa5b1e;--radius:24px;--shadow:0 20px 60px rgba(10,18,22,.12);
-    }
-    [data-theme="dark"]{
-      --bg:#0a1215;--surface:rgba(18,27,31,.74);--surface-2:rgba(26,37,42,.46);--line:rgba(255,255,255,.09);--text:#eef4f2;--muted:#9eb2ae;--accent:#62c4cf;--accent-2:#1f7f88;--good:#7ad489;--warn:#ffb067;--radius:24px;--shadow:0 24px 80px rgba(0,0,0,.38);
-    }
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Satoshi',sans-serif;background:radial-gradient(circle at top left, rgba(98,196,207,.18), transparent 28%),radial-gradient(circle at 85% 15%, rgba(60,115,255,.12), transparent 18%),linear-gradient(180deg,#081013,#0d1518 46%,#091114 100%);color:var(--text);min-height:100vh;overflow-x:hidden}
-    body:before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);background-size:32px 32px;pointer-events:none;mask-image:radial-gradient(circle at center, black, transparent 80%)}
-    button,input,select,textarea{font:inherit;color:inherit}
-    button{cursor:pointer;border:none}
-    .shell{display:grid;grid-template-columns:300px 1fr;gap:24px;min-height:100vh;padding:24px}
-    .glass{background:var(--surface);backdrop-filter:blur(18px);border:1px solid var(--line);box-shadow:var(--shadow)}
-    .sidebar{border-radius:32px;padding:26px;display:flex;flex-direction:column;justify-content:space-between;gap:24px;position:sticky;top:24px;height:calc(100vh - 48px)}
-    .brand{display:flex;align-items:center;gap:14px}.brand-mark{width:54px;height:54px;border-radius:18px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 12px 30px rgba(42,180,194,.26)}
-    .brand h1{font-family:'Cabinet Grotesk',sans-serif;font-size:28px;line-height:1}.brand p{color:var(--muted);font-size:14px;margin-top:4px}
-    .menu{display:grid;gap:10px}.menu button{padding:16px 18px;border-radius:18px;text-align:left;background:transparent;border:1px solid transparent;color:var(--text);transition:.25s ease;display:flex;justify-content:space-between;align-items:center}
-    .menu button:hover,.menu button.active{background:rgba(255,255,255,.06);border-color:var(--line);transform:translateX(2px)}
-    .menu small{color:var(--muted);font-size:12px}
-    .orb-card{padding:20px;border-radius:24px;background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.03));border:1px solid var(--line);position:relative;overflow:hidden}
-    .orb-card:before{content:'';position:absolute;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle, rgba(98,196,207,.28), transparent 70%);top:-70px;right:-50px}
-    .orb-card p{max-width:26ch;color:var(--muted);font-size:14px;position:relative;z-index:1}
-    .main{display:grid;gap:24px}
-    .hero{padding:30px;border-radius:34px;display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:stretch;position:relative;overflow:hidden}
-    .hero:after{content:'';position:absolute;inset:auto -80px -120px auto;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle, rgba(98,196,207,.22), transparent 65%);pointer-events:none}
-    .tag{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line);font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
-    .hero h2{font-family:'Cabinet Grotesk',sans-serif;font-size:clamp(36px,5vw,72px);line-height:.95;margin-top:18px;max-width:10ch}
-    .hero p{margin-top:18px;max-width:56ch;color:var(--muted);font-size:17px}
-    .hero-actions{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap}.btn{padding:14px 18px;border-radius:16px;font-weight:700;transition:.25s ease}.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:white;box-shadow:0 14px 30px rgba(36,148,158,.32)}.btn-secondary{background:rgba(255,255,255,.05);border:1px solid var(--line)}
-    .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.stat{padding:18px;border-radius:22px;background:rgba(255,255,255,.05);border:1px solid var(--line);min-height:132px;display:flex;flex-direction:column;justify-content:space-between}.stat strong{font-size:34px;font-family:'Cabinet Grotesk',sans-serif}.stat span{color:var(--muted);font-size:13px}
-    .content{display:grid;grid-template-columns:1.1fr .9fr;gap:24px}
-    .panel{border-radius:30px;padding:24px;min-height:620px;position:relative;overflow:hidden}
-    .panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:20px}.panel-head h3{font-family:'Cabinet Grotesk',sans-serif;font-size:26px}.panel-head p{color:var(--muted);font-size:14px;margin-top:4px}
-    .steps{display:flex;gap:10px;overflow:auto;padding-bottom:8px;margin-bottom:18px}.step{min-width:max-content;padding:12px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);font-size:12px;color:var(--muted)}.step.active{background:rgba(98,196,207,.16);color:var(--text);border-color:rgba(98,196,207,.28)}
-    .card{background:var(--surface-2);border:1px solid var(--line);border-radius:24px;padding:18px}
-    .grid{display:grid;gap:14px}.grid.two{grid-template-columns:repeat(2,1fr)}
-    label{display:block;font-size:13px;font-weight:700;margin-bottom:8px;color:var(--muted)}
-    input,select,textarea{width:100%;padding:14px 15px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.04);outline:none} textarea{min-height:96px;resize:vertical}
-    .seg{display:flex;gap:10px;flex-wrap:wrap}.seg button{padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line)}.seg button.active{background:rgba(98,196,207,.16);border-color:rgba(98,196,207,.25)}
-    .doc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.doc{padding:16px;border-radius:20px;background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));border:1px solid var(--line);display:grid;gap:10px;position:relative;overflow:hidden}.doc.done:after{content:'✓';position:absolute;top:14px;right:14px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(122,212,137,.18);color:var(--good);font-weight:800}
-    .doc h4{font-size:15px}.doc p{font-size:12px;color:var(--muted)}.file-pill{padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.06);font-size:12px;color:var(--accent);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .panel-actions{display:flex;justify-content:space-between;gap:12px;margin-top:18px;flex-wrap:wrap}
-    .feed{display:grid;gap:12px}.feed-item{padding:16px;border-radius:20px;background:var(--surface-2);border:1px solid var(--line)}.feed-item strong{display:block}.feed-item span{font-size:12px;color:var(--muted)}.feed-item p{margin-top:6px;font-size:14px;color:var(--text)}
-    .mini-tabs{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}.mini-tabs button{padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--line)}.mini-tabs button.active{background:rgba(98,196,207,.16)}
-    .table-wrap{max-height:420px;overflow:auto;border-radius:22px;border:1px solid var(--line)} table{width:100%;border-collapse:collapse} th,td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--line);font-size:13px} th{position:sticky;top:0;background:rgba(14,20,23,.92);backdrop-filter:blur(10px);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:11px}
-    .status{display:inline-flex;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.submitted{background:rgba(98,196,207,.16);color:var(--accent)}.pending{background:rgba(255,176,103,.16);color:var(--warn)}.completed{background:rgba(122,212,137,.16);color:var(--good)}
+    :root{--navy:#0f2d52;--blue:#1a4a7a;--mid:#2563a8;--accent:#3b82f6;--light:#e8f0fe;--green:#16a34a;--red:#dc2626;--grey:#f8f9fc;--border:#dde3ed;--text:#1e293b;--muted:#64748b;--white:#fff}
+    *{box-sizing:border-box;margin:0;padding:0} body{font-family:'DM Sans',sans-serif;background:#f0f4f8;color:var(--text);min-height:100vh}
+    button,input,select,textarea{font:inherit} button{cursor:pointer;border:none} input,select,textarea{outline:none}
+    .header{background:var(--navy);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(0,0,0,.16)}
+    .header-left{display:flex;align-items:center;gap:12px}.header-logo{width:38px;height:38px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px}
+    .header-title{color:#fff;font-size:17px;font-weight:700}.header-sub{color:#9fc0df;font-size:12px}
+    .btn-admin-nav{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.16);padding:9px 14px;border-radius:8px;font-size:13px;font-weight:700}
+    .btn-exit{background:rgba(220,38,38,.92)}
+    .progress-wrap{background:#fff;border-bottom:1px solid var(--border);padding:0 28px;overflow:auto}.progress-steps{display:flex;list-style:none;min-width:max-content}.progress-steps li{display:flex;align-items:center;gap:8px;padding:14px 18px;font-size:12px;font-weight:500;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap}.progress-steps li.active{color:var(--blue);border-bottom-color:var(--blue)}.progress-steps li.done{color:var(--green);border-bottom-color:var(--green)}
+    .step-num{width:22px;height:22px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}.active .step-num{background:var(--blue);color:#fff}.done .step-num{background:var(--green);color:#fff}
+    .container{max-width:760px;margin:28px auto;padding:0 16px 60px}.section-panel{display:none}.section-panel.active{display:block;animation:fade .22s ease}@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .section-header{margin-bottom:20px}.section-header h2{font-family:'DM Serif Display',serif;font-size:28px;color:var(--navy)}.section-header p{color:var(--muted);font-size:13px;margin-top:5px}
+    .card{background:#fff;border-radius:14px;padding:26px;border:1px solid var(--border);box-shadow:0 2px 10px rgba(15,45,82,.05)}
+    .field{margin-bottom:18px} label{display:block;font-size:13px;font-weight:700;color:var(--text);margin-bottom:7px}.req{color:var(--red)}
+    input[type=text],input[type=email],input[type=password],select,textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;background:#fff;font-size:14px} input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,130,246,.12)} textarea{resize:vertical;min-height:88px}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.radio-group{display:flex;gap:10px;flex-wrap:wrap}.radio-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;background:#fff;cursor:pointer;font-size:14px}.radio-opt.selected{border-color:var(--blue);background:var(--light);font-weight:600}
+    .file-upload-area{border:2px dashed var(--border);border-radius:10px;padding:16px;text-align:center;background:var(--grey)}.file-upload-area.has-file{border-color:var(--green);background:#f0fdf4}.upload-icon{font-size:24px;margin-bottom:6px}.upload-label{font-size:13px;color:var(--muted)}.file-name{margin-top:8px;font-size:12px;color:var(--green);font-weight:700}
+    .info-box{background:var(--light);border:1px solid #cfe0ff;border-radius:9px;padding:12px 14px;color:var(--blue);font-size:13px;margin-bottom:16px}.nav-bar{display:flex;justify-content:space-between;gap:12px;margin-top:22px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 22px;border-radius:9px;font-size:14px;font-weight:700}.btn-primary{background:var(--blue);color:#fff}.btn-secondary{background:#fff;color:var(--blue);border:1.5px solid var(--border)}.btn-submit{background:var(--green);color:#fff}
+    .mini-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}.table-wrap{overflow:auto;background:#fff;border:1px solid var(--border);border-radius:12px}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:12px 14px;border-bottom:1px solid #edf1f6;text-align:left;font-size:13px}.table th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}.badge{display:inline-flex;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:700}.submitted{background:#dbeafe;color:#1d4ed8}.pending{background:#ffedd5;color:#c2410c}.completed{background:#dcfce7;color:#15803d}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);align-items:center;justify-content:center;padding:18px}.modal-overlay.active{display:flex}.modal-box{background:#fff;padding:22px;border-radius:14px;width:340px;box-shadow:0 4px 28px rgba(0,0,0,.2)}.modal-box h3{font-family:'DM Serif Display',serif;color:var(--navy);margin-bottom:12px}
     .hidden{display:none!important}
-    @media (max-width:1100px){.shell,.content,.hero{grid-template-columns:1fr}.sidebar{position:relative;height:auto}}
-    @media (max-width:720px){.shell{padding:14px}.sidebar,.hero,.panel{padding:18px;border-radius:24px}.grid.two,.doc-grid,.stat-grid{grid-template-columns:1fr}.hero h2{font-size:40px}.btn{width:100%;justify-content:center}.panel-actions{flex-direction:column-reverse}}
+    @media (max-width:720px){.grid-2{grid-template-columns:1fr}.header{padding:14px 16px}.progress-wrap{padding:0 12px}.container{margin:18px auto;padding:0 12px 40px}.card{padding:18px}.nav-bar{flex-direction:column-reverse}.btn{width:100%}}
   </style>
 </head>
 <body>
-  <div class="shell">
-    <aside class="sidebar glass">
+  <div class="header">
+    <div class="header-left">
+      <div class="header-logo">💊</div>
       <div>
-        <div class="brand">
-          <div class="brand-mark">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-label="logo">
-              <rect x="5" y="5" width="14" height="5" rx="2.5" fill="white" opacity=".95"/>
-              <rect x="5" y="14" width="14" height="5" rx="2.5" fill="white" opacity=".65"/>
-            </svg>
-          </div>
-          <div>
-            <h1>Cadila</h1>
-            <p>Stockist request demo</p>
-          </div>
-        </div>
-        <div style="height:24px"></div>
-        <nav class="menu">
-          <button class="active" data-view="form"><span>Main Flow</span><small>Applicant</small></button>
-          <button data-view="admin"><span>Admin Request</span><small>Resubmission</small></button>
-          <button data-view="resubmit"><span>Applicant Re-upload</span><small>Token Upload</small></button>
-          <button data-view="records"><span>Live Records</span><small>Tables</small></button>
-        </nav>
+        <div class="header-title">Stockist Request Portal</div>
+        <div class="header-sub">Cadila Pharma</div>
       </div>
-      <div class="orb-card">
-        <strong style="display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Demo access</strong>
-        <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:28px;margin-bottom:6px">STKREQ@2026</div>
-        <p>Visual-only interactive prototype. Smooth transitions, mock file states, request IDs, admin token flow.</p>
-      </div>
-    </aside>
-
-    <main class="main">
-      <section class="hero glass">
-        <div>
-          <div class="tag">High-fidelity interactive concept</div>
-          <h2>Good visual demo for your stockist workflow.</h2>
-          <p>Clean premium UI with applicant journey, admin action flow, resubmission upload, and live records in one polished interface.</p>
-          <div class="hero-actions">
-            <button class="btn btn-primary" onclick="setView('form')">Open applicant flow</button>
-            <button class="btn btn-secondary" onclick="toggleTheme()">Toggle theme</button>
-          </div>
-        </div>
-        <div class="stat-grid">
-          <div class="stat glass"><span>Total requests</span><strong id="sReq">01</strong></div>
-          <div class="stat glass"><span>Document logs</span><strong id="sDoc">04</strong></div>
-          <div class="stat glass"><span>Pending resubmits</span><strong id="sRes">00</strong></div>
-          <div class="stat glass"><span>Division route</span><strong style="font-size:22px">17 maps</strong></div>
-        </div>
-      </section>
-
-      <section class="content">
-        <div class="panel glass">
-          <div id="view-form">
-            <div class="panel-head"><div><h3>Applicant Request</h3><p>7-step premium preview of the main form</p></div><div class="tag">Live mock UI</div></div>
-            <div class="steps" id="steps"></div>
-            <div id="formBody"></div>
-            <div class="panel-actions">
-              <button class="btn btn-secondary" id="backBtn">Back</button>
-              <button class="btn btn-primary" id="nextBtn">Next</button>
-            </div>
-          </div>
-
-          <div id="view-admin" class="hidden">
-            <div class="panel-head"><div><h3>Admin Resubmission</h3><p>Select a request and generate a token link</p></div><div class="tag">Admin side</div></div>
-            <div class="grid">
-              <div class="card grid two">
-                <div><label>Password</label><input id="pwd" type="password" placeholder="Enter admin password"></div>
-                <div style="display:flex;align-items:end"><button class="btn btn-primary" style="width:100%" onclick="unlock()">Unlock</button></div>
-              </div>
-              <div id="adminArea" class="hidden grid">
-                <div class="grid two card">
-                  <div><label>Request</label><select id="reqPick"></select></div>
-                  <div><label>Admin Email</label><input id="adminMail" value="nihar.mashru@cadilapharma.com"></div>
-                </div>
-                <div class="card">
-                  <label>Requested documents</label>
-                  <div class="doc-grid" id="adminDocs"></div>
-                </div>
-                <div class="card"><label>Remarks</label><textarea id="remarks" placeholder="Explain what needs correction"></textarea></div>
-                <button class="btn btn-primary" onclick="sendRequest()">Send Resubmission Email</button>
-              </div>
-            </div>
-          </div>
-
-          <div id="view-resubmit" class="hidden">
-            <div class="panel-head"><div><h3>Applicant Re-upload</h3><p>Token-based requested documents upload view</p></div><div class="tag">Applicant side</div></div>
-            <div class="grid">
-              <div class="card"><label>Pending token</label><select id="tokenPick" onchange="loadToken()"></select></div>
-              <div id="tokenArea" class="hidden grid">
-                <div class="card"><label>Admin remarks</label><div id="remarkBox" style="color:var(--muted)"></div></div>
-                <div class="doc-grid" id="resubDocs"></div>
-                <button class="btn btn-primary" onclick="completeToken()">Upload & Resubmit</button>
-              </div>
-            </div>
-          </div>
-
-          <div id="view-records" class="hidden">
-            <div class="panel-head"><div><h3>Live Records</h3><p>Requests, documents, and resubmission logs</p></div><div class="tag">Realtime view</div></div>
-            <div class="mini-tabs">
-              <button class="active" onclick="showTable('requests',this)">Requests</button>
-              <button onclick="showTable('docs',this)">Document History</button>
-              <button onclick="showTable('resub',this)">Resubmissions</button>
-            </div>
-            <div id="tab-requests" class="table-wrap"></div>
-            <div id="tab-docs" class="table-wrap hidden"></div>
-            <div id="tab-resub" class="table-wrap hidden"></div>
-          </div>
-        </div>
-
-        <div class="panel glass">
-          <div class="panel-head"><div><h3>Activity Stream</h3><p>Backend-style events for the demo</p></div><div class="tag">Animated feed</div></div>
-          <div class="feed" id="feed"></div>
-        </div>
-      </section>
-    </main>
+    </div>
+    <div>
+      <button class="btn-admin-nav" id="btn-admin-login" onclick="openAdmin()">Admin Login</button>
+      <button class="btn-admin-nav btn-exit hidden" id="btn-back-form" onclick="closeAdmin()">← Back to Form</button>
+    </div>
   </div>
 
-  <script>
-    const DOCS=['Drug License','GSTIN','PAN Card','Food Licence','Aadhar Card','Stockist Profile','Party Request Letter','Bank Statement','TDS Declaration','Pharma Rack Consent','Warehouse Photos','HQ Statement 1'];
-    const state={view:'form',step:0,unlocked:false,selected:{},resubFiles:{},form:{email:'field@cadila.demo',name:'Nihar Demo',division:'New Care - DG',type:'New Stockiest Code',stockist:'Shreeji Pharma',place:'Ahmedabad',hq:'Ahmedabad HQ',pr:'Yes',remarks:'Demo request'} ,db:{requests:[{id:'REQ-240731-ABC',stockist:'Shreeji Pharma',division:'New Care - DG',status:'Submitted',email:'field@cadila.demo'}],docs:[{id:'REQ-240731-ABC',doc:'Drug License',type:'Original',file:'drug-license.pdf'},{id:'REQ-240731-ABC',doc:'GSTIN',type:'Original',file:'gstin.pdf'},{id:'REQ-240731-ABC',doc:'Food Licence',type:'Original',file:'food-licence.pdf'},{id:'REQ-240731-ABC',doc:'HQ Statement 1',type:'Original',file:'hq1.xlsx'}],resub:[]},feed:[]};
-    const stepNames=['Applicant','Stockist','KYC Docs','Financial Docs','HQ Statements','Details','Submit'];
-    function pushFeed(t,d){state.feed.unshift({t,d,time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})});renderFeed();}
-    function renderFeed(){document.getElementById('feed').innerHTML=state.feed.slice(0,9).map(i=>`<div class="feed-item"><strong>${i.t}</strong><span>${i.time}</span><p>${i.d}</p></div>`).join('')}
-    function updateStats(){document.getElementById('sReq').textContent=String(state.db.requests.length).padStart(2,'0');document.getElementById('sDoc').textContent=String(state.db.docs.length).padStart(2,'0');document.getElementById('sRes').textContent=String(state.db.resub.filter(r=>r.status==='Pending').length).padStart(2,'0')}
-    function setView(v){state.view=v;document.querySelectorAll('.menu button').forEach(b=>b.classList.toggle('active',b.dataset.view===v));['form','admin','resubmit','records'].forEach(x=>document.getElementById('view-'+x).classList.toggle('hidden',x!==v));if(v==='admin')renderAdmin();if(v==='resubmit')renderResubmit();if(v==='records')renderTables()}
-    function renderSteps(){document.getElementById('steps').innerHTML=stepNames.map((s,i)=>`<div class="step ${i===state.step?'active':''}">${i+1}. ${s}</div>`).join('')}
-    function formCard(inner){return `<div class="card grid">${inner}</div>`}
-    function docCard(name,done=true){return `<div class="doc ${done?'done':''}"><h4>${name}</h4><p>${done?'Mock file attached':'Waiting for upload'}</p><div class="file-pill">${done?name.toLowerCase().replace(/\s+/g,'-')+'.pdf':'No file yet'}</div><button class="btn btn-secondary" onclick="attachDoc('${name}')">${done?'Replace':'Upload'}</button></div>`}
-    function renderForm(){renderSteps();let html='';if(state.step===0) html=formCard(`<div class="grid two"><div><label>Email Address</label><input value="${state.form.email}"></div><div><label>Your Name</label><input value="${state.form.name}"></div></div><div><label>Division</label><input value="${state.form.division}"></div><div><label>Type of Code</label><div class="seg"><button class="active">New Stockiest Code</button><button>Extension Code</button></div></div>`);if(state.step===1) html=formCard(`<div class="grid two"><div><label>Stockist Name</label><input value="${state.form.stockist}"></div><div><label>Stockist Place</label><input value="${state.form.place}"></div></div><div class="grid two"><div><label>HQ</label><input value="${state.form.hq}"></div><div><label>Uses Pharma Rack?</label><div class="seg"><button class="active">Yes</button><button>No</button></div></div></div><div><label>Remarks</label><textarea>${state.form.remarks}</textarea></div>`);if(state.step===2) html=formCard(`<div class="doc-grid">${['Drug License','GSTIN','PAN Card','Food Licence','Aadhar Card','Stockist Profile'].map(x=>docCard(x,true)).join('')}</div>`);if(state.step===3) html=formCard(`<div class="doc-grid">${['Bank Statement','TDS Declaration','Pharma Rack Consent','Warehouse Photos'].map(x=>docCard(x,true)).join('')}</div>`);if(state.step===4) html=formCard(`<div class="doc-grid">${['HQ Statement 1','HQ Statement 2'].map((x,i)=>docCard(x,i===0)).join('')}</div>`);if(state.step===5) html=formCard(`<div><label>Replacement Stockist (Name & HQ)</label><textarea></textarea></div><div><label>Reason for Replacement</label><textarea></textarea></div><div><label>Limit Reduction Stockist</label><div class="seg"><button class="active">MIS can select</button><button>I will share name & limit</button></div></div>`);if(state.step===6) html=formCard(`<div class="grid"><div class="file-pill">Division route: nihar.mashru@cadilapharma.com</div><div class="file-pill">Applicant: ${state.form.name}</div><div class="file-pill">Stockist: ${state.form.stockist}</div><div class="file-pill">Ready to generate request ID and save document history</div></div>`);document.getElementById('formBody').innerHTML=html;document.getElementById('backBtn').style.visibility=state.step===0?'hidden':'visible';document.getElementById('nextBtn').textContent=state.step===6?'Submit Request':'Next';}
-    function attachDoc(name){pushFeed('Mock file attached',`${name} updated in the visual demo.`)}
-    document.getElementById('backBtn').onclick=()=>{if(state.step>0){state.step--;renderForm()}};
-    document.getElementById('nextBtn').onclick=()=>{if(state.step<6){state.step++;renderForm()}else submitMain()};
-    function submitMain(){const id='REQ-'+String(Date.now()).slice(-6)+'-VIZ';state.db.requests.unshift({id,stockist:state.form.stockist,division:state.form.division,status:'Submitted',email:state.form.email});['Drug License','GSTIN','PAN Card','Food Licence','Bank Statement','HQ Statement 1'].forEach(d=>state.db.docs.unshift({id,doc:d,type:'Original',file:d.toLowerCase().replace(/\s+/g,'-')+'.pdf'}));pushFeed('Request submitted',`${id} created for ${state.form.stockist} with visual backend simulation.`);updateStats();renderTables();renderAdmin();setView('records')}
-    function unlock(){if(document.getElementById('pwd').value!=='STKREQ@2026') return pushFeed('Admin login failed','Wrong password in demo');state.unlocked=true;document.getElementById('adminArea').classList.remove('hidden');pushFeed('Admin unlocked','Admin panel opened successfully');renderAdmin()}
-    function renderAdmin(){document.getElementById('reqPick').innerHTML=state.db.requests.map(r=>`<option value="${r.id}">${r.id} · ${r.stockist}</option>`).join('');document.getElementById('adminDocs').innerHTML=DOCS.map(d=>`<label class="doc"><h4><input type="checkbox" onchange="pickDoc('${d}',this.checked)"> ${d}</h4><p>Select if this document needs re-upload</p></label>`).join('')}
-    function pickDoc(d,v){if(v) state.selected[d]=1; else delete state.selected[d]}
-    function sendRequest(){const req=document.getElementById('reqPick').value;const docs=Object.keys(state.selected);const remarks=document.getElementById('remarks').value.trim();if(!req||!docs.length||!remarks) return pushFeed('Missing admin input','Choose request, documents and remarks');const token='RESUB-'+String(Date.now()).slice(-6);state.db.resub.unshift({req,token,docs,remarks,status:'Pending'});pushFeed('Resubmission sent',`${token} generated for ${req} with ${docs.length} requested docs.`);state.selected={};document.getElementById('remarks').value='';updateStats();renderResubmit();setView('resubmit')}
-    function renderResubmit(){const pending=state.db.resub.filter(r=>r.status==='Pending');document.getElementById('tokenPick').innerHTML=pending.length?pending.map(r=>`<option value="${r.token}">${r.token} · ${r.req}</option>`).join(''):'<option>No pending token</option>';loadToken()}
-    function loadToken(){const token=document.getElementById('tokenPick').value;const row=state.db.resub.find(r=>r.token===token&&r.status==='Pending');const box=document.getElementById('tokenArea');if(!row){box.classList.add('hidden');return}box.classList.remove('hidden');document.getElementById('remarkBox').textContent=row.remarks;document.getElementById('resubDocs').innerHTML=row.docs.map(d=>`<div class="doc ${state.resubFiles[d]?'done':''}"><h4>${d}</h4><p>${state.resubFiles[d]?'Replacement ready':'Upload requested document'}</p><div class="file-pill">${state.resubFiles[d]||'No file attached'}</div><button class="btn btn-secondary" onclick="resubAttach('${d}')">Attach</button></div>`).join('')}
-    function resubAttach(d){state.resubFiles[d]='resubmit-'+d.toLowerCase().replace(/\s+/g,'-')+'.pdf';pushFeed('Resubmission file added',`${d} attached for token flow.`);loadToken()}
-    function completeToken(){const token=document.getElementById('tokenPick').value;const row=state.db.resub.find(r=>r.token===token&&r.status==='Pending');if(!row) return;const miss=row.docs.filter(d=>!state.resubFiles[d]);if(miss.length) return pushFeed('Upload pending',`Still missing: ${miss.join(', ')}`);row.status='Completed';row.docs.forEach(d=>state.db.docs.unshift({id:row.req,doc:d,type:'Resubmission',file:state.resubFiles[d]}));state.resubFiles={};pushFeed('Resubmission completed',`${row.req} marked completed and history updated.`);updateStats();renderTables();renderResubmit();setView('records')}
-    function renderTables(){document.getElementById('tab-requests').innerHTML=`<table><thead><tr><th>Request ID</th><th>Stockist</th><th>Division</th><th>Status</th></tr></thead><tbody>${state.db.requests.map(r=>`<tr><td>${r.id}</td><td>${r.stockist}</td><td>${r.division}</td><td><span class="status submitted">${r.status}</span></td></tr>`).join('')}</tbody></table>`;document.getElementById('tab-docs').innerHTML=`<table><thead><tr><th>Request</th><th>Document</th><th>Type</th><th>File</th></tr></thead><tbody>${state.db.docs.map(d=>`<tr><td>${d.id}</td><td>${d.doc}</td><td>${d.type}</td><td>${d.file}</td></tr>`).join('')}</tbody></table>`;document.getElementById('tab-resub').innerHTML=`<table><thead><tr><th>Request</th><th>Token</th><th>Docs</th><th>Status</th></tr></thead><tbody>${state.db.resub.length?state.db.resub.map(r=>`<tr><td>${r.req}</td><td>${r.token}</td><td>${r.docs.join(', ')}</td><td><span class="status ${r.status==='Pending'?'pending':'completed'}">${r.status}</span></td></tr>`).join(''):'<tr><td colspan="4">No rows yet</td></tr>'}</tbody></table>`}
-    function showTable(tab,el){document.querySelectorAll('.mini-tabs button').forEach(b=>b.classList.remove('active'));el.classList.add('active');['requests','docs','resub'].forEach(t=>document.getElementById('tab-'+t).classList.toggle('hidden',t!==tab))}
-    function toggleTheme(){const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark')}
-    document.querySelectorAll('.menu button').forEach(b=>b.onclick=()=>setView(b.dataset.view));
-    pushFeed('Demo ready','Visual stockist request prototype loaded.');
-    renderForm();renderAdmin();renderResubmit();renderTables();updateStats();
-  </script>
+  <div id="main-app">
+    <div class="progress-wrap">
+      <ul class="progress-steps" id="progress-steps"></ul>
+    </div>
+    <div class="container">
+      <div id="steps-holder"></div>
+      <div id="success-panel" class="card hidden" style="text-align:center">
+        <div style="font-size:42px;margin-bottom:10px">✅</div>
+        <h2 style="font-family:'DM Serif Display',serif;color:var(--navy)">Submitted Successfully</h2>
+        <p style="color:var(--muted);margin-top:8px">Request ID: <strong id="req-id-display"></strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="admin-app" class="hidden">
+    <div class="container">
+      <div class="section-header"><h2>Admin Panel</h2><p>Resubmission</p></div>
+      <div class="card">
+        <div class="field"><label>Select Request</label><select id="admin-req-select"></select></div>
+        <div class="field"><label>Admin Email</label><input type="email" id="admin-email" value="nihar.mashru@cadilapharma.com"></div>
+        <div class="field"><label>Documents Needed</label><div class="grid-2" id="admin-doc-list"></div></div>
+        <div class="field"><label>Remarks</label><textarea id="admin-remarks"></textarea></div>
+        <button class="btn btn-submit" onclick="sendResubmission()">Send Resubmission Email</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="resubmit-app" class="hidden">
+    <div class="container">
+      <div class="section-header"><h2>Document Resubmission</h2><p>Please upload requested documents.</p></div>
+      <div class="card">
+        <div class="field"><label>Select Token</label><select id="resubmit-token" onchange="loadResubmission()"></select></div>
+        <div class="info-box"><strong>Admin Remarks:</strong> <span id="resubmit-remarks">-</span></div>
+        <div id="resubmit-fields"></div>
+        <div class="nav-bar"><div></div><button class="btn btn-submit" onclick="submitResubmission()">Upload & Resubmit</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="records-app" class="hidden">
+    <div class="container">
+      <div class="section-header"><h2>Records</h2></div>
+      <div class="mini-card"><strong>Requests</strong></div>
+      <div class="table-wrap" style="margin-bottom:16px"><table class="table" id="requests-table"></table></div>
+      <div class="mini-card"><strong>Document History</strong></div>
+      <div class="table-wrap" style="margin-bottom:16px"><table class="table" id="docs-table"></table></div>
+      <div class="mini-card"><strong>Resubmissions</strong></div>
+      <div class="table-wrap"><table class="table" id="resub-table"></table></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="admin-modal">
+    <div class="modal-box">
+      <h3>Admin Login</h3>
+      <div class="field"><label>Password</label><input type="password" id="admin-pwd"></div>
+      <div class="nav-bar"><button class="btn btn-secondary" onclick="closeAdminModal()">Cancel</button><button class="btn btn-primary" onclick="validateAdmin()">Unlock</button></div>
+    </div>
+  </div>
+
+<script>
+const DOC_LIST=['Drug License','GSTIN','PAN Card','Food Licence','Aadhar Card','Stockist Profile','Party Request Letter','Bank Statement','TDS Declaration','Pharma Rack Consent','Warehouse Photos','HQ Statement 1'];
+const stepNames=['Applicant','Stockist Info','KYC Docs','Financial Docs','HQ Statements','Details','Submit'];
+let currentStep=0;
+let form={email:'field@cadila.demo',name:'Nihar Demo',division:'New Care - DG',codeType:'New Stockiest Code',stockistName:'Shreeji Pharma',stockistPlace:'Ahmedabad',hq:'Ahmedabad HQ',pharmaRack:'Yes',remarks:'',replacementInfo:'',replacementReason:'',limitReduction:'MIS can select'};
+let db={requests:[{id:'REQ-240731-ABC',name:'Shreeji Pharma',division:'New Care - DG',status:'Submitted',email:'field@cadila.demo'}],docs:[{req:'REQ-240731-ABC',doc:'Drug License',type:'Original',file:'drug-license.pdf'},{req:'REQ-240731-ABC',doc:'GSTIN',type:'Original',file:'gstin.pdf'},{req:'REQ-240731-ABC',doc:'Food Licence',type:'Original',file:'food-licence.pdf'},{req:'REQ-240731-ABC',doc:'HQ Statement 1',type:'Original',file:'hq1.xlsx'}],resub:[]};
+let selectedDocs={};let resubUploads={};
+function renderProgress(){document.getElementById('progress-steps').innerHTML=stepNames.map((s,i)=>`<li class="${i===currentStep?'active':''} ${i<currentStep?'done':''}"><div class="step-num">${i+1}</div>${s}</li>`).join('')}
+function renderStep(){renderProgress();const holder=document.getElementById('steps-holder');const sections=[
+`<div class="section-panel active"><div class="section-header"><h2>Applicant Details</h2></div><div class="card"><div class="grid-2"><div class="field"><label>Email Address <span class="req">*</span></label><input type="email" value="${form.email}"></div><div class="field"><label>Your Name <span class="req">*</span></label><input type="text" value="${form.name}"></div></div><div class="field"><label>Division <span class="req">*</span></label><input type="text" value="${form.division}"></div><div class="field"><label>Type of Code <span class="req">*</span></label><div class="radio-group"><div class="radio-opt selected">New Stockiest Code</div><div class="radio-opt">Extension Code</div></div></div></div><div class="nav-bar"><div></div><button class="btn btn-primary" onclick="nextStep()">Next →</button></div></div>`,
+`<div class="section-panel active"><div class="section-header"><h2>Stockist Information</h2></div><div class="card"><div class="grid-2"><div class="field"><label>Stockist Name</label><input type="text" value="${form.stockistName}"></div><div class="field"><label>Stockist Place</label><input type="text" value="${form.stockistPlace}"></div></div><div class="grid-2"><div class="field"><label>HQ</label><input type="text" value="${form.hq}"></div><div class="field"><label>Uses Pharma Rack?</label><div class="radio-group"><div class="radio-opt selected">Yes</div><div class="radio-opt">No</div></div></div></div><div class="field"><label>Remarks</label><textarea>${form.remarks}</textarea></div></div><div class="nav-bar"><button class="btn btn-secondary" onclick="prevStep()">← Back</button><button class="btn btn-primary" onclick="nextStep()">Next →</button></div></div>`,
+`<div class="section-panel active"><div class="section-header"><h2>KYC Documents</h2></div><div class="info-box">Upload placeholders</div><div class="card"><div class="grid-2">${['Drug License','GSTIN','PAN Card','Food Licence','Aadhar Card','Stockist Profile','Party Request Letter'].map(x=>docBox(x)).join('')}</div></div><div class="nav-bar"><button class="btn btn-secondary" onclick="prevStep()">← Back</button><button class="btn btn-primary" onclick="nextStep()">Next →</button></div></div>`,
+`<div class="section-panel active"><div class="section-header"><h2>Financial Documents</h2></div><div class="card"><div class="grid-2">${['Bank Statement','TDS Declaration','Pharma Rack Consent','Warehouse Photos'].map(x=>docBox(x)).join('')}</div></div><div class="nav-bar"><button class="btn btn-secondary" onclick="prevStep()">← Back</button><button class="btn btn-primary" onclick="nextStep()">Next →</button></div></div>`,
+`<div class="section-panel active"><div class="section-header"><h2>HQ Statements</h2></div><div class="card"><div class="grid-2">${['HQ Statement 1','HQ Statement 2'].map(x=>docBox(x)).join('')}</div></div><div class="nav-bar"><button class="btn btn-secondary" onclick="prevStep()">← Back</button><button class="btn btn-primary" onclick="nextStep()">Next →</button></div></div>`,
+`<div class="section-panel active"><div class="section-header"><h2>Code Type Details</h2></div><div class="card"><div class="field"><label>Replacement Stockist Name & HQ</label><textarea></textarea></div><div class="field"><label>Reason For Replacement</label><textarea></textarea></div><div class="field"><label>Limit Reduction Stockist</label><div class="radio-group"><div class="radio-opt selected">MIS can select</div><div class="radio-opt">I will share name & limit</div></div></div></div><div class="nav-bar"><button class="btn btn-secondary" onclick="prevStep()">← Back</button><button class="btn btn-primary" onclick="nextStep()">Next →</button></div></div>`,
+`<div class="section-panel active"><div class="section-header"><h2>Review & Submit</h2></div><div class="info-box">Ready to submit</div><div class="nav-bar"><button class="btn btn-secondary" onclick="prevStep()">← Back</button><button class="btn btn-submit" onclick="submitMain()">Submit Request</button></div></div>`
+]; holder.innerHTML=sections[currentStep];}
+function docBox(name){return `<div class="field"><label>${name}</label><div class="file-upload-area has-file"><div class="upload-icon">📄</div><div class="upload-label">Upload</div><div class="file-name">${name.toLowerCase().replace(/\s+/g,'-')}.pdf</div></div></div>`}
+function nextStep(){if(currentStep<6){currentStep++;renderStep()}} function prevStep(){if(currentStep>0){currentStep--;renderStep()}}
+function submitMain(){const id='REQ-'+String(Date.now()).slice(-6)+'-DEM';db.requests.unshift({id,name:form.stockistName,division:form.division,status:'Submitted',email:form.email});['Drug License','GSTIN','PAN Card','Food Licence','Bank Statement','HQ Statement 1'].forEach(d=>db.docs.unshift({req:id,doc:d,type:'Original',file:d.toLowerCase().replace(/\s+/g,'-')+'.pdf'}));document.getElementById('steps-holder').classList.add('hidden');document.getElementById('success-panel').classList.remove('hidden');document.getElementById('req-id-display').innerText=id;renderTables();renderAdminList()}
+function openAdmin(){document.getElementById('admin-modal').classList.add('active')} function closeAdminModal(){document.getElementById('admin-modal').classList.remove('active')}
+function validateAdmin(){if(document.getElementById('admin-pwd').value!=='STKREQ@2026') return; closeAdminModal(); document.getElementById('main-app').classList.add('hidden');document.getElementById('records-app').classList.add('hidden');document.getElementById('resubmit-app').classList.add('hidden');document.getElementById('admin-app').classList.remove('hidden');document.getElementById('btn-admin-login').classList.add('hidden');document.getElementById('btn-back-form').classList.remove('hidden');renderAdminList()}
+function closeAdmin(){document.getElementById('admin-app').classList.add('hidden');document.getElementById('resubmit-app').classList.add('hidden');document.getElementById('records-app').classList.add('hidden');document.getElementById('main-app').classList.remove('hidden');document.getElementById('btn-back-form').classList.add('hidden');document.getElementById('btn-admin-login').classList.remove('hidden')}
+function renderAdminList(){document.getElementById('admin-req-select').innerHTML=db.requests.map(r=>`<option value="${r.id}">${r.id} | ${r.name} (${r.division})</option>`).join('');document.getElementById('admin-doc-list').innerHTML=DOC_LIST.map(d=>`<label class="radio-opt" style="font-size:13px"><input type="checkbox" onchange="pickDoc('${d}',this.checked)"> ${d}</label>`).join('')}
+function pickDoc(d,v){if(v) selectedDocs[d]=1; else delete selectedDocs[d]}
+function sendResubmission(){const req=document.getElementById('admin-req-select').value;const docs=Object.keys(selectedDocs);const remarks=document.getElementById('admin-remarks').value.trim();if(!req||!docs.length||!remarks) return; const token='RESUB-'+String(Date.now()).slice(-6);const email=db.requests.find(x=>x.id===req)?.email||'';db.resub.unshift({req,token,email,docs,remarks,status:'Pending'});selectedDocs={};document.getElementById('admin-app').classList.add('hidden');document.getElementById('resubmit-app').classList.remove('hidden');renderResubmission();renderTables()}
+function renderResubmission(){document.getElementById('resubmit-token').innerHTML=db.resub.filter(x=>x.status==='Pending').map(r=>`<option value="${r.token}">${r.token} | ${r.req}</option>`).join('')||'<option>No pending token</option>';loadResubmission()}
+function loadResubmission(){const token=document.getElementById('resubmit-token').value;const row=db.resub.find(r=>r.token===token&&r.status==='Pending');if(!row){document.getElementById('resubmit-remarks').innerText='-';document.getElementById('resubmit-fields').innerHTML='';return} document.getElementById('resubmit-remarks').innerText=row.remarks;document.getElementById('resubmit-fields').innerHTML=row.docs.map(d=>`<div class="field"><label>${d}</label><div class="file-upload-area has-file"><div class="upload-icon">📄</div><div class="upload-label">Upload</div><div class="file-name">resubmit-${d.toLowerCase().replace(/\s+/g,'-')}.pdf</div></div></div>`).join('')}
+function submitResubmission(){const token=document.getElementById('resubmit-token').value;const row=db.resub.find(r=>r.token===token&&r.status==='Pending');if(!row) return; row.status='Completed';row.docs.forEach(d=>db.docs.unshift({req:row.req,doc:d,type:'Resubmission',file:'resubmit-'+d.toLowerCase().replace(/\s+/g,'-')+'.pdf'}));document.getElementById('resubmit-app').classList.add('hidden');document.getElementById('records-app').classList.remove('hidden');renderTables()}
+function renderTables(){document.getElementById('requests-table').innerHTML=`<thead><tr><th>Request ID</th><th>Stockist</th><th>Division</th><th>Status</th></tr></thead><tbody>${db.requests.map(r=>`<tr><td>${r.id}</td><td>${r.name}</td><td>${r.division}</td><td><span class="badge submitted">${r.status}</span></td></tr>`).join('')}</tbody>`;document.getElementById('docs-table').innerHTML=`<thead><tr><th>Request</th><th>Document</th><th>Version</th><th>File</th></tr></thead><tbody>${db.docs.map(d=>`<tr><td>${d.req}</td><td>${d.doc}</td><td>${d.type}</td><td>${d.file}</td></tr>`).join('')}</tbody>`;document.getElementById('resub-table').innerHTML=`<thead><tr><th>Request</th><th>Token</th><th>Docs</th><th>Status</th></tr></thead><tbody>${db.resub.length?db.resub.map(r=>`<tr><td>${r.req}</td><td>${r.token}</td><td>${r.docs.join(', ')}</td><td><span class="badge ${r.status==='Pending'?'pending':'completed'}">${r.status}</span></td></tr>`).join(''):'<tr><td colspan="4">No rows</td></tr>'}</tbody>`}
+renderStep();renderTables();
+</script>
 </body>
 </html>
