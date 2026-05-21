@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadila Stockist Request Demo</title>
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=clash-display@500,600&display=swap" rel="stylesheet">
+  <style>
+    :root, [data-theme="light"] {
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --space-1: .25rem; --space-2: .5rem; --space-3: .75rem; --space-4: 1rem; --space-5: 1.25rem;
+      --space-6: 1.5rem; --space-8: 2rem; --space-10: 2.5rem; --space-12: 3rem; --space-16: 4rem;
+      --color-bg: #f7f6f2; --color-surface:#f9f8f5; --color-surface-2:#fbfbf9; --color-surface-offset:#f1efe8;
+      --color-border:#d4d1ca; --color-divider:#dfddd7; --color-text:#28251d; --color-text-muted:#6f6d67; --color-text-faint:#a19e97;
+      --color-primary:#01696f; --color-primary-hover:#0c4e54; --color-primary-highlight:#dceceb;
+      --color-success:#437a22; --color-success-highlight:#dde7d7; --color-warning:#964219; --color-error:#a12c7b;
+      --radius-sm:.5rem; --radius-md:.75rem; --radius-lg:1rem; --radius-xl:1.25rem; --radius-full:999px;
+      --shadow-sm:0 1px 2px rgba(28,24,18,.06); --shadow-md:0 10px 28px rgba(28,24,18,.08); --shadow-lg:0 20px 48px rgba(28,24,18,.12);
+      --font-body:'Satoshi', Inter, sans-serif; --font-display:'Clash Display', 'Satoshi', sans-serif;
+    }
+    [data-theme="dark"] {
+      --color-bg:#171614; --color-surface:#1c1b19; --color-surface-2:#201f1d; --color-surface-offset:#23211f;
+      --color-border:#393836; --color-divider:#2a2927; --color-text:#d7d4ce; --color-text-muted:#9a9790; --color-text-faint:#6e6b66;
+      --color-primary:#4f98a3; --color-primary-hover:#73b4be; --color-primary-highlight:#263334;
+      --color-success:#79b155; --color-success-highlight:#263226; --color-warning:#cf845d; --color-error:#d163a7;
+      --shadow-sm:0 1px 2px rgba(0,0,0,.22); --shadow-md:0 10px 28px rgba(0,0,0,.28); --shadow-lg:0 20px 48px rgba(0,0,0,.38);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+    body{font-family:var(--font-body);font-size:var(--text-base);background:var(--color-bg);color:var(--color-text);line-height:1.6;min-height:100dvh}
+    button,input,select,textarea{font:inherit;color:inherit}
+    button{cursor:pointer;border:none;background:none}
+    img,svg{display:block;max-width:100%}
+    a{color:inherit}
+    .app-shell{display:grid;grid-template-columns:280px 1fr;min-height:100dvh}
+    .sidebar{background:var(--color-surface);border-right:1px solid var(--color-border);padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6);position:sticky;top:0;height:100dvh}
+    .brand{display:flex;gap:var(--space-3);align-items:center}
+    .logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,var(--color-primary),#2a8b95);display:grid;place-items:center;color:#fff;box-shadow:var(--shadow-md)}
+    .brand h1{font-family:var(--font-display);font-size:var(--text-lg);line-height:1}
+    .brand p{font-size:var(--text-sm);color:var(--color-text-muted)}
+    .nav-group{display:grid;gap:var(--space-2)}
+    .nav-btn{width:100%;text-align:left;padding:var(--space-3) var(--space-4);border-radius:var(--radius-md);background:transparent;border:1px solid transparent;display:flex;justify-content:space-between;align-items:center}
+    .nav-btn.active{background:var(--color-primary-highlight);border-color:color-mix(in srgb, var(--color-primary) 20%, var(--color-border));color:var(--color-primary)}
+    .nav-btn small{font-size:var(--text-xs);color:var(--color-text-muted)}
+    .mini-card{background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-4);font-size:var(--text-sm);color:var(--color-text-muted)}
+    .theme-toggle{padding:var(--space-3);border-radius:var(--radius-md);border:1px solid var(--color-border);background:var(--color-surface-2);display:flex;align-items:center;gap:var(--space-3)}
+    .main{padding:var(--space-6);display:grid;gap:var(--space-6)}
+    .hero{background:linear-gradient(135deg,color-mix(in srgb,var(--color-primary) 12%, var(--color-surface)),var(--color-surface));border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--space-8);box-shadow:var(--shadow-md);display:grid;grid-template-columns:1.2fr .8fr;gap:var(--space-8)}
+    .eyebrow{display:inline-flex;gap:var(--space-2);align-items:center;background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-full);padding:.35rem .75rem;font-size:var(--text-xs);letter-spacing:.04em;text-transform:uppercase;color:var(--color-text-muted)}
+    .hero h2{font-family:var(--font-display);font-size:var(--text-xl);line-height:1.05;margin-top:var(--space-4);max-width:13ch}
+    .hero p{margin-top:var(--space-4);max-width:58ch;color:var(--color-text-muted)}
+    .hero-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-3);align-content:start}
+    .stat{background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-4)}
+    .stat strong{display:block;font-size:var(--text-lg);color:var(--color-primary)}
+    .stat span{font-size:var(--text-sm);color:var(--color-text-muted)}
+    .workspace{display:grid;grid-template-columns:1.3fr .7fr;gap:var(--space-6)}
+    .panel{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);box-shadow:var(--shadow-sm)}
+    .panel-head{padding:var(--space-5) var(--space-6);border-bottom:1px solid var(--color-divider);display:flex;justify-content:space-between;align-items:center;gap:var(--space-3)}
+    .panel-head h3{font-size:var(--text-lg);font-family:var(--font-display);font-weight:600}
+    .panel-body{padding:var(--space-6)}
+    .steps{display:flex;gap:var(--space-2);overflow:auto;padding-bottom:var(--space-2)}
+    .step-pill{padding:.55rem .9rem;border-radius:var(--radius-full);border:1px solid var(--color-border);background:var(--color-surface-2);font-size:var(--text-xs);white-space:nowrap}
+    .step-pill.done{background:var(--color-success-highlight);color:var(--color-success);border-color:color-mix(in srgb,var(--color-success) 22%, var(--color-border))}
+    .step-pill.active{background:var(--color-primary-highlight);color:var(--color-primary);border-color:color-mix(in srgb,var(--color-primary) 22%, var(--color-border))}
+    .grid{display:grid;gap:var(--space-4)}
+    .grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .field{display:grid;gap:var(--space-2)}
+    .field label{font-size:var(--text-sm);font-weight:700}
+    .req{color:var(--color-error)}
+    input,select,textarea{width:100%;padding:.85rem 1rem;border-radius:var(--radius-md);border:1px solid var(--color-border);background:var(--color-surface-2);outline:none}
+    input:focus,select:focus,textarea:focus{border-color:var(--color-primary);box-shadow:0 0 0 4px color-mix(in srgb, var(--color-primary) 14%, transparent)}
+    textarea{min-height:96px;resize:vertical}
+    .segmented{display:flex;gap:var(--space-3);flex-wrap:wrap}
+    .chip{padding:.8rem 1rem;border-radius:var(--radius-md);border:1px solid var(--color-border);background:var(--color-surface-2);font-size:var(--text-sm);display:flex;gap:.5rem;align-items:center}
+    .chip.active{border-color:var(--color-primary);background:var(--color-primary-highlight);color:var(--color-primary);font-weight:700}
+    .doc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-4)}
+    .upload-card{border:1px dashed var(--color-border);background:var(--color-surface-2);border-radius:var(--radius-lg);padding:var(--space-4);display:grid;gap:var(--space-2)}
+    .upload-card.done{border-style:solid;border-color:color-mix(in srgb,var(--color-success) 30%, var(--color-border));background:var(--color-success-highlight)}
+    .upload-card h4{font-size:var(--text-sm)}
+    .upload-card p{font-size:var(--text-xs);color:var(--color-text-muted)}
+    .upload-card .fake-file{font-size:var(--text-xs);color:var(--color-success);font-weight:700}
+    .actions{display:flex;justify-content:space-between;gap:var(--space-3);padding-top:var(--space-4)}
+    .btn{padding:.9rem 1.15rem;border-radius:var(--radius-md);font-weight:700;border:1px solid transparent;display:inline-flex;align-items:center;gap:.6rem}
+    .btn-primary{background:var(--color-primary);color:#fff}.btn-primary:hover{background:var(--color-primary-hover)}
+    .btn-secondary{background:var(--color-surface-2);border-color:var(--color-border)}
+    .btn-success{background:var(--color-success);color:#fff}
+    .timeline{display:grid;gap:var(--space-3)}
+    .event{padding:var(--space-4);border:1px solid var(--color-border);border-radius:var(--radius-lg);background:var(--color-surface-2)}
+    .event strong{display:block;font-size:var(--text-sm)} .event span{display:block;font-size:var(--text-xs);color:var(--color-text-muted)}
+    .event p{font-size:var(--text-sm);margin-top:.35rem;color:var(--color-text)}
+    .table{width:100%;border-collapse:collapse;font-size:var(--text-sm)}
+    .table th,.table td{padding:.8rem;border-bottom:1px solid var(--color-divider);text-align:left;vertical-align:top}
+    .table th{color:var(--color-text-muted);font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.04em}
+    .badge{display:inline-flex;padding:.28rem .6rem;border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:700}
+    .badge.submitted{background:var(--color-primary-highlight);color:var(--color-primary)}
+    .badge.pending{background:#f3e3da;color:var(--color-warning)}
+    .badge.completed{background:var(--color-success-highlight);color:var(--color-success)}
+    .hidden{display:none!important}
+    .footer-note{font-size:var(--text-xs);color:var(--color-text-muted)}
+    @media (max-width: 1100px){.workspace,.hero{grid-template-columns:1fr}.app-shell{grid-template-columns:1fr}.sidebar{position:relative;height:auto;border-right:none;border-bottom:1px solid var(--color-border)}}
+    @media (max-width: 720px){.grid.two,.doc-grid,.hero-grid{grid-template-columns:1fr}.main{padding:var(--space-4)}.panel-body,.panel-head,.sidebar,.hero{padding:var(--space-4)}.actions{flex-direction:column-reverse}.btn{justify-content:center;width:100%}}
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-label="Cadila demo logo">
+            <path d="M7 5.5h10a2.5 2.5 0 0 1 0 5H7a2.5 2.5 0 1 1 0-5Z" fill="currentColor" opacity=".92"/>
+            <path d="M7 13.5h10a2.5 2.5 0 0 1 0 5H7a2.5 2.5 0 0 1 0-5Z" fill="currentColor" opacity=".72"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Stockist Demo</h1>
+          <p>Cadila request workflow</p>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <button class="nav-btn active" data-view="applicant"><span>Applicant flow</span><small>7-step form</small></button>
+        <button class="nav-btn" data-view="admin"><span>Admin panel</span><small>Resubmission</small></button>
+        <button class="nav-btn" data-view="resubmit"><span>Applicant resubmit</span><small>Token upload</small></button>
+        <button class="nav-btn" data-view="data"><span>Live data view</span><small>Requests + docs</small></button>
+      </div>
+
+      <div class="mini-card">
+        This is a fully client-side **demo**. It simulates Apps Script calls, request IDs, document history, admin validation, and resubmission links without Google Drive, Gmail, or Sheets.
+      </div>
+
+      <button class="theme-toggle" data-theme-toggle aria-label="Switch theme">
+        <span id="themeIcon">🌙</span>
+        <span>Toggle theme</span>
+      </button>
+    </aside>
+
+    <main class="main">
+      <section class="hero">
+        <div>
+          <span class="eyebrow">Interactive sandbox · applicant to admin to resubmission</span>
+          <h2>Live interactive demo of your stockist request system.</h2>
+          <p>Use the applicant form to submit a mock request, switch to the admin panel to request missing documents, then open the resubmission view to complete the loop. The tables update instantly so you can test the whole workflow in one screen.</p>
+        </div>
+        <div class="hero-grid">
+          <div class="stat"><strong id="statRequests">1</strong><span>Total demo requests</span></div>
+          <div class="stat"><strong id="statDocs">4</strong><span>Document history rows</span></div>
+          <div class="stat"><strong id="statResub">0</strong><span>Pending resubmissions</span></div>
+          <div class="stat"><strong>STKREQ@2026</strong><span>Admin demo password</span></div>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <div class="panel" id="leftPanel">
+          <div class="panel-head">
+            <h3 id="panelTitle">Applicant request</h3>
+            <div class="eyebrow" id="panelEyebrow">Main submission</div>
+          </div>
+          <div class="panel-body">
+            <div id="view-applicant">
+              <div class="steps" id="stepNav"></div>
+              <div style="height: var(--space-5)"></div>
+              <div id="formStage"></div>
+              <div class="actions">
+                <button class="btn btn-secondary" id="backBtn">← Back</button>
+                <button class="btn btn-primary" id="nextBtn">Next →</button>
+              </div>
+            </div>
+
+            <div id="view-admin" class="hidden grid">
+              <div class="grid two">
+                <div class="field">
+                  <label>Admin password <span class="req">*</span></label>
+                  <input id="adminPwd" type="password" placeholder="Use STKREQ@2026" />
+                </div>
+                <div class="field" style="align-content:end;">
+                  <button class="btn btn-primary" id="adminUnlock">Unlock admin panel</button>
+                </div>
+              </div>
+              <div id="adminContent" class="hidden grid">
+                <div class="grid two">
+                  <div class="field">
+                    <label>Recent request</label>
+                    <select id="adminReqSelect"></select>
+                  </div>
+                  <div class="field">
+                    <label>Admin email</label>
+                    <input id="adminEmail" type="email" value="nihar.mashru@cadilapharma.com" />
+                  </div>
+                </div>
+                <div class="field">
+                  <label>Requested documents</label>
+                  <div class="doc-grid" id="adminDocChecklist"></div>
+                </div>
+                <div class="field">
+                  <label>Remarks for applicant</label>
+                  <textarea id="adminRemarks" placeholder="Explain what needs correction..."></textarea>
+                </div>
+                <div class="actions">
+                  <div class="footer-note">A token link is generated instantly in this demo, just like the resubmission email flow.</div>
+                  <button class="btn btn-success" id="sendResubmission">Send resubmission request</button>
+                </div>
+              </div>
+            </div>
+
+            <div id="view-resubmit" class="hidden grid">
+              <div class="field">
+                <label>Resubmission token</label>
+                <select id="resubmitTokenSelect"></select>
+              </div>
+              <div id="resubmitDetails" class="hidden grid">
+                <div class="mini-card"><strong>Admin remarks:</strong> <span id="resubmitRemarks"></span></div>
+                <div class="doc-grid" id="resubmitDocs"></div>
+                <div class="actions">
+                  <div class="footer-note">Uploading here marks the resubmission as completed and appends new document history rows.</div>
+                  <button class="btn btn-success" id="completeResubmission">Upload & resubmit</button>
+                </div>
+              </div>
+            </div>
+
+            <div id="view-data" class="hidden grid">
+              <div class="grid">
+                <div>
+                  <h4 style="margin-bottom:.75rem">Requests</h4>
+                  <div style="overflow:auto"><table class="table" id="requestsTable"></table></div>
+                </div>
+                <div>
+                  <h4 style="margin-bottom:.75rem">Document history</h4>
+                  <div style="overflow:auto"><table class="table" id="docsTable"></table></div>
+                </div>
+                <div>
+                  <h4 style="margin-bottom:.75rem">Resubmission requests</h4>
+                  <div style="overflow:auto"><table class="table" id="resubTable"></table></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Activity feed</h3>
+            <div class="eyebrow">Simulated backend events</div>
+          </div>
+          <div class="panel-body">
+            <div class="timeline" id="timeline"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const EMAIL_CONFIG = {
+      "New Care - DG": { to: "nihar.mashru@cadilapharma.com", cc: "" },
+      "IntenseCare - DT": { to: "intensecare@cadila.demo", cc: "" },
+      "Magprime - DP": { to: "magprime@cadila.demo", cc: "" },
+      "Maxinova - CA": { to: "maxinova@cadila.demo", cc: "" },
+      "Magnastar - CK": { to: "magnastar@cadila.demo", cc: "" },
+      "Cardian - CT": { to: "cardian@cadila.demo", cc: "" },
+      "Cadila CNS - DN": { to: "cns@cadila.demo", cc: "" },
+      "Evanex - CW": { to: "evanex@cadila.demo", cc: "" },
+      "Maxima One - CL": { to: "maxima@cadila.demo", cc: "" },
+      "Magnawave - CY": { to: "magnawave@cadila.demo", cc: "" },
+      "Cadico - CZ": { to: "cadico@cadila.demo", cc: "" },
+      "Estomag - DD": { to: "estomag@cadila.demo", cc: "" },
+      "ChezGreen - DB": { to: "chezgreen@cadila.demo", cc: "" },
+      "Cadinu - DU": { to: "cadinu@cadila.demo", cc: "" },
+      "Cadila Oncology - CO": { to: "oncology@cadila.demo", cc: "" },
+      "Laviza - DR": { to: "laviza@cadila.demo", cc: "" },
+      "Magfam - CP": { to: "magfam@cadila.demo", cc: "" }
+    };
+    const FALLBACK_EMAIL_CONFIG = { to: "nihar.mashru@cadilapharma.com", cc: "" };
+    const DOC_LIST = ['Drug License', 'GSTIN', 'PAN Card', 'Food Licence', 'Aadhar Card', 'Stockist Profile', 'Party Request Letter', 'Bank Statement', 'TDS Declaration', 'Pharma Rack Consent', 'Warehouse Photos', 'HQ Statement 1'];
+    const steps = [
+      { key:'applicant', label:'Applicant', render: renderApplicantStep },
+      { key:'stockist', label:'Stockist Info', render: renderStockistStep },
+      { key:'kyc', label:'KYC Docs', render: renderKycStep },
+      { key:'financial', label:'Financial Docs', render: renderFinancialStep },
+      { key:'hq', label:'HQ Statements', render: renderHqStep },
+      { key:'details', label:'Details', render: renderDetailsStep },
+      { key:'submit', label:'Submit', render: renderReviewStep }
+    ];
+
+    const state = {
+      currentView: 'applicant',
+      currentStep: 0,
+      adminUnlocked: false,
+      form: {
+        email:'field@cadila.demo', name:'Demo User', division:'New Care - DG', codeType:'New Stockiest Code', stockistName:'Shreeji Pharma Dist.', stockistPlace:'Ahmedabad', hq:'Ahmedabad HQ', pharmaRack:'Yes', remarks:'Demo submission for review.', replacementInfo:'', replacementReason:'', limitReduction:'MIS can select'
+      },
+      docs: {
+        'Drug License':'drug-license.pdf','GSTIN':'gstin.pdf','PAN Card':'pan-card.pdf','Food Licence':'food-licence.pdf','Aadhar Card':'aadhar-card.pdf','Stockist Profile':'stockist-profile.pdf','Party Request Letter':'party-request-letter.pdf','Bank Statement':'bank-statement.pdf','TDS Declaration':'tds-declaration.pdf','Pharma Rack Consent':'pharma-rack-consent.pdf','Warehouse Photos':'warehouse-photos.zip','HQ Statement 1':'hq-statement-1.xlsx'
+      },
+      resubmitUploads: {},
+      db: {
+        requests: [],
+        docHistory: [],
+        resubmissions: []
+      },
+      timeline: []
+    };
+
+    function seed() {
+      const reqId = 'REQ-240731-ABC';
+      state.db.requests.push({
+        requestId:reqId, timestamp:'21/05/2026, 11:00:10 am', submitterName:'Demo User', submitterEmail:'field@cadila.demo', division:'New Care - DG', hq:'Ahmedabad HQ', stockiestPlace:'Ahmedabad', newStockiestName:'Shreeji Pharma Dist.', typeOfCode:'New Stockiest Code', pharmaRack:'Yes', applicantEmail:'field@cadila.demo', status:'Submitted', folderUrl:'drive://New Care - DG/Shreeji Pharma Dist.'
+      });
+      ['Drug License','GSTIN','Food Licence','HQ Statement 1'].forEach((doc, i) => {
+        state.db.docHistory.push({timestamp:`21/05/2026, 11:0${i}:10 am`, requestId:reqId, documentName:doc, versionType:'Original', fileName:doc.toLowerCase().replace(/\s+/g,'-') + '.pdf', uploadedBy:'field@cadila.demo'});
+      });
+      addTimeline('System seeded', 'Loaded one demo request and four document history rows to mirror the Apps Script sheets.');
+    }
+
+    function addTimeline(title, text) {
+      state.timeline.unshift({ title, text, time:new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) });
+      renderTimeline();
+    }
+    function generateRequestId(prefix='REQ') {
+      const tail = Math.random().toString(36).slice(2,5).toUpperCase();
+      const stamp = String(Date.now()).slice(-6);
+      return `${prefix}-${stamp}-${tail}`;
+    }
+    function updateStats() {
+      document.getElementById('statRequests').textContent = state.db.requests.length;
+      document.getElementById('statDocs').textContent = state.db.docHistory.length;
+      document.getElementById('statResub').textContent = state.db.resubmissions.filter(r => r.status === 'Pending').length;
+    }
+    function renderTimeline() {
+      const el = document.getElementById('timeline');
+      el.innerHTML = state.timeline.slice(0,10).map(item => `
+        <article class="event">
+          <strong>${item.title}</strong>
+          <span>${item.time}</span>
+          <p>${item.text}</p>
+        </article>`).join('');
+    }
+    function switchView(view) {
+      state.currentView = view;
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.view === view));
+      ['applicant','admin','resubmit','data'].forEach(v => document.getElementById(`view-${v}`).classList.toggle('hidden', v !== view));
+      const map = {
+        applicant:['Applicant request','Main submission'],
+        admin:['Admin resubmission panel','Validation + token flow'],
+        resubmit:['Applicant document resubmission','Token-based upload'],
+        data:['Demo data tables','Requests, docs, resubmissions']
+      };
+      document.getElementById('panelTitle').textContent = map[view][0];
+      document.getElementById('panelEyebrow').textContent = map[view][1];
+      if (view === 'applicant') renderApplicant();
+      if (view === 'admin') renderAdmin();
+      if (view === 'resubmit') renderResubmit();
+      if (view === 'data') renderTables();
+    }
+
+    function renderApplicant() {
+      const stepNav = document.getElementById('stepNav');
+      stepNav.innerHTML = steps.map((s,i) => `<button class="step-pill ${i < state.currentStep ? 'done' : ''} ${i === state.currentStep ? 'active' : ''}" ${i <= state.currentStep ? `onclick="goStep(${i})"` : ''}>${i+1}. ${s.label}</button>`).join('');
+      steps[state.currentStep].render();
+      document.getElementById('backBtn').style.visibility = state.currentStep === 0 ? 'hidden' : 'visible';
+      document.getElementById('nextBtn').textContent = state.currentStep === steps.length - 1 ? 'Submit request' : 'Next →';
+      document.getElementById('nextBtn').className = 'btn ' + (state.currentStep === steps.length - 1 ? 'btn-success' : 'btn-primary');
+    }
+    function goStep(i){ state.currentStep = i; renderApplicant(); }
+    function renderApplicantStep(){
+      setStage(`
+        <div class="grid two">
+          <div class="field"><label>Email address <span class="req">*</span></label><input id="f-email" value="${state.form.email}"></div>
+          <div class="field"><label>Your name <span class="req">*</span></label><input id="f-name" value="${state.form.name}"></div>
+        </div>
+        <div class="field"><label>Division <span class="req">*</span></label>
+          <select id="f-division">${Object.keys(EMAIL_CONFIG).map(d => `<option ${state.form.division===d?'selected':''}>${d}</option>`).join('')}</select>
+        </div>
+        <div class="field"><label>Type of code <span class="req">*</span></label>
+          <div class="segmented">
+            <button class="chip ${state.form.codeType==='New Stockiest Code'?'active':''}" onclick="setCodeType('New Stockiest Code')">New Stockist</button>
+            <button class="chip ${state.form.codeType==='Extension Code'?'active':''}" onclick="setCodeType('Extension Code')">Extension Code</button>
+          </div>
+        </div>
+      `);
+    }
+    function renderStockistStep(){
+      setStage(`
+        <div class="grid two">
+          <div class="field"><label>Stockist name <span class="req">*</span></label><input id="f-stockistName" value="${state.form.stockistName}"></div>
+          <div class="field"><label>Stockist place <span class="req">*</span></label><input id="f-stockistPlace" value="${state.form.stockistPlace}"></div>
+        </div>
+        <div class="grid two">
+          <div class="field"><label>HQ <span class="req">*</span></label><input id="f-hq" value="${state.form.hq}"></div>
+          <div class="field"><label>Uses Pharma Rack? <span class="req">*</span></label>
+            <div class="segmented">
+              <button class="chip ${state.form.pharmaRack==='Yes'?'active':''}" onclick="setPharmaRack('Yes')">Yes</button>
+              <button class="chip ${state.form.pharmaRack==='No'?'active':''}" onclick="setPharmaRack('No')">No</button>
+            </div>
+          </div>
+        </div>
+        <div class="field"><label>Remarks</label><textarea id="f-remarks">${state.form.remarks}</textarea></div>
+      `);
+    }
+    function renderKycStep(){
+      renderDocs(['Drug License','GSTIN','PAN Card','Food Licence','Aadhar Card','Stockist Profile','Party Request Letter'], 'Upload placeholders update the simulated files list.');
+    }
+    function renderFinancialStep(){
+      renderDocs(['Bank Statement','TDS Declaration','Pharma Rack Consent','Warehouse Photos'], 'These mirror your financial document section.');
+    }
+    function renderHqStep(){
+      renderDocs(['HQ Statement 1'], 'HQ statements stay separate for clarity.');
+    }
+    function renderDetailsStep(){
+      setStage(`
+        <div class="field"><label>Replacement stockist name & HQ</label><textarea id="f-replacementInfo">${state.form.replacementInfo}</textarea></div>
+        <div class="field"><label>Reason for replacement</label><textarea id="f-replacementReason">${state.form.replacementReason}</textarea></div>
+        <div class="field"><label>Limit reduction stockist</label>
+          <div class="segmented">
+            <button class="chip ${state.form.limitReduction==='MIS can select'?'active':''}" onclick="setLimitReduction('MIS can select')">MIS can select</button>
+            <button class="chip ${state.form.limitReduction==='I will share'?'active':''}" onclick="setLimitReduction('I will share')">I will share name & limit</button>
+          </div>
+        </div>
+      `);
+    }
+    function renderReviewStep(){
+      const config = EMAIL_CONFIG[state.form.division] || FALLBACK_EMAIL_CONFIG;
+      setStage(`
+        <div class="grid">
+          <div class="mini-card"><strong>Division routing:</strong> Internal notification will go to <b>${config.to}</b> and cc the applicant email.</div>
+          <div class="mini-card"><strong>Applicant:</strong> ${state.form.name} · ${state.form.email}</div>
+          <div class="mini-card"><strong>Stockist:</strong> ${state.form.stockistName} · ${state.form.stockistPlace} · ${state.form.hq}</div>
+          <div class="mini-card"><strong>Visible uploaded docs:</strong> ${Object.keys(state.docs).join(', ')}</div>
+        </div>
+      `);
+    }
+    function renderDocs(items, note) {
+      setStage(`
+        <div class="mini-card">${note}</div>
+        <div class="doc-grid">
+          ${items.map(doc => `
+            <div class="upload-card ${state.docs[doc] ? 'done' : ''}">
+              <h4>${doc}</h4>
+              <p>${state.docs[doc] ? 'Mock file ready' : 'No file selected yet'}</p>
+              <div class="fake-file">${state.docs[doc] || '—'}</div>
+              <button class="btn btn-secondary" onclick="mockUpload('${doc}')">${state.docs[doc] ? 'Replace file' : 'Upload file'}</button>
+            </div>`).join('')}
+        </div>
+      `);
+    }
+    function setStage(html){ document.getElementById('formStage').innerHTML = `<div class="grid">${html}</div>`; }
+    function setCodeType(v){ state.form.codeType = v; renderApplicant(); }
+    function setPharmaRack(v){ state.form.pharmaRack = v; renderApplicant(); }
+    function setLimitReduction(v){ state.form.limitReduction = v; renderApplicant(); }
+    function mockUpload(doc) {
+      state.docs[doc] = doc.toLowerCase().replace(/\s+/g,'-') + (doc.includes('Photos') ? '.zip' : doc.includes('Statement') ? '.xlsx' : '.pdf');
+      addTimeline('Document attached', `${doc} prepared for submission as ${state.docs[doc]}.`);
+      renderApplicant();
+    }
+    function syncApplicantFields() {
+      ['email','name','division'].forEach(k => {
+        const map = {email:'f-email', name:'f-name', division:'f-division'};
+        const el = document.getElementById(map[k]); if (el) state.form[k] = el.value;
+      });
+      ['stockistName','stockistPlace','hq','remarks','replacementInfo','replacementReason'].forEach(k => {
+        const map = {stockistName:'f-stockistName',stockistPlace:'f-stockistPlace',hq:'f-hq',remarks:'f-remarks',replacementInfo:'f-replacementInfo',replacementReason:'f-replacementReason'};
+        const el = document.getElementById(map[k]); if (el) state.form[k] = el.value;
+      });
+    }
+    function validateStep() {
+      syncApplicantFields();
+      if (state.currentStep === 0) return state.form.email && state.form.name && state.form.division && state.form.codeType;
+      if (state.currentStep === 1) return state.form.stockistName && state.form.stockistPlace && state.form.hq && state.form.pharmaRack;
+      return true;
+    }
+    function handleNext() {
+      if (state.currentView !== 'applicant') return;
+      if (state.currentStep < steps.length - 1) {
+        if (!validateStep()) return addTimeline('Validation block', 'Please complete the required fields before moving forward.');
+        state.currentStep += 1; renderApplicant();
+      } else {
+        if (!validateStep()) return addTimeline('Validation block', 'Missing required applicant fields.');
+        submitRequest();
+      }
+    }
+    function handleBack() { if (state.currentView === 'applicant' && state.currentStep > 0) { state.currentStep -= 1; renderApplicant(); } }
+    function submitRequest() {
+      const requestId = generateRequestId();
+      const config = EMAIL_CONFIG[state.form.division] || FALLBACK_EMAIL_CONFIG;
+      const request = {
+        requestId, timestamp:new Date().toLocaleString('en-IN'), submitterName:state.form.name, submitterEmail:state.form.email,
+        division:state.form.division, hq:state.form.hq, stockiestPlace:state.form.stockistPlace, newStockiestName:state.form.stockistName,
+        typeOfCode:state.form.codeType, pharmaRack:state.form.pharmaRack, applicantEmail:state.form.email, status:'Submitted',
+        folderUrl:`drive://${state.form.division}/${state.form.stockistName}`
+      };
+      state.db.requests.unshift(request);
+      Object.entries(state.docs).forEach(([documentName,fileName]) => {
+        state.db.docHistory.unshift({ timestamp:new Date().toLocaleString('en-IN'), requestId, documentName, versionType:'Original', fileName, uploadedBy:state.form.email });
+      });
+      addTimeline('Request submitted', `${requestId} saved, folder created for ${state.form.stockistName}, and internal notification routed to ${config.to}.`);
+      state.currentStep = 0;
+      renderAdmin(); renderResubmit(); renderTables(); updateStats();
+      switchView('data');
+    }
+
+    function renderAdmin() {
+      document.getElementById('adminContent').classList.toggle('hidden', !state.adminUnlocked);
+      const select = document.getElementById('adminReqSelect');
+      select.innerHTML = state.db.requests.map(r => `<option value="${r.requestId}">${r.requestId} | ${r.newStockiestName} (${r.division})</option>`).join('');
+      document.getElementById('adminDocChecklist').innerHTML = DOC_LIST.map(doc => `<label class="upload-card" style="padding:1rem"><span style="display:flex;gap:.6rem;align-items:flex-start"><input type="checkbox" class="adminDoc" value="${doc}"><span><strong>${doc}</strong><br><small>${state.db.docHistory.some(h => h.documentName === doc) ? 'Exists in history' : 'Not yet seen'}</small></span></span></label>`).join('');
+    }
+    function unlockAdmin() {
+      const pwd = document.getElementById('adminPwd').value;
+      if (pwd !== 'STKREQ@2026') return addTimeline('Admin login failed', 'Invalid password entered in the demo panel.');
+      state.adminUnlocked = true;
+      addTimeline('Admin unlocked', 'Admin panel opened successfully with the configured script password.');
+      renderAdmin();
+    }
+    function sendResubmission() {
+      const reqId = document.getElementById('adminReqSelect').value;
+      const docs = Array.from(document.querySelectorAll('.adminDoc:checked')).map(x => x.value);
+      const remarks = document.getElementById('adminRemarks').value.trim();
+      const request = state.db.requests.find(r => r.requestId === reqId);
+      if (!reqId || !docs.length || !remarks || !request) return addTimeline('Admin validation block', 'Select a request, choose documents, and add remarks before sending.');
+      const token = generateRequestId('RESUB');
+      state.db.resubmissions.unshift({ timestamp:new Date().toLocaleString('en-IN'), requestId:reqId, applicantEmail:request.applicantEmail, requestedDocuments:docs, adminRemarks:remarks, token, link:`?resubmit=${token}`, status:'Pending', sentBy:document.getElementById('adminEmail').value });
+      addTimeline('Resubmission email sent', `Token ${token} generated for ${request.applicantEmail}; requested docs: ${docs.join(', ')}.`);
+      document.getElementById('adminRemarks').value = '';
+      renderResubmit(); renderTables(); updateStats();
+      switchView('resubmit');
+    }
+
+    function renderResubmit() {
+      const select = document.getElementById('resubmitTokenSelect');
+      const pending = state.db.resubmissions.filter(r => r.status === 'Pending');
+      select.innerHTML = pending.length ? pending.map(r => `<option value="${r.token}">${r.token} | ${r.requestId}</option>`).join('') : '<option value="">No pending tokens</option>';
+      if (pending.length) loadResubmitToken(pending[0].token); else {
+        document.getElementById('resubmitDetails').classList.add('hidden');
+      }
+    }
+    function loadResubmitToken(token) {
+      const item = state.db.resubmissions.find(r => r.token === token && r.status === 'Pending');
+      if (!item) return document.getElementById('resubmitDetails').classList.add('hidden');
+      document.getElementById('resubmitDetails').classList.remove('hidden');
+      document.getElementById('resubmitRemarks').textContent = item.adminRemarks;
+      document.getElementById('resubmitDocs').innerHTML = item.requestedDocuments.map(doc => `
+        <div class="upload-card ${state.resubmitUploads[doc] ? 'done' : ''}">
+          <h4>${doc}</h4>
+          <p>${state.resubmitUploads[doc] ? 'Ready to upload' : 'Awaiting replacement file'}</p>
+          <div class="fake-file">${state.resubmitUploads[doc] || '—'}</div>
+          <button class="btn btn-secondary" onclick="mockResubFile('${doc}')">${state.resubmitUploads[doc] ? 'Replace again' : 'Attach file'}</button>
+        </div>`).join('');
+    }
+    function mockResubFile(doc) {
+      state.resubmitUploads[doc] = 'resubmit-' + doc.toLowerCase().replace(/\s+/g,'-') + '.pdf';
+      addTimeline('Resubmission file attached', `${doc} prepared as ${state.resubmitUploads[doc]}.`);
+      loadResubmitToken(document.getElementById('resubmitTokenSelect').value);
+    }
+    function completeResubmission() {
+      const token = document.getElementById('resubmitTokenSelect').value;
+      const item = state.db.resubmissions.find(r => r.token === token && r.status === 'Pending');
+      if (!item) return;
+      const missing = item.requestedDocuments.filter(doc => !state.resubmitUploads[doc]);
+      if (missing.length) return addTimeline('Resubmission blocked', `Please attach all requested documents: ${missing.join(', ')}.`);
+      item.status = 'Completed';
+      item.requestedDocuments.forEach(doc => {
+        state.db.docHistory.unshift({ timestamp:new Date().toLocaleString('en-IN'), requestId:item.requestId, documentName:doc, versionType:'Resubmission', fileName:state.resubmitUploads[doc], uploadedBy:item.applicantEmail });
+      });
+      addTimeline('Resubmission completed', `${item.requestId} updated and MIS notification sent for ${item.requestedDocuments.join(', ')}.`);
+      state.resubmitUploads = {};
+      renderResubmit(); renderTables(); updateStats(); switchView('data');
+    }
+
+    function renderTables() {
+      document.getElementById('requestsTable').innerHTML = `<thead><tr><th>ID</th><th>Stockist</th><th>Division</th><th>Status</th></tr></thead><tbody>${state.db.requests.map(r => `<tr><td>${r.requestId}</td><td>${r.newStockiestName}</td><td>${r.division}</td><td><span class="badge submitted">${r.status}</span></td></tr>`).join('')}</tbody>`;
+      document.getElementById('docsTable').innerHTML = `<thead><tr><th>Request</th><th>Document</th><th>Version</th><th>File</th></tr></thead><tbody>${state.db.docHistory.slice(0,16).map(d => `<tr><td>${d.requestId}</td><td>${d.documentName}</td><td>${d.versionType}</td><td>${d.fileName}</td></tr>`).join('')}</tbody>`;
+      document.getElementById('resubTable').innerHTML = `<thead><tr><th>Request</th><th>Token</th><th>Docs</th><th>Status</th></tr></thead><tbody>${state.db.resubmissions.length ? state.db.resubmissions.map(r => `<tr><td>${r.requestId}</td><td>${r.token}</td><td>${r.requestedDocuments.join(', ')}</td><td><span class="badge ${r.status==='Pending'?'pending':'completed'}">${r.status}</span></td></tr>`).join('') : '<tr><td colspan="4">No resubmissions yet.</td></tr>'}</tbody>`;
+    }
+
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => switchView(btn.dataset.view)));
+    document.getElementById('nextBtn').addEventListener('click', handleNext);
+    document.getElementById('backBtn').addEventListener('click', handleBack);
+    document.getElementById('adminUnlock').addEventListener('click', unlockAdmin);
+    document.getElementById('sendResubmission').addEventListener('click', sendResubmission);
+    document.getElementById('resubmitTokenSelect').addEventListener('change', e => loadResubmitToken(e.target.value));
+    document.getElementById('completeResubmission').addEventListener('click', completeResubmission);
+    document.querySelector('[data-theme-toggle]').addEventListener('click', () => {
+      const root = document.documentElement;
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      document.getElementById('themeIcon').textContent = next === 'dark' ? '☀️' : '🌙';
+    });
+
+    seed();
+    updateStats();
+    renderApplicant();
+    renderAdmin();
+    renderResubmit();
+    renderTables();
+  </script>
+</body>
+</html>
