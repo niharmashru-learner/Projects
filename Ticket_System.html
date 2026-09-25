@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MT & EKA Ticket Desk — Demo</title>
+<style>
+  :root{
+    --ink:#12181b; --paper:#f6f4ef; --panel:#ffffff; --line:#dfdad0; --slate:#5b6b6f;
+    --mt:#c25a2c; --eka:#1f6f5c; --amber:#d9a441; --danger:#b3452f; --sidebar:#171e21; --radius:3px;
+  }
+  *{box-sizing:border-box;}
+  body{ margin:0; background:var(--paper); color:var(--ink);
+    font-family:'Courier New', ui-monospace, monospace; -webkit-font-smoothing:antialiased; }
+  .shell{ display:flex; min-height:100vh; }
+  .sidebar{ width:220px; flex-shrink:0; background:var(--sidebar); color:#cfd8da;
+    border-right:4px solid var(--mt); display:flex; flex-direction:column; }
+  .brand{ padding:20px 18px 16px; border-bottom:1px solid #2a3438; }
+  .brand h1{ margin:0; font-size:15px; color:#fff; letter-spacing:0.3px; line-height:1.35; }
+  .brand .tag{ font-size:10px; color:#8b9a9d; text-transform:uppercase; letter-spacing:1.2px; margin-top:4px; }
+  nav{ padding:10px 0; flex:1; }
+  .nav-item{ display:flex; align-items:center; gap:10px; padding:11px 18px; font-size:12.5px;
+    letter-spacing:0.3px; cursor:pointer; border-left:3px solid transparent; color:#a9b6b8; text-decoration:none; background:none; border-top:0; border-bottom:0; border-right:0; width:100%; text-align:left; font-family:inherit; }
+  .nav-item .dot{ width:6px; height:6px; border-radius:50%; background:#4c5a5d; }
+  .nav-item:hover{ background:#1e2629; color:#fff; }
+  .nav-item.active{ background:#1e2629; color:#fff; border-left-color:var(--mt); }
+  .nav-item.active .dot{ background:var(--mt); }
+  .sidebar-foot{ padding:14px 18px; font-size:10px; color:#697679; border-top:1px solid #2a3438; line-height:1.6; }
+  .main{ flex:1; min-width:0; }
+  .topbar{ background:var(--ink); color:var(--paper); padding:16px 28px;
+    display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+  .topbar h2{ margin:0; font-size:15px; letter-spacing:0.3px; }
+  .demo-flag{ font-size:10px; background:var(--amber); color:#2b2107; padding:4px 9px; border-radius:20px; text-transform:uppercase; letter-spacing:.5px; font-weight:700; }
+  .content{ padding:24px 28px 60px; max-width:1180px; }
+  .panel{ background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); margin-bottom:20px; }
+  .panel-head{ padding:12px 16px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; }
+  .panel-head h3{ margin:0; font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--slate); }
+  .panel-body{ padding:16px; }
+  label{ display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--slate); margin:12px 0 4px; }
+  select, input, textarea{ width:100%; padding:8px 9px; font-family:inherit; font-size:13px;
+    border:1px solid var(--line); border-radius:var(--radius); background:#fff; color:var(--ink); }
+  textarea{ resize:vertical; min-height:80px; }
+  button{ font-family:inherit; cursor:pointer; border:none; border-radius:var(--radius);
+    font-size:12px; letter-spacing:0.5px; text-transform:uppercase; padding:10px 14px; }
+  .btn-primary{ background:var(--ink); color:#fff; }
+  .btn-primary:hover{ background:#000; }
+  table{ width:100%; border-collapse:collapse; font-size:12.5px; }
+  th{ text-align:left; padding:9px 10px; background:#f0ede5; border-bottom:1px solid var(--line);
+    font-size:10.5px; text-transform:uppercase; letter-spacing:0.5px; color:var(--slate); }
+  td{ padding:10px 10px; border-bottom:1px solid #ece8de; }
+  .pill{ display:inline-block; padding:2px 8px; border-radius:20px; font-size:10.5px;
+    text-transform:uppercase; letter-spacing:0.4px; font-weight:700; background:#f2f0e6; color:var(--slate); }
+  .pill.open{ background:#fbe6e1; color:var(--danger); }
+  .pill.progress{ background:#faf1dc; color:#8a6a1f; }
+  .pill.closed{ background:#e3f0ec; color:var(--eka); }
+  .ticket-id-cell{ font-weight:700; color:var(--mt); }
+  .kpis{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
+  .kpi{ background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:14px 16px; }
+  .kpi .lbl{ font-size:10px; text-transform:uppercase; letter-spacing:0.6px; color:var(--slate); font-weight:700; }
+  .kpi .val{ font-size:24px; font-weight:700; margin-top:6px; }
+  .view{ display:none; } .view.active{ display:block; }
+  @media(max-width:900px){ .sidebar{ display:none; } .kpis{ grid-template-columns:1fr 1fr; } }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <h1>MT &amp; EKA<br>Ticket Desk</h1>
+      <div class="tag">Demo Workspace</div>
+    </div>
+    <nav>
+      <button class="nav-item active" onclick="showView('dashboard')"><span class="dot"></span> Dashboard</button>
+      <button class="nav-item" onclick="showView('raise')"><span class="dot"></span> Raise Ticket</button>
+    </nav>
+    <div class="sidebar-foot">Logged in as demo.user@company.com<br>(sample session)</div>
+  </aside>
+  <div class="main">
+    <div class="topbar"><h2 id="pageTitle">Dashboard</h2><span class="demo-flag">Live demo · sample data</span></div>
+    <div class="content">
+
+      <div id="view-dashboard" class="view active">
+        <div class="kpis">
+          <div class="kpi"><div class="lbl">Open</div><div class="val" style="color:var(--danger)">14</div></div>
+          <div class="kpi"><div class="lbl">In Progress</div><div class="val" style="color:#8a6a1f">9</div></div>
+          <div class="kpi"><div class="lbl">Closed (30d)</div><div class="val" style="color:var(--eka)">52</div></div>
+          <div class="kpi"><div class="lbl">Avg Resolution</div><div class="val">1.8d</div></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h3>Assigned to Me</h3></div>
+          <div class="panel-body" style="padding:0;">
+            <table>
+              <thead><tr><th>Ticket ID</th><th>Subject</th><th>Outlet / Chain</th><th>Status</th><th>Priority</th></tr></thead>
+              <tbody id="assignedBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h3>Raised by Me</h3></div>
+          <div class="panel-body" style="padding:0;">
+            <table>
+              <thead><tr><th>Ticket ID</th><th>Subject</th><th>Outlet / Chain</th><th>Status</th><th>Priority</th></tr></thead>
+              <tbody id="myBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="view-raise" class="view">
+        <div class="panel">
+          <div class="panel-head"><h3>Raise a New Ticket</h3></div>
+          <div class="panel-body">
+            <label>Channel</label>
+            <select><option>MT — Modern Trade</option><option>EKA</option></select>
+            <label>Outlet / Chain</label>
+            <input placeholder="e.g. Reliance Trends - Indiranagar"/>
+            <label>Subject</label>
+            <input placeholder="Short summary of the issue"/>
+            <label>Priority</label>
+            <select><option>Low</option><option>Medium</option><option>High</option></select>
+            <label>Description</label>
+            <textarea placeholder="Describe the issue…"></textarea>
+            <div style="margin-top:16px"><button class="btn-primary" onclick="alert('Demo only — ticket creation is disabled on this static page.')">Submit Ticket</button></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
+const OUTLETS=["Reliance Trends - Indiranagar (MTS)","More Retail - Andheri (MTO)","Spencer's - Whitefield (MTS)","EKA-Delhi-North (EKA)","EKA-Pune-West (EKA)","Vishal Mega Mart - Kandivali (MTO)"];
+const SUBJECTS=["Short shipment on last dispatch","Price mismatch at billing","Damaged stock received","POSM not delivered","Return not processed","Invoice discrepancy","Scheme not applied at outlet","Stock discrepancy vs system"];
+const STATUSES=[["Open","open"],["In Progress","progress"],["Closed","closed"]];
+const PRIOR=["Low","Medium","High"];
+function ticketRow(id){
+  const st=pick(STATUSES);
+  return `<tr><td class="ticket-id-cell">MT${pick(['S','O'])}-${rnd(700,999)}-${String(id).padStart(3,'0')}</td><td>${pick(SUBJECTS)}</td><td>${pick(OUTLETS)}</td><td><span class="pill ${st[1]}">${st[0]}</span></td><td><span class="pill">${pick(PRIOR)}</span></td></tr>`;
+}
+document.getElementById('assignedBody').innerHTML=Array.from({length:6},(_,i)=>ticketRow(i+1)).join('');
+document.getElementById('myBody').innerHTML=Array.from({length:5},(_,i)=>ticketRow(i+20)).join('');
+
+function showView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  event.target.closest('.nav-item').classList.add('active');
+  document.getElementById('pageTitle').textContent = name==='dashboard'?'Dashboard':'Raise Ticket';
+}
+</script>
+</body>
+</html>

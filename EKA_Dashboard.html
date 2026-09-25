@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>EKA Dashboard — Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--accent:#2563EB;--text:#172033;--text2:#334155;--muted:#64748B;--muted2:#94A3B8;--line:#D9E1EC;--bg:#F4F7FB;--good:#0F766E;--danger:#DC2626;--font-display:'Plus Jakarta Sans',sans-serif;--font-body:'Manrope',sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-body)}
+a{color:inherit;text-decoration:none}
+.app-shell{min-height:100vh}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:230px;background:#0F172A;padding:22px;z-index:20}
+.brand{display:flex;gap:11px;align-items:center;padding:2px 8px 30px}
+.brand-mark{width:40px;height:40px;border-radius:8px;display:grid;place-items:center;color:#fff;background:var(--accent);font-family:var(--font-display);font-weight:800;font-size:19px}
+.brand-name{font:700 18px var(--font-display);color:#F8FAFC}
+.brand-name span{color:#60A5FA}
+.brand-sub{font-size:8px;letter-spacing:2px;color:#94A3B8;margin-top:2px;text-transform:uppercase}
+.nav{width:100%;display:block;background:transparent;border:0;color:#CBD5E1;text-align:left;padding:12px 13px;border-radius:9px;margin:3px 0;font-weight:600;cursor:pointer;font-size:14px}
+.nav:hover{background:#17233A;color:#fff}
+.nav.active{background:#1E3A8A;color:#fff;box-shadow:inset 3px 0 #60A5FA}
+.side-note{position:absolute;left:22px;right:22px;bottom:25px;color:#94A3B8;line-height:1.6;font-size:11px;border-top:1px solid #334155;padding-top:16px}
+.side-note b{color:#60A5FA}
+main{margin-left:230px;width:calc(100% - 230px);padding:28px 34px 45px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.eyebrow{font-size:9px;letter-spacing:2px;color:var(--accent);font-weight:700}
+.topbar h1{font:700 28px var(--font-display);margin:3px 0;letter-spacing:-.03em}
+.badge{border:1px solid var(--line);background:#fff;color:var(--muted);padding:8px 11px;border-radius:8px;font-size:11px}
+.demo-badge{background:#FEF3C7;border-color:#FDE68A;color:#92400E;font-weight:700}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:15px;min-height:100px;box-shadow:0 6px 22px rgba(15,23,42,.045)}
+.k-title{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:800}
+.k-value{font:700 23px var(--font-display);margin:10px 0 5px;letter-spacing:-.02em}
+.k-sub{font-size:10px;color:var(--muted2)}
+.good .k-value{color:var(--good)}
+.bad .k-value{color:var(--danger)}
+.filters{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.filter{min-width:170px}
+.filter label{display:block;color:var(--muted);font-size:10px;margin:0 0 5px;text-transform:uppercase;letter-spacing:.7px;font-weight:700}
+.filter select,.filter input{width:100%;height:38px;border:1px solid var(--line);border-radius:7px;padding:8px;font-family:inherit}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 6px 22px rgba(15,23,42,.045)}
+.card-title{font-family:var(--font-display);font-weight:700;margin-bottom:10px}
+.table-wrap{overflow:auto;max-height:520px;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:900px}
+th{position:sticky;top:0;background:#FAFAF9;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-size:9px;text-align:left;padding:11px 10px;border-bottom:1px solid var(--line);font-weight:800}
+td{padding:10px;border-bottom:1px solid var(--line);font-size:12px;white-space:nowrap}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+tbody tr:hover td{background:#F3F9FE}
+.nod-badge{display:inline-block;min-width:32px;text-align:center;padding:3px 9px;border-radius:12px;font-weight:700;font-size:11px}
+.nod-red{background:rgba(220,38,38,.12);color:#B91C1C}
+.nod-yellow{background:rgba(217,164,65,.18);color:#8A5A00}
+.nod-green{background:rgba(15,118,110,.14);color:#0F766E}
+.view{display:none}
+.view.active{display:block}
+@media(max-width:1100px){.sidebar{width:190px}main{margin-left:190px;width:calc(100% - 190px);padding:22px}.kpis{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.sidebar{display:none}main{margin-left:0;width:100%}.kpis{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">E</div>
+      <div>
+        <div class="brand-name">EKA<span>.</span>Dashboard</div>
+        <div class="brand-sub">Field Stock Intel</div>
+      </div>
+    </div>
+    <button class="nav active" onclick="showView('stock')">📊 Stock Overview</button>
+    <button class="nav" onclick="showView('entry')">📝 Physical Stock Entry</button>
+    <button class="nav" onclick="showView('variance')">📋 Inward Validation</button>
+    <div class="side-note">This is a <b>static demo</b> of the live EKA Dashboard (Flask + Google Sheets). All figures below are sample data — no live sheet is connected.</div>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <div>
+        <div class="eyebrow">EKA CHANNEL</div>
+        <h1>Stock Overview</h1>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="badge demo-badge">Live demo · sample data</span>
+        <span class="badge" id="sourceBadge">Sample Sheet • 240 rows</span>
+      </div>
+    </div>
+
+    <div id="view-stock" class="view active">
+      <div class="kpis">
+        <div class="kpi"><div class="k-title">Total SKUs</div><div class="k-value">240</div><div class="k-sub">Across 6 categories</div></div>
+        <div class="kpi good"><div class="k-title">Healthy Stock</div><div class="k-value">168</div><div class="k-sub">70% of range</div></div>
+        <div class="kpi bad"><div class="k-title">Critical (NOD &lt; 7)</div><div class="k-value">31</div><div class="k-sub">Needs replenishment</div></div>
+        <div class="kpi"><div class="k-title">Overstock (NOD &gt; 60)</div><div class="k-value">41</div><div class="k-sub">Excess days of stock</div></div>
+        <div class="kpi"><div class="k-title">Avg Growth %</div><div class="k-value">+12.4%</div><div class="k-sub">vs last year</div></div>
+      </div>
+
+      <div class="filters">
+        <div class="filter"><label>Category</label><select id="fCat" onchange="render()"><option value="">All</option></select></div>
+        <div class="filter"><label>NOD Bucket</label><select id="fNod" onchange="render()"><option value="">All</option><option>Red</option><option>Yellow</option><option>Green</option></select></div>
+        <div class="filter"><label>Search SKU</label><input id="fSearch" placeholder="Type to search…" oninput="render()"/></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">SKU Stock Health</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>SKU</th><th>Category</th><th class="num">Stock</th><th class="num">L3M Avg</th><th class="num">NOD</th><th>NOD Bucket</th><th class="num">Growth %</th></tr></thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-entry" class="view">
+      <div class="card">
+        <div class="card-title">Physical Stock Entry</div>
+        <p class="k-sub" style="margin-bottom:14px">Select a location, enter counted quantities per SKU, and submit for reconciliation. (Form disabled in this static demo.)</p>
+        <div class="filters">
+          <div class="filter"><label>Location</label><select disabled><option>Warehouse — Ahmedabad</option></select></div>
+          <div class="filter"><label>Entry Date</label><input type="date" disabled/></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>SKU</th><th class="num">System Stock</th><th class="num">Counted Qty</th></tr></thead>
+            <tbody id="entryBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-variance" class="view">
+      <div class="card">
+        <div class="card-title">Inward Validation</div>
+        <p class="k-sub" style="margin-bottom:14px">Enter a PO number to fetch expected SKUs and quantities, then log actual received qty to generate a variance report. (Demo only.)</p>
+        <div class="filters">
+          <div class="filter"><label>PO Number</label><input placeholder="e.g. PO-88291" disabled/></div>
+          <div class="filter"><button class="badge" style="cursor:pointer" disabled>Fetch</button></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>SKU</th><th class="num">Order Qty</th><th class="num">Received Qty</th><th class="num">Variance</th></tr></thead>
+            <tbody id="varBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const CATS=["Skincare","Haircare","Makeup","Fragrance","Wellness","Baby Care"];
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
+const DATA=Array.from({length:240},(_,i)=>{
+  const stock=rnd(0,3000), avg=rnd(5,220);
+  const nod = avg>0 ? Math.round(stock/avg*31) : 0;
+  const bucket = nod<7?"Red":nod>60?"Green":"Yellow";
+  const growth = (Math.random()*80-20).toFixed(1);
+  return {sku:`EKA-${1000+i}`, cat:pick(CATS), stock, avg, nod, bucket, growth};
+});
+CATS.forEach(c=>{const o=document.createElement('option');o.textContent=c;document.getElementById('fCat').appendChild(o)});
+
+function render(){
+  const cat=document.getElementById('fCat').value;
+  const nod=document.getElementById('fNod').value;
+  const q=document.getElementById('fSearch').value.toLowerCase();
+  const rows=DATA.filter(r=> (!cat||r.cat===cat) && (!nod||r.bucket===nod) && (!q||r.sku.toLowerCase().includes(q)) ).slice(0,120);
+  document.getElementById('tbody').innerHTML=rows.map(r=>`<tr><td>${r.sku}</td><td>${r.cat}</td><td class="num">${r.stock.toLocaleString('en-IN')}</td><td class="num">${r.avg}</td><td class="num">${r.nod}</td><td><span class="nod-badge nod-${r.bucket.toLowerCase()}">${r.bucket}</span></td><td class="num" style="color:${r.growth>=0?'#0F766E':'#DC2626'}">${r.growth>=0?'+':''}${r.growth}%</td></tr>`).join('');
+}
+document.getElementById('entryBody').innerHTML = DATA.slice(0,15).map(r=>`<tr><td>${r.sku}</td><td class="num">${r.stock}</td><td class="num"><input class="entryNum" style="width:90px" placeholder="—" disabled/></td></tr>`).join('');
+document.getElementById('varBody').innerHTML = DATA.slice(0,10).map(r=>{const rec=rnd(r.stock-20,r.stock+20); const v=rec-r.stock; return `<tr><td>${r.sku}</td><td class="num">${r.stock}</td><td class="num">${rec}</td><td class="num" style="color:${v===0?'#64748B':v>0?'#0F766E':'#DC2626'}">${v>0?'+':''}${v}</td></tr>`}).join('');
+
+function showView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));
+  event.target.classList.add('active');
+}
+render();
+</script>
+</body>
+</html>

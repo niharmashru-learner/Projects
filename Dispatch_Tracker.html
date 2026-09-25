@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Dispatch Tracker — Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--accent:#FF4B4B;--bg:#0E1117;--panel:#161B22;--panel2:#1C2128;--line:#2D333B;--text:#FAFAFA;--muted:#8B949E;--good:#3FB950;--warn:#D29922;--bad:#F85149}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Source Sans 3',sans-serif}
+.topbar{background:var(--panel);border-bottom:1px solid var(--line);padding:14px 26px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.topbar h1{margin:0;font-size:19px;font-weight:800}
+.topbar h1 span{color:var(--accent)}
+.badge{border:1px solid var(--line);background:var(--panel2);color:var(--muted);padding:6px 11px;border-radius:6px;font-size:11px}
+.demo-badge{background:rgba(210,153,34,.15);border-color:rgba(210,153,34,.4);color:#E3B341;font-weight:700}
+.wrap{display:flex}
+.sidebar{width:230px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--line);min-height:calc(100vh - 57px);padding:18px 14px}
+.side-title{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:6px 8px 10px;font-weight:700}
+.nav{display:block;width:100%;text-align:left;background:transparent;border:0;color:#C9D1D9;padding:11px 10px;border-radius:6px;font-size:14px;margin-bottom:2px;cursor:pointer}
+.nav:hover{background:var(--panel2)}
+.nav.active{background:rgba(255,75,75,.14);color:var(--accent);font-weight:700}
+main{flex:1;padding:24px 30px 50px;min-width:0}
+.view{display:none}
+.view.active{display:block}
+h2{font-size:22px;margin:0 0 4px;font-weight:800}
+.cap{color:var(--muted);font-size:13px;margin-bottom:18px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.kpi .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-weight:700}
+.kpi .val{font-size:26px;font-weight:800;margin-top:8px}
+.kpi.good .val{color:var(--good)}
+.kpi.bad .val{color:var(--bad)}
+.kpi.warn .val{color:var(--warn)}
+.filters{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.filters select,.filters input{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:9px 12px;border-radius:6px;font-family:inherit;min-width:170px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:18px}
+.panel h3{margin:0 0 12px;font-size:14px;font-weight:700}
+.table-wrap{overflow:auto;border-radius:8px;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;min-width:820px}
+th{position:sticky;top:0;background:var(--panel2);text-align:left;padding:10px;font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.5px;border-bottom:1px solid var(--line)}
+td{padding:9px 10px;border-bottom:1px solid var(--line);font-size:12.5px}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+tbody tr:hover td{background:var(--panel2)}
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:700}
+.pill.delivered{background:rgba(63,185,80,.15);color:var(--good)}
+.pill.transit{background:rgba(210,153,34,.15);color:var(--warn)}
+.pill.delayed{background:rgba(248,81,73,.15);color:var(--bad)}
+.gapbar{height:8px;border-radius:4px;background:var(--panel2);overflow:hidden;width:100px}
+.gapbar div{height:100%;background:var(--bad)}
+@media(max-width:900px){.sidebar{display:none}.kpis{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>🏠 Dashboards<span> · Dispatch Tracker</span></h1>
+  <div style="display:flex;gap:8px"><span class="badge demo-badge">Live demo · sample data</span><span class="badge">Streamlit app</span></div>
+</div>
+<div class="wrap">
+  <aside class="sidebar">
+    <div class="side-title">Pages</div>
+    <button class="nav active" onclick="showView('order')">📦 Order Tracking</button>
+    <button class="nav" onclick="showView('gap')">📉 Stock Gap Dashboard</button>
+    <div class="side-title" style="margin-top:20px">About</div>
+    <p style="color:var(--muted);font-size:12px;line-height:1.6;padding:0 8px">This is a static demo of the live Streamlit dashboard, which reads directly from SharePoint order, stock and dispatch sheets. Sample data shown here.</p>
+  </aside>
+  <main>
+    <div id="view-order" class="view active">
+      <h2>📦 Order Tracking</h2>
+      <div class="cap">Search and filter live order / delivery data — AWB, courier, delivery status, TAT.</div>
+      <div class="kpis">
+        <div class="kpi"><div class="lbl">Total Orders</div><div class="val" id="k1">—</div></div>
+        <div class="kpi good"><div class="lbl">Delivered</div><div class="val" id="k2">—</div></div>
+        <div class="kpi warn"><div class="lbl">In Transit</div><div class="val" id="k3">—</div></div>
+        <div class="kpi bad"><div class="lbl">Delayed (TAT &gt; 5d)</div><div class="val" id="k4">—</div></div>
+      </div>
+      <div class="filters">
+        <select id="fCourier" onchange="renderOrders()"><option value="">All Couriers</option></select>
+        <select id="fStatus" onchange="renderOrders()"><option value="">All Status</option><option>Delivered</option><option>In Transit</option><option>Delayed</option></select>
+        <input id="fAwb" placeholder="Search AWB / Order ID" oninput="renderOrders()"/>
+      </div>
+      <div class="panel">
+        <h3>Order / Delivery Log</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Order ID</th><th>AWB</th><th>Courier</th><th>Outlet</th><th class="num">TAT (days)</th><th>Status</th></tr></thead>
+          <tbody id="orderBody"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <div id="view-gap" class="view">
+      <h2>📉 Stock Gap Dashboard</h2>
+      <div class="cap">Matches live orders against live stock — Ahmedabad (MWH) or Bangalore (Direct Shelf BLR).</div>
+      <div class="filters">
+        <select id="fWh" onchange="renderGap()"><option value="">All Warehouses</option><option>Ahmedabad (MWH)</option><option>Bangalore (Direct Shelf)</option></select>
+      </div>
+      <div class="panel">
+        <h3>Orders Exceeding Available Stock</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>SKU</th><th>Warehouse</th><th class="num">Ordered Qty</th><th class="num">Available Stock</th><th class="num">Gap</th><th>Severity</th></tr></thead>
+          <tbody id="gapBody"></tbody>
+        </table></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
+const COURIERS=["Delhivery","Bluedart","Ecom Express","XpressBees","DTDC"];
+const OUTLETS=["Reliance Trends - Indiranagar","More Retail - Andheri","Nature's Basket - Powai","Spencer's - Whitefield","Vishal Mega Mart - Kandivali","Metro Cash & Carry - Peenya"];
+const ORDERS=Array.from({length:80},(_,i)=>{
+  const tat=rnd(1,9);
+  const status = tat>5?"Delayed":tat>=3?"In Transit":"Delivered";
+  return {id:`ORD-${20450+i}`, awb:`AWB${rnd(100000,999999)}`, courier:pick(COURIERS), outlet:pick(OUTLETS), tat, status};
+});
+COURIERS.forEach(c=>{const o=document.createElement('option');o.textContent=c;document.getElementById('fCourier').appendChild(o)});
+
+function renderOrders(){
+  const c=document.getElementById('fCourier').value, s=document.getElementById('fStatus').value, q=document.getElementById('fAwb').value.toLowerCase();
+  const rows=ORDERS.filter(r=>(!c||r.courier===c)&&(!s||r.status===s)&&(!q||r.awb.toLowerCase().includes(q)||r.id.toLowerCase().includes(q)));
+  document.getElementById('k1').textContent=rows.length;
+  document.getElementById('k2').textContent=rows.filter(r=>r.status==="Delivered").length;
+  document.getElementById('k3').textContent=rows.filter(r=>r.status==="In Transit").length;
+  document.getElementById('k4').textContent=rows.filter(r=>r.status==="Delayed").length;
+  document.getElementById('orderBody').innerHTML=rows.slice(0,50).map(r=>`<tr><td>${r.id}</td><td>${r.awb}</td><td>${r.courier}</td><td>${r.outlet}</td><td class="num">${r.tat}</td><td><span class="pill ${r.status==='Delivered'?'delivered':r.status==='In Transit'?'transit':'delayed'}">${r.status}</span></td></tr>`).join('');
+}
+
+const WHS=["Ahmedabad (MWH)","Bangalore (Direct Shelf)"];
+const SKUS=["Renee Kajal 0.35g","Renee Matte Lipstick","Renee Lip Serum","Renee Foundation 30ml","Renee Compact Powder","Renee Eyeliner Pen","Renee Highlighter Duo"];
+const GAP=Array.from({length:30},()=>{
+  const ordered=rnd(20,400), avail=rnd(0,ordered+50);
+  const gap=Math.max(0,ordered-avail);
+  const sev=gap===0?"None":gap<50?"Low":gap<150?"Medium":"High";
+  return {sku:pick(SKUS), wh:pick(WHS), ordered, avail, gap, sev};
+}).filter(r=>r.gap>0);
+
+function renderGap(){
+  const wh=document.getElementById('fWh').value;
+  const rows=GAP.filter(r=>!wh||r.wh===wh);
+  document.getElementById('gapBody').innerHTML=rows.map(r=>`<tr><td>${r.sku}</td><td>${r.wh}</td><td class="num">${r.ordered}</td><td class="num">${r.avail}</td><td class="num" style="color:var(--bad)">${r.gap}</td><td><span class="pill ${r.sev==='High'?'delayed':r.sev==='Medium'?'transit':'delivered'}">${r.sev}</span></td></tr>`).join('');
+}
+
+function showView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));
+  event.target.classList.add('active');
+}
+renderOrders(); renderGap();
+</script>
+</body>
+</html>
