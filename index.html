@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b12">
+  <meta name="description" content="Nihar Mashru — business analytics, dashboards, workflow automation and decision intelligence projects.">
+  <title>Nihar Mashru — Analytics & Automation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080b12;
+      --panel: rgba(16, 21, 33, .72);
+      --panel-hover: rgba(22, 29, 45, .88);
+      --text: #f4f6fb;
+      --muted: #9aa5b8;
+      --subtle: #647087;
+      --line: rgba(173, 190, 220, .13);
+      --lime: #c9ff68;
+      --cyan: #68e7ef;
+      --violet: #a38bff;
+      --max: 1160px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Manrope', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    .scene {
+      position: fixed; inset: 0; z-index: -3; overflow: hidden; pointer-events: none;
+      background:
+        radial-gradient(ellipse at 50% -20%, rgba(64, 82, 145, .19), transparent 55%),
+        linear-gradient(180deg, #080b12 0%, #090d15 50%, #080b12 100%);
+    }
+    #particles { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .76; }
+    .grid-wash {
+      position: absolute; inset: -20%;
+      background-image: linear-gradient(rgba(148,166,205,.045) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(148,166,205,.045) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(ellipse at 50% 38%, black 0%, transparent 72%);
+      transform: perspective(900px) rotateX(8deg) scale(1.1);
+      opacity: .38;
+    }
+    .aurora {
+      position: absolute; width: 42vw; height: 42vw; min-width: 320px; min-height: 320px;
+      border-radius: 50%; filter: blur(90px); opacity: .13; mix-blend-mode: screen;
+      animation: drift 22s ease-in-out infinite alternate;
+    }
+    .aurora.one { top: 0; left: -14%; background: #5a55ff; }
+    .aurora.two { top: 28%; right: -18%; background: #12d9dc; animation-delay: -7s; }
+    .aurora.three { bottom: -28%; left: 28%; background: #8d55ff; animation-delay: -13s; }
+    .cursor-glow {
+      position: fixed; width: 460px; height: 460px; border-radius: 50%; z-index: -1;
+      pointer-events: none; opacity: .16; filter: blur(85px);
+      background: radial-gradient(circle, rgba(104,231,239,.35), transparent 66%);
+      transform: translate(-50%, -50%); left: 50%; top: 30%;
+    }
+    @keyframes drift { from { transform: translate3d(-4%, -2%, 0) scale(.9); } to { transform: translate3d(8%, 7%, 0) scale(1.12); } }
+    @keyframes breathe { 0%,100% { opacity: .65; transform: scale(.98); } 50% { opacity: 1; transform: scale(1.03); } }
+    @keyframes orbit { to { transform: rotate(360deg); } }
+    @keyframes rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    .wrap { width: min(var(--max), calc(100% - 48px)); margin: 0 auto; }
+    .nav {
+      position: sticky; top: 0; z-index: 20; backdrop-filter: blur(18px);
+      background: rgba(8,11,18,.72); border-bottom: 1px solid rgba(173,190,220,.08);
+    }
+    .nav-inner { height: 76px; display: flex; align-items: center; justify-content: space-between; }
+    .brand { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; font-weight: 800; letter-spacing: -.04em; }
+    .brand-mark {
+      width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center;
+      color: #0a0d13; font-size: 13px; font-weight: 800;
+      background: linear-gradient(135deg, var(--lime), var(--cyan));
+      box-shadow: 0 0 26px rgba(104,231,239,.17);
+    }
+    .brand-name { font-size: 15px; }
+    .brand-name span { color: var(--muted); font-weight: 500; }
+    .nav-links { display: flex; align-items: center; gap: 30px; }
+    .nav-links a { text-decoration: none; color: #aeb7c8; font-size: 12px; transition: color .2s; }
+    .nav-links a:hover { color: var(--lime); }
+    .nav-contact { border: 1px solid var(--line); border-radius: 999px; padding: 10px 15px; }
+    .hero { min-height: 650px; display: grid; grid-template-columns: 1.12fr .88fr; align-items: center; gap: 55px; padding-top: 72px; padding-bottom: 94px; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 10px; color: var(--lime);
+      font: 11px 'DM Mono', monospace; letter-spacing: .13em; text-transform: uppercase;
+      border: 1px solid rgba(201,255,104,.19); background: rgba(201,255,104,.045);
+      border-radius: 999px; padding: 10px 13px; margin-bottom: 27px;
+    }
+    .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 14px var(--lime); animation: breathe 2s infinite; }
+    h1 { font-size: clamp(43px, 6vw, 76px); line-height: 1.04; letter-spacing: -.075em; font-weight: 800; max-width: 700px; }
+    h1 .gradient {
+      color: transparent; background: linear-gradient(100deg, #f5f7fb 8%, #a7f4e9 45%, #c9ff68 95%);
+      -webkit-background-clip: text; background-clip: text;
+    }
+    .hero-copy { margin-top: 25px; color: var(--muted); font-size: 15px; line-height: 1.9; max-width: 540px; }
+    .hero-copy strong { color: #e5eaf4; font-weight: 600; }
+    .hero-actions { display: flex; align-items: center; gap: 13px; margin-top: 32px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none;
+      font-size: 12px; font-weight: 800; border-radius: 999px; padding: 14px 19px;
+      transition: transform .22s, box-shadow .22s, background .22s; border: 1px solid transparent;
+    }
+    .btn:hover { transform: translateY(-3px); }
+    .btn-primary { color: #0b0e13; background: var(--lime); box-shadow: 0 8px 28px rgba(201,255,104,.12); }
+    .btn-primary:hover { box-shadow: 0 10px 36px rgba(201,255,104,.25); }
+    .btn-quiet { border-color: var(--line); color: #dce3ef; background: rgba(255,255,255,.025); }
+    .btn-quiet:hover { background: rgba(255,255,255,.07); }
+    .hero-meta { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 43px; }
+    .meta-item { display: flex; align-items: center; gap: 9px; color: #8d99ad; font-size: 11px; }
+    .meta-item .mini { color: var(--cyan); font-size: 14px; }
+    .visual {
+      min-height: 410px; position: relative; display: grid; place-items: center; isolation: isolate;
+    }
+    .visual::before {
+      content: ''; position: absolute; width: 330px; height: 330px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(104,231,239,.12), rgba(163,139,255,.06) 44%, transparent 70%);
+      filter: blur(8px); animation: breathe 7s ease-in-out infinite;
+    }
+    .orbit {
+      position: absolute; width: 330px; height: 330px; border: 1px solid rgba(151,177,222,.15);
+      border-radius: 50%; animation: orbit 28s linear infinite;
+    }
+    .orbit::before, .orbit::after { content: ''; position: absolute; border-radius: 50%; }
+    .orbit::before { width: 9px; height: 9px; background: var(--cyan); box-shadow: 0 0 20px var(--cyan); top: 45px; left: 42px; }
+    .orbit::after { width: 6px; height: 6px; background: var(--lime); box-shadow: 0 0 16px var(--lime); bottom: 35px; right: 55px; }
+    .orbit.two { width: 250px; height: 250px; border-style: dashed; border-color: rgba(201,255,104,.22); animation-direction: reverse; animation-duration: 36s; }
+    .orbit.three { width: 390px; height: 390px; border-color: rgba(163,139,255,.12); animation-duration: 48s; }
+    .core {
+      position: relative; width: 190px; height: 190px; border-radius: 36px; display: grid; place-items: center;
+      border: 1px solid rgba(198,219,255,.22); background: linear-gradient(145deg, rgba(27,37,57,.92), rgba(10,15,25,.88));
+      box-shadow: 0 28px 90px rgba(0,0,0,.36), inset 0 1px rgba(255,255,255,.08);
+      transform: rotate(-7deg); overflow: hidden;
+    }
+    .core::before { content: ''; position: absolute; inset: -50%; background: conic-gradient(from 0deg, transparent, rgba(104,231,239,.17), transparent 28%); animation: orbit 8s linear infinite; }
+    .core-inner { position: relative; z-index: 1; text-align: center; transform: rotate(7deg); }
+    .core-symbol { font-size: 43px; line-height: 1; margin-bottom: 15px; color: var(--lime); text-shadow: 0 0 28px rgba(201,255,104,.24); }
+    .core-label { font: 10px 'DM Mono', monospace; letter-spacing: .16em; color: #dbe5f6; }
+    .float-tag {
+      position: absolute; display: flex; align-items: center; gap: 9px; padding: 11px 13px;
+      border: 1px solid rgba(173,190,220,.16); background: rgba(12,17,28,.78); backdrop-filter: blur(12px);
+      border-radius: 13px; box-shadow: 0 16px 42px rgba(0,0,0,.2); font-size: 10px; color: #dce4f2;
+      animation: float 6s ease-in-out infinite;
+    }
+    .float-tag small { display: block; color: var(--subtle); font: 9px 'DM Mono', monospace; margin-top: 3px; }
+    .float-icon { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 9px; background: rgba(104,231,239,.09); color: var(--cyan); font-size: 14px; }
+    .tag-a { top: 57px; right: -3px; }
+    .tag-b { bottom: 63px; left: -7px; animation-delay: -2s; }
+    .tag-c { bottom: 35px; right: 8px; animation-delay: -4s; }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 27px; }
+    .section-kicker { font: 10px 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .15em; color: var(--cyan); margin-bottom: 11px; }
+    h2 { font-size: clamp(28px, 3.5vw, 42px); letter-spacing: -.06em; line-height: 1.12; }
+    .section-note { color: var(--muted); font-size: 12px; line-height: 1.7; max-width: 340px; }
+    .projects { padding: 40px 0 105px; }
+    .project-list { border-top: 1px solid var(--line); }
+    .project {
+      position: relative; display: grid; grid-template-columns: 62px minmax(0,1fr) auto; align-items: center; gap: 23px;
+      padding: 25px 22px; border-bottom: 1px solid var(--line); text-decoration: none;
+      background: rgba(255,255,255,0); transition: background .25s, padding .25s, border-color .25s;
+      overflow: hidden;
+    }
+    .project::after { content: ''; position: absolute; inset: 0 auto 0 0; width: 2px; background: linear-gradient(var(--cyan), var(--lime)); transform: scaleY(0); transform-origin: bottom; transition: transform .25s; }
+    .project:hover { padding-left: 29px; background: linear-gradient(90deg, rgba(104,231,239,.055), rgba(163,139,255,.025) 55%, transparent); border-color: rgba(104,231,239,.18); }
+    .project:hover::after { transform: scaleY(1); }
+    .project-icon { width: 54px; height: 54px; display: grid; place-items: center; border-radius: 17px; border: 1px solid var(--line); background: rgba(255,255,255,.025); font-size: 23px; transition: transform .25s, border-color .25s; }
+    .project:hover .project-icon { transform: rotate(-5deg) scale(1.05); border-color: rgba(104,231,239,.35); }
+    .project-main { min-width: 0; }
+    .project-title { font-size: 15px; font-weight: 800; letter-spacing: -.025em; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .project-desc { margin-top: 7px; color: var(--muted); font-size: 12px; line-height: 1.7; max-width: 680px; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+    .tag { color: #9ca9bf; font: 9px 'DM Mono', monospace; border: 1px solid rgba(173,190,220,.12); border-radius: 5px; padding: 4px 6px; }
+    .project-arrow { width: 35px; height: 35px; border: 1px solid var(--line); color: #c9d4e6; border-radius: 50%; display: grid; place-items: center; font-size: 15px; transition: transform .25s, color .25s, background .25s; }
+    .project:hover .project-arrow { transform: translate(2px,-2px); color: #0a0e13; background: var(--lime); border-color: var(--lime); }
+    .badge { font: 9px 'DM Mono', monospace; color: #d5c9ff; background: rgba(163,139,255,.1); border: 1px solid rgba(163,139,255,.18); border-radius: 999px; padding: 4px 7px; letter-spacing: .02em; }
+    .about-strip { padding: 30px; border: 1px solid var(--line); border-radius: 22px; background: linear-gradient(120deg, rgba(18,25,40,.8), rgba(12,17,28,.5)); display: grid; grid-template-columns: 1fr auto; gap: 30px; align-items: center; position: relative; overflow: hidden; }
+    .about-strip::before { content: ''; position: absolute; width: 260px; height: 260px; right: -90px; top: -150px; border-radius: 50%; background: rgba(104,231,239,.08); filter: blur(25px); }
+    .about-strip h3 { font-size: 20px; letter-spacing: -.04em; }
+    .about-strip p { margin-top: 9px; max-width: 690px; color: var(--muted); font-size: 12px; line-height: 1.8; }
+    .about-chips { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 16px; }
+    .about-chips span { border: 1px solid var(--line); border-radius: 999px; color: #c0cada; font: 9px 'DM Mono', monospace; padding: 7px 9px; }
+    .footer { padding: 35px 0 28px; margin-top: 80px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 20px; color: #778398; font-size: 10px; }
+    .footer strong { color: #dce3ef; font-weight: 700; }
+    .footer-right { font: 9px 'DM Mono', monospace; letter-spacing: .06em; }
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .delay-1 { transition-delay: .1s; } .delay-2 { transition-delay: .2s; } .delay-3 { transition-delay: .3s; }
+    @media (max-width: 850px) {
+      .hero { grid-template-columns: 1fr; gap: 15px; padding-top: 75px; padding-bottom: 65px; }
+      .hero-content { text-align: center; }
+      .eyebrow { margin-left: auto; margin-right: auto; }
+      h1, .hero-copy { margin-left: auto; margin-right: auto; }
+      .hero-actions, .hero-meta { justify-content: center; }
+      .visual { min-height: 360px; }
+      .tag-a { right: 5%; } .tag-b { left: 5%; }
+      .section-head { align-items: start; flex-direction: column; }
+      .section-note { max-width: 520px; }
+    }
+    @media (max-width: 600px) {
+      .wrap { width: min(100% - 32px, var(--max)); }
+      .nav-inner { height: 66px; }
+      .nav-links { gap: 14px; }
+      .nav-links a { font-size: 11px; }
+      .nav-links a:first-child { display: none; }
+      .nav-contact { padding: 8px 11px; }
+      .hero { padding-top: 58px; }
+      h1 { font-size: clamp(42px, 12vw, 60px); }
+      .hero-copy { font-size: 13px; }
+      .hero-meta { gap: 12px 18px; margin-top: 29px; }
+      .visual { min-height: 300px; transform: scale(.88); margin: -10px 0; }
+      .orbit { width: 260px; height: 260px; } .orbit.two { width: 205px; height: 205px; } .orbit.three { width: 305px; height: 305px; }
+      .core { width: 155px; height: 155px; border-radius: 30px; }
+      .tag-a { top: 35px; right: -2px; } .tag-b { bottom: 40px; left: -6px; } .tag-c { bottom: 10px; right: 2px; }
+      .float-tag { padding: 8px 9px; }
+      .project { grid-template-columns: 44px minmax(0,1fr) 27px; gap: 12px; padding: 20px 5px; }
+      .project:hover { padding-left: 9px; }
+      .project-icon { width: 42px; height: 42px; border-radius: 13px; font-size: 19px; }
+      .project-title { font-size: 13px; gap: 6px; }
+      .project-desc { font-size: 11px; }
+      .project-arrow { width: 27px; height: 27px; font-size: 12px; }
+      .about-strip { padding: 23px 19px; grid-template-columns: 1fr; gap: 20px; }
+      .about-strip h3 { font-size: 18px; }
+      .about-strip .btn { justify-self: start; }
+      .footer { margin-top: 55px; flex-direction: column; align-items: flex-start; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+      .reveal { opacity: 1; transform: none; }
+      #particles { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="scene" aria-hidden="true">
+    <canvas id="particles"></canvas>
+    <div class="grid-wash"></div>
+    <div class="aurora one"></div><div class="aurora two"></div><div class="aurora three"></div>
+  </div>
+  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+  <nav class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="#" aria-label="Nihar Mashru home">
+        <span class="brand-mark">NM.</span>
+        <span class="brand-name">NIHAR MASHRU <span>/ PROJECTS</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="#work">Selected work</a>
+        <a href="#about">Expertise</a>
+        <a class="nav-contact" href="#contact">Let's connect ↗</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero wrap">
+      <div class="hero-content">
+        <div class="eyebrow reveal"><span class="pulse"></span> BUSINESS INTELLIGENCE · AUTOMATION</div>
+        <h1 class="reveal delay-1">Making data work<br>for <span class="gradient">real business.</span></h1>
+        <p class="hero-copy reveal delay-2">
+          I'm <strong>Nihar Mashru</strong> — I build analytics dashboards, reporting systems and workflow automations that turn everyday business complexity into clearer decisions.
+        </p>
+        <div class="hero-actions reveal delay-3">
+          <a class="btn btn-primary" href="#work">Explore my projects <span>↘</span></a>
+          <a class="btn btn-quiet" href="#about">What I work with <span>↗</span></a>
+        </div>
+        <div class="hero-meta reveal delay-3">
+          <div class="meta-item"><span class="mini">✳</span> Business-first thinking</div>
+          <div class="meta-item"><span class="mini">⌘</span> Analytics & automation</div>
+          <div class="meta-item"><span class="mini">↗</span> Built around real workflows</div>
+        </div>
+      </div>
+
+      <div class="visual reveal delay-2" aria-label="Animated analytics illustration">
+        <div class="orbit three"></div><div class="orbit"></div><div class="orbit two"></div>
+        <div class="core">
+          <div class="core-inner">
+            <div class="core-symbol">⌁</div>
+            <div class="core-label">DATA → DECISIONS</div>
+          </div>
+        </div>
+        <div class="float-tag tag-a"><span class="float-icon">▥</span><span>Business insights<small>ANALYTICS</small></span></div>
+        <div class="float-tag tag-b"><span class="float-icon">⌘</span><span>Workflow systems<small>AUTOMATION</small></span></div>
+        <div class="float-tag tag-c"><span class="float-icon">↗</span><span>Decision support<small>INTELLIGENCE</small></span></div>
+      </div>
+    </section>
+
+    <section class="projects wrap" id="work">
+      <div class="section-head reveal">
+        <div>
+          <div class="section-kicker">01 / SELECTED WORK</div>
+          <h2>Projects built to solve<br>actual problems.</h2>
+        </div>
+        <p class="section-note">A growing collection of dashboards, internal tools and automation projects. Some demos use sample or mock data.</p>
+      </div>
+
+      <div class="project-list">
+        <a class="project reveal" href="CadiPulse_Dashboard.html">
+          <div class="project-icon">📊</div>
+          <div class="project-main">
+            <div class="project-title">CadiPulse Dashboard</div>
+            <p class="project-desc">Explore product-wise, stockist-wise and zone-wise sales views, year-over-year growth comparisons, stock reporting and AI-style findings in one field-force intelligence interface.</p>
+            <div class="project-tags"><span class="tag">SALES ANALYTICS</span><span class="tag">DASHBOARD</span></div>
+          </div><span class="project-arrow">↗</span>
+        </a>
+        <a class="project reveal" href="HO_Order_Form.html">
+          <div class="project-icon">📋</div>
+          <div class="project-main">
+            <div class="project-title">HO Order Form</div>
+            <p class="project-desc">A guided order-entry workflow covering customer and hospital details, division selection, dynamic product rows, CC email details, attachments and a submission confirmation flow.</p>
+            <div class="project-tags"><span class="tag">WORKFLOW</span><span class="tag">DATA VALIDATION</span></div>
+          </div><span class="project-arrow">↗</span>
+        </a>
+        <a class="project reveal" href="New_Stk.html">
+          <div class="project-icon">🧾</div>
+          <div class="project-main">
+            <div class="project-title">New Stockist / Extension Code Form</div>
+            <p class="project-desc">A multi-step stockist onboarding/request experience with applicant details, progress tracking, submission confirmation, document resubmission and an admin records interface.</p>
+            <div class="project-tags"><span class="tag">MASTER DATA</span><span class="tag">OPERATIONS</span></div>
+          </div><span class="project-arrow">↗</span>
+        </a>
+        <a class="project reveal" href="SAP_RUNNER.html">
+          <div class="project-icon">⚙️</div>
+          <div class="project-main">
+            <div class="project-title">SAP Runner</div>
+            <p class="project-desc">An interactive SAP automation concept with a run control, execution log, reset/clear actions and a report table to demonstrate how repetitive operational steps could be orchestrated.</p>
+            <div class="project-tags"><span class="tag">AUTOMATION</span><span class="tag">SAP</span></div>
+          </div><span class="project-arrow">↗</span>
+        </a>
+        <a class="project reveal" href="EKA_Dashboard.html">
+          <div class="project-icon">📦</div>
+          <div class="project-main">
+            <div class="project-title">EKA Dashboard <span class="badge">SAMPLE DATA</span></div>
+            <p class="project-desc">A field-operations demo with stock overview, physical stock entry and variance views to illustrate stock visibility and inward/quantity checks. Values are illustrative sample data.</p>
+            <div class="project-tags"><span class="tag">STOCK INTELLIGENCE</span><span class="tag">FIELD OPERATIONS</span></div>
+          </div><span class="project-arrow">↗</span>
+        </a>
+        <a class="project reveal" href="mt360/index2.html">
+          <div class="project-icon">🏬</div>
+          <div class="project-main">
+            <div class="project-title">MT 360 Dashboard <span class="badge">MOCK DATA</span></div>
+            <p class="project-desc">A 360° Modern Trade analytics concept for exploring chain-, SKU- and store-level performance, sales trends, distribution, pricing and commercial signals. The current demo uses mock data.</p>
+            <div class="project-tags"><span class="tag">COMMERCIAL ANALYTICS</span><span class="tag">MODERN TRADE</span></div>
+          </div><span class="project-arrow">↗</span>
+        </a>
+        <a class="project reveal" href="Dispatch_Tracker.html">
+          <div class="project-icon">🚚</div>
+          <div class="project-main">
+            <div class="project-title">Dispatch Tracker <span class="badge">SAMPLE DATA</span></div>
+            <p class="project-desc">A supply-chain demo with separate order-tracking and stock-gap views, helping users inspect order progress and identify potential quantity gaps. The displayed records are sample data.</p>
+            <div class="project-tags"><span class="tag">SUPPLY CHAIN</span><span class="tag">TRACKING</span></div>
+          </div><span class="project-arrow">↗</span>
+        </a>
+        <a class="project reveal" href="Ticket_System.html">
+          <div class="project-icon">🎫</div>
+          <div class="project-main">
+            <div class="project-title">MT & EKA Ticket Desk <span class="badge">SAMPLE DATA</span></div>
+            <p class="project-desc">A support-desk concept with dashboard and ticket-raising views for Modern Trade and EKA requests, including status and priority-style tracking. Ticket creation is disabled in this static demo.</p>
+            <div class="project-tags"><span class="tag">SUPPORT SYSTEM</span><span class="tag">OPERATIONS</span></div>
+          </div><span class="project-arrow">↗</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="wrap reveal" id="about">
+      <div class="about-strip">
+        <div>
+          <div class="section-kicker">02 / TOOLKIT</div>
+          <h3>Business context first. Technology in service of it.</h3>
+          <p>I focus on making reporting more useful, reducing repetitive work and building systems that help teams see what is happening across sales, stock and operations.</p>
+          <div class="about-chips">
+            <span>Excel & VBA</span><span>Power BI</span><span>Python</span><span>Flask</span><span>HTML / CSS / JS</span><span>Workflow Automation</span>
+          </div>
+        </div>
+        <a class="btn btn-quiet" href="#contact">Start a conversation ↗</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap footer" id="contact">
+    <div>© 2026 <strong>Nihar Mashru</strong> · Built with curiosity and code.</div>
+    <div class="footer-right">ANALYTICS / AUTOMATION / DECISION INTELLIGENCE</div>
+  </footer>
+
+  <script>
+    (() => {
+      const canvas = document.getElementById('particles');
+      const ctx = canvas.getContext('2d');
+      const glow = document.getElementById('cursorGlow');
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let width = 0, height = 0, points = [], raf = 0;
+      const pointer = { x: -1000, y: -1000, active: false };
+      const dpr = () => Math.min(window.devicePixelRatio || 1, 1.7);
+
+      function resize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        const ratio = dpr();
+        canvas.width = Math.floor(width * ratio);
+        canvas.height = Math.floor(height * ratio);
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+        const count = Math.min(105, Math.max(38, Math.floor(width * height / 14500)));
+        points = Array.from({ length: count }, () => ({
+          x: Math.random() * width, y: Math.random() * height,
+          vx: (Math.random() - .5) * .24, vy: (Math.random() - .5) * .24,
+          r: Math.random() * 1.35 + .45,
+          hue: Math.random() > .55 ? 184 : 255
+        }));
+      }
+      function draw() {
+        ctx.clearRect(0, 0, width, height);
+        for (let i = 0; i < points.length; i++) {
+          const p = points[i];
+          if (!reduceMotion) { p.x += p.vx; p.y += p.vy; }
+          if (p.x < -10) p.x = width + 10; if (p.x > width + 10) p.x = -10;
+          if (p.y < -10) p.y = height + 10; if (p.y > height + 10) p.y = -10;
+          if (pointer.active && !reduceMotion) {
+            const dx = p.x - pointer.x, dy = p.y - pointer.y, d = Math.hypot(dx, dy);
+            if (d < 120 && d > 0) { p.x += dx / d * .22; p.y += dy / d * .22; }
+          }
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `hsla(${p.hue}, 90%, 78%, .72)`; ctx.fill();
+          for (let j = i + 1; j < points.length; j++) {
+            const q = points[j], dx = p.x - q.x, dy = p.y - q.y, d = Math.hypot(dx, dy);
+            if (d < 112) {
+              ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
+              ctx.strokeStyle = `rgba(116, 170, 205, ${(1 - d / 112) * .14})`;
+              ctx.lineWidth = .7; ctx.stroke();
+            }
+          }
+        }
+        if (!reduceMotion) raf = requestAnimationFrame(draw);
+      }
+      resize(); draw();
+      window.addEventListener('resize', () => { resize(); if (reduceMotion) draw(); }, { passive: true });
+      window.addEventListener('pointermove', (e) => {
+        pointer.x = e.clientX; pointer.y = e.clientY; pointer.active = true;
+        if (glow && !reduceMotion) {
+          glow.style.left = e.clientX + 'px'; glow.style.top = e.clientY + 'px';
+        }
+      }, { passive: true });
+      window.addEventListener('pointerleave', () => { pointer.active = false; }, { passive: true });
+
+      const revealItems = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window && !reduceMotion) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: .12, rootMargin: '0px 0px -25px 0px' });
+        revealItems.forEach((el) => observer.observe(el));
+      } else {
+        revealItems.forEach((el) => el.classList.add('visible'));
+      }
+    })();
+  </script>
+</body>
+</html>
